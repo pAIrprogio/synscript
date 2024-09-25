@@ -501,9 +501,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@syn-stack/json@workspace:*, @syn-stack/json@workspace:packages/json":
+"@synstack/json@workspace:*, @synstack/json@workspace:packages/json":
   version: 0.0.0-use.local
-  resolution: "@syn-stack/json@workspace:packages/json"
+  resolution: "@synstack/json@workspace:packages/json"
   dependencies:
     "@types/node": "npm:^22.7.0"
     tsup: "npm:^8.3.0"
@@ -513,9 +513,9 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@syn-stack/pipe@workspace:*, @syn-stack/pipe@workspace:packages/pipe":
+"@synstack/pipe@workspace:*, @synstack/pipe@workspace:packages/pipe":
   version: 0.0.0-use.local
-  resolution: "@syn-stack/pipe@workspace:packages/pipe"
+  resolution: "@synstack/pipe@workspace:packages/pipe"
   dependencies:
     "@types/node": "npm:^22.7.0"
     tsup: "npm:^8.3.0"
@@ -524,9 +524,9 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@syn-stack/shared@workspace:packages/shared":
+"@synstack/resolved@workspace:*, @synstack/resolved@workspace:packages/resolved":
   version: 0.0.0-use.local
-  resolution: "@syn-stack/shared@workspace:packages/shared"
+  resolution: "@synstack/resolved@workspace:packages/resolved"
   dependencies:
     "@types/node": "npm:^22.7.0"
     tsup: "npm:^8.3.0"
@@ -535,11 +535,22 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@syn-stack/str@workspace:*, @syn-stack/str@workspace:packages/str":
+"@synstack/shared@workspace:packages/shared":
   version: 0.0.0-use.local
-  resolution: "@syn-stack/str@workspace:packages/str"
+  resolution: "@synstack/shared@workspace:packages/shared"
   dependencies:
-    "@syn-stack/pipe": "workspace:*"
+    "@types/node": "npm:^22.7.0"
+    tsup: "npm:^8.3.0"
+    tsx: "npm:^4.19.1"
+    typescript: "npm:^5.6.2"
+  languageName: unknown
+  linkType: soft
+
+"@synstack/str@workspace:*, @synstack/str@workspace:packages/str":
+  version: 0.0.0-use.local
+  resolution: "@synstack/str@workspace:packages/str"
+  dependencies:
+    "@synstack/pipe": "workspace:*"
     "@types/node": "npm:^22.7.0"
     change-case: "npm:^5.4.4"
     tsup: "npm:^8.3.0"
@@ -548,37 +559,41 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@syn-stack/syn-script@workspace:packages/syn-script":
+"@synstack/synscript@workspace:packages/synscript":
   version: 0.0.0-use.local
-  resolution: "@syn-stack/syn-script@workspace:packages/syn-script"
+  resolution: "@synstack/synscript@workspace:packages/synscript"
   dependencies:
-    "@syn-stack/json": "workspace:*"
-    "@syn-stack/pipe": "workspace:*"
-    "@syn-stack/str": "workspace:*"
-    "@syn-stack/web": "workspace:*"
-    "@syn-stack/xml": "workspace:*"
-    "@syn-stack/yaml": "workspace:*"
-    tsup: "npm:^8.3.0"
-    tsx: "npm:^4.19.1"
-    typescript: "npm:^5.6.2"
-  languageName: unknown
-  linkType: soft
-
-"@syn-stack/text@workspace:packages/text":
-  version: 0.0.0-use.local
-  resolution: "@syn-stack/text@workspace:packages/text"
-  dependencies:
+    "@synstack/json": "workspace:*"
+    "@synstack/pipe": "workspace:*"
+    "@synstack/resolved": "workspace:*"
+    "@synstack/str": "workspace:*"
+    "@synstack/web": "workspace:*"
+    "@synstack/xml": "workspace:*"
+    "@synstack/yaml": "workspace:*"
     "@types/node": "npm:^22.7.0"
-    immer: "npm:^10.1.1"
     tsup: "npm:^8.3.0"
     tsx: "npm:^4.19.1"
     typescript: "npm:^5.6.2"
   languageName: unknown
   linkType: soft
 
-"@syn-stack/web@workspace:*, @syn-stack/web@workspace:packages/web":
+"@synstack/text@workspace:packages/text":
   version: 0.0.0-use.local
-  resolution: "@syn-stack/web@workspace:packages/web"
+  resolution: "@synstack/text@workspace:packages/text"
+  dependencies:
+    "@synstack/json": "workspace:*"
+    "@synstack/resolved": "workspace:*"
+    "@synstack/str": "workspace:*"
+    "@types/node": "npm:^22.7.0"
+    tsup: "npm:^8.3.0"
+    tsx: "npm:^4.19.1"
+    typescript: "npm:^5.6.2"
+  languageName: unknown
+  linkType: soft
+
+"@synstack/web@workspace:*, @synstack/web@workspace:packages/web":
+  version: 0.0.0-use.local
+  resolution: "@synstack/web@workspace:packages/web"
   dependencies:
     "@mozilla/readability": "npm:^0.5.0"
     "@types/node": "npm:^22.7.0"
@@ -590,9 +605,9 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@syn-stack/xml@workspace:*, @syn-stack/xml@workspace:packages/xml":
+"@synstack/xml@workspace:*, @synstack/xml@workspace:packages/xml":
   version: 0.0.0-use.local
-  resolution: "@syn-stack/xml@workspace:packages/xml"
+  resolution: "@synstack/xml@workspace:packages/xml"
   dependencies:
     "@types/node": "npm:^22.7.0"
     immer: "npm:^10.1.1"
@@ -602,9 +617,9 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@syn-stack/yaml@workspace:*, @syn-stack/yaml@workspace:packages/yaml":
+"@synstack/yaml@workspace:*, @synstack/yaml@workspace:packages/yaml":
   version: 0.0.0-use.local
-  resolution: "@syn-stack/yaml@workspace:packages/yaml"
+  resolution: "@synstack/yaml@workspace:packages/yaml"
   dependencies:
     "@types/node": "npm:^22.7.0"
     tsup: "npm:^8.3.0"
@@ -2819,9 +2834,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"syn-script-workspace@workspace:.":
+"synscript-workspace@workspace:.":
   version: 0.0.0-use.local
-  resolution: "syn-script-workspace@workspace:."
+  resolution: "synscript-workspace@workspace:."
   dependencies:
     "@eslint/js": "npm:^9.11.1"
     "@types/eslint": "npm:^9.6.1"

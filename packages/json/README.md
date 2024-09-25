@@ -1,1 +1,1 @@
-# @syn-stack/json
+# @synstack/json

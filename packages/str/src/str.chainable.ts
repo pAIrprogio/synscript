@@ -1,4 +1,4 @@
-import pipe from "@syn-stack/pipe";
+import pipe from "@synstack/pipe";
 import * as changeCase from "change-case";
 import * as lib from "./str.lib";
 
@@ -7,11 +7,7 @@ export type Stringable = {
 };
 
 export class Str {
-  public static from(this: void, text: Stringable) {
-    return new Str(text.toString());
-  }
-
-  private constructor(private readonly text: string) {}
+  public constructor(private readonly text: string) {}
 
   /**
    * Remove empty lines at the start of the text but leave whitespace on the first line with content
@@ -66,7 +62,7 @@ export class Str {
    * Split a string into substrings using the specified separator and return them as an array
    */
   public split(separator: string | RegExp, limit?: number) {
-    return lib.split(this.text, separator, limit).map(Str.from);
+    return lib.split(this.text, separator, limit).map((v) => new Str(v));
   }
 
   /**
@@ -75,7 +71,7 @@ export class Str {
    * Defaults to ":"
    */
   public addLineNumbers(separator: string = ":") {
-    return Str.from(lib.addLineNumbers(this.text, separator));
+    return new Str(lib.addLineNumbers(this.text, separator));
   }
 
   /**
@@ -305,5 +301,6 @@ export class Str {
   }
 }
 
-export const str = Str.from;
-export default str;
+export const str = (text: Stringable) => {
+  return new Str(text.toString());
+};

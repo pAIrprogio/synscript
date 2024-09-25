@@ -223,18 +223,3 @@ const buildXmlTree = (parts: Array<XmlPart>) => {
  */
 export const parse = <T extends Array<Xml.Node>>(content: string): T =>
   buildXmlTree(splitXmlTags(content)) as T;
-
-export const xml = {
-  /**
-   * A non-iso parser for XML
-   *
-   * - Preserves the original text order
-   * - Adds invalid XML tags as text
-   *
-   * @param content The XML like content to parse
-   * @returns The parsed XML as a tree of nodes
-   */
-  parse,
-};
-
-export default xml;

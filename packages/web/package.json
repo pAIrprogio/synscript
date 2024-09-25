@@ -1,5 +1,5 @@
 {
-  "name": "@syn-stack/web",
+  "name": "@synstack/web",
   "packageManager": "yarn@4.4.0",
   "type": "module",
   "version": "1.0.0",
@@ -32,13 +32,15 @@
     "test": "yarn test:types && yarn test:unit"
   },
   "exports": {
-    "import": {
-      "types": "./src/web.index.ts",
-      "default": "./dist/web.index.js"
-    },
-    "require": {
-      "types": "./src/web.index.d.cts",
-      "default": "./dist/web.index.cjs"
+    ".": {
+      "import": {
+        "types": "./src/web.index.ts",
+        "default": "./dist/web.index.js"
+      },
+      "require": {
+        "types": "./dist/web.index.d.cts",
+        "default": "./dist/web.index.cjs"
+      }
     }
   },
   "dependencies": {

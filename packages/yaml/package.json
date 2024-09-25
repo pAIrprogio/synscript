@@ -1,5 +1,5 @@
 {
-  "name": "@syn-stack/yaml",
+  "name": "@synstack/yaml",
   "packageManager": "yarn@4.4.0",
   "type": "module",
   "version": "1.0.0",
@@ -33,13 +33,15 @@
     "test": "yarn test:types && yarn test:unit"
   },
   "exports": {
-    "import": {
-      "types": "./src/yaml.index.ts",
-      "default": "./dist/yaml.index.js"
-    },
-    "require": {
-      "types": "./src/yaml.index.d.cts",
-      "default": "./dist/yaml.index.cjs"
+    ".": {
+      "import": {
+        "types": "./src/yaml.index.ts",
+        "default": "./dist/yaml.index.js"
+      },
+      "require": {
+        "types": "./dist/yaml.index.d.cts",
+        "default": "./dist/yaml.index.cjs"
+      }
     }
   },
   "dependencies": {

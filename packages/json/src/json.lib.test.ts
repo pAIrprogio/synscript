@@ -2,7 +2,7 @@ import { assertType } from "@shared/src/ts.utils";
 import assert from "node:assert/strict";
 import { describe, it } from "node:test";
 import { z } from "zod";
-import { json } from "./json.index";
+import * as json from "./json.lib";
 
 describe("Json", () => {
   describe("deserialize", () => {

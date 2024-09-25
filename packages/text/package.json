@@ -1,8 +1,9 @@
 {
-  "name": "@syn-stack/syn-script",
+  "name": "@synstack/text",
   "packageManager": "yarn@4.4.0",
   "type": "module",
   "version": "1.0.0",
+  "description": "String templating as it was meant to be",
   "author": {
     "name": "pAIrprog",
     "url": "https://pairprog.io"
@@ -10,9 +11,20 @@
   "repository": {
     "type": "git",
     "url": "https://github.com/pAIrprog/syn-stack.git",
-    "directory": "packages/syn-script"
+    "directory": "packages/text"
   },
   "license": "Apache-2.0",
+  "keywords": [
+    "string",
+    "typescript",
+    "ts",
+    "templating",
+    "template",
+    "interpolation",
+    "llm",
+    "prompt",
+    "ai"
+  ],
   "scripts": {
     "publish": "yarn npm publish --access public",
     "prepublish": "yarn test && yarn build",
@@ -24,22 +36,21 @@
     "test": "yarn test:types && yarn test:unit"
   },
   "exports": {
-    "import": {
-      "types": "./src/syn-script.index.ts",
-      "default": "./dist/syn-script.index.js"
-    },
-    "require": {
-      "types": "./src/syn-script.index.d.cts",
-      "default": "./dist/syn-script.index.cjs"
+    ".": {
+      "import": {
+        "types": "./src/text.index.ts",
+        "default": "./dist/text.index.js"
+      },
+      "require": {
+        "types": "./dist/text.index.d.cts",
+        "default": "./dist/text.index.cjs"
+      }
     }
   },
   "dependencies": {
-    "@syn-stack/json": "workspace:*",
-    "@syn-stack/pipe": "workspace:*",
-    "@syn-stack/str": "workspace:*",
-    "@syn-stack/web": "workspace:*",
-    "@syn-stack/xml": "workspace:*",
-    "@syn-stack/yaml": "workspace:*"
+    "@synstack/json": "workspace:*",
+    "@synstack/resolved": "workspace:*",
+    "@synstack/str": "workspace:*"
   },
   "devDependencies": {
     "@types/node": "^22.7.0",

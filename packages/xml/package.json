@@ -1,5 +1,5 @@
 {
-  "name": "@syn-stack/xml",
+  "name": "@synstack/xml",
   "packageManager": "yarn@4.4.0",
   "type": "module",
   "version": "1.0.0",
@@ -33,13 +33,15 @@
     "test": "yarn test:types && yarn test:unit"
   },
   "exports": {
-    "import": {
-      "types": "./src/xml.index.ts",
-      "default": "./dist/xml.index.js"
-    },
-    "require": {
-      "types": "./src/xml.index.d.cts",
-      "default": "./dist/xml.index.cjs"
+    ".": {
+      "import": {
+        "types": "./src/xml.index.ts",
+        "default": "./dist/xml.index.js"
+      },
+      "require": {
+        "types": "./dist/xml.index.d.cts",
+        "default": "./dist/xml.index.cjs"
+      }
     }
   },
   "dependencies": {

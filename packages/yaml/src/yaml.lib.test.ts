@@ -2,7 +2,7 @@ import { assertType } from "@shared/src/ts.utils";
 import assert from "node:assert/strict";
 import { describe, it } from "node:test";
 import { z } from "zod";
-import { yaml } from "./yaml.index";
+import * as yaml from "./yaml.lib";
 
 describe("Yaml", () => {
   describe("deserialize", () => {

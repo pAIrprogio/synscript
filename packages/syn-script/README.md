@@ -1,1 +1,0 @@
-# @syn-stack/yaml

@@ -1,1 +1,1 @@
-# @syn-stack/pipe
+# @synstack/pipe

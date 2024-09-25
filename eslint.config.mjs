@@ -1,6 +1,5 @@
 import eslint from "@eslint/js";
 import globals from "globals";
-import path from "path";
 import tseslint from "typescript-eslint";
 
 export default [
@@ -11,19 +10,7 @@ export default [
   {
     ignores: ["out", "dist"],
     languageOptions: {
-      parserOptions: {
-        projectService: {
-          allowDefaultProject: [
-            "*.js",
-            "*.cjs",
-            "*.mjs",
-            "*.ts",
-            "*.cts",
-            "*.mts",
-          ],
-          defaultProject: path.resolve(import.meta.dirname, "./tsconfig.json"),
-        },
-      },
+      parserOptions: {},
     },
     rules: {
       "@typescript-eslint/no-restricted-imports": [

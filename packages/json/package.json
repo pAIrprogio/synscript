@@ -1,5 +1,5 @@
 {
-  "name": "@syn-stack/json",
+  "name": "@synstack/json",
   "packageManager": "yarn@4.4.0",
   "type": "module",
   "version": "1.0.0",
@@ -33,13 +33,15 @@
     "test": "yarn test:types && yarn test:unit"
   },
   "exports": {
-    "import": {
-      "types": "./src/json.index.ts",
-      "default": "./dist/json.index.js"
-    },
-    "require": {
-      "types": "./src/json.index.d.cts",
-      "default": "./dist/json.index.cjs"
+    ".": {
+      "import": {
+        "types": "./src/json.index.ts",
+        "default": "./dist/json.index.js"
+      },
+      "require": {
+        "types": "./dist/json.index.d.cts",
+        "default": "./dist/json.index.cjs"
+      }
     }
   },
   "dependencies": {

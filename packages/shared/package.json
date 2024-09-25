@@ -1,5 +1,5 @@
 {
-  "name": "@syn-stack/shared",
+  "name": "@synstack/shared",
   "private": true,
   "scripts": {
     "test:types": "tsc --noEmit",

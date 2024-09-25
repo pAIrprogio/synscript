@@ -1,5 +1,5 @@
 {
-  "name": "@syn-stack/pipe",
+  "name": "@synstack/pipe",
   "packageManager": "yarn@4.4.0",
   "type": "module",
   "version": "1.0.0",
@@ -33,16 +33,17 @@
     "test": "yarn test:types && yarn test:unit"
   },
   "exports": {
-    "import": {
-      "types": "./src/pipe.index.ts",
-      "default": "./dist/pipe.index.js"
-    },
-    "require": {
-      "types": "./src/pipe.index.d.cts",
-      "default": "./dist/pipe.index.cjs"
+    ".": {
+      "import": {
+        "types": "./src/pipe.index.ts",
+        "default": "./dist/pipe.index.js"
+      },
+      "require": {
+        "types": "./dist/pipe.index.d.cts",
+        "default": "./dist/pipe.index.cjs"
+      }
     }
   },
-  "dependencies": {},
   "devDependencies": {
     "@types/node": "^22.7.0",
     "tsup": "^8.3.0",

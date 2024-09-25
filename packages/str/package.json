@@ -1,5 +1,5 @@
 {
-  "name": "@syn-stack/str",
+  "name": "@synstack/str",
   "packageManager": "yarn@4.4.0",
   "type": "module",
   "version": "1.0.0",
@@ -32,17 +32,19 @@
     "test": "yarn test:types && yarn test:unit"
   },
   "exports": {
-    "import": {
-      "types": "./src/str.index.ts",
-      "default": "./dist/str.index.js"
-    },
-    "require": {
-      "types": "./src/str.index.d.cts",
-      "default": "./dist/str.index.cjs"
+    ".": {
+      "import": {
+        "types": "./src/str.index.ts",
+        "default": "./dist/str.index.js"
+      },
+      "require": {
+        "types": "./dist/str.index.d.cts",
+        "default": "./dist/str.index.cjs"
+      }
     }
   },
   "dependencies": {
-    "@syn-stack/pipe": "workspace:*",
+    "@synstack/pipe": "workspace:*",
     "change-case": "^5.4.4"
   },
   "devDependencies": {

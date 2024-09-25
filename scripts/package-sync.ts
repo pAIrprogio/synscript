@@ -12,16 +12,22 @@ const orderKeys = (obj: { [key: string]: any }) =>
 await Promise.all(
   packages.map(async (packagePath) => {
     const content = await readFile(packagePath, "utf-8");
-    const packageJson = JSON.parse(content);
+    const packageJson = (() => {
+      try {
+        return JSON.parse(content);
+      } catch {
+        throw new Error("Failed to parse package.json for " + packagePath);
+      }
+    })();
     if (packageJson.private) return;
 
     const name = packagePath.match(/packages\/(.*)\/package.json/)?.[1];
     if (!name) throw new Error("Couldn't extract package name " + packagePath);
     const newPackageJson = {
-      name: `@syn-stack/${name}`,
+      name: `@synstack/${name}`,
       packageManager: "yarn@4.4.0",
       type: "module",
-      version: packageJson.version,
+      version: packageJson.version ?? "1.0.0",
       description: packageJson.description,
       author: {
         name: "pAIrprog",
@@ -45,16 +51,19 @@ await Promise.all(
         "test:unit:watch": "node --import tsx --watch --test src/**/*.test.ts",
         test: "yarn test:types && yarn test:unit",
       },
-      exports: {
-        import: {
-          types: `./src/${name}.index.ts`,
-          default: `./dist/${name}.index.js`,
+      exports: orderKeys({
+        ...packageJson.exports,
+        ".": {
+          import: {
+            types: `./src/${name}.index.ts`,
+            default: `./dist/${name}.index.js`,
+          },
+          require: {
+            types: `./dist/${name}.index.d.cts`,
+            default: `./dist/${name}.index.cjs`,
+          },
         },
-        require: {
-          types: `./src/${name}.index.d.cts`,
-          default: `./dist/${name}.index.cjs`,
-        },
-      },
+      } as {}),
       dependencies: orderKeys({
         ...packageJson.dependencies,
       } as {}),

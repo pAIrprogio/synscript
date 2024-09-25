@@ -1,5 +1,5 @@
 {
-  "name": "syn-script-workspace",
+  "name": "synscript-workspace",
   "private": true,
   "type": "module",
   "workspaces": {
@@ -9,7 +9,7 @@
   },
   "packageManager": "yarn@4.4.0",
   "scripts": {
-    "build": "yarn workspaces foreach --parallel --topological-dev --interlaced --verbose run build",
+    "build": "yarn workspaces foreach --parallel --all --topological-dev --interlaced --verbose run build",
     "build:watch": "yarn workspaces foreach --parallel --all --interlaced --verbose run build:watch",
     "publish": "yarn workspaces foreach --parallel --topological-dev --interlaced --no-private --verbose run publish",
     "package:sync": "./scripts/package-sync.ts"
