@@ -1,1 +1,1 @@
-# @synstack/yaml
+# @synstack/synscript
