@@ -42,7 +42,8 @@
     "@synstack/str": "workspace:*",
     "@synstack/web": "workspace:*",
     "@synstack/xml": "workspace:*",
-    "@synstack/yaml": "workspace:*"
+    "@synstack/yaml": "workspace:*",
+    "@synstack/text": "workspace:*"
   },
   "devDependencies": {
     "@types/node": "^22.7.0",
