@@ -4,6 +4,16 @@
   "type": "module",
   "version": "1.0.0",
   "description": "Web scraping utilities",
+  "author": {
+    "name": "pAIrprog",
+    "url": "https://pairprog.io"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/pAIrprog/syn-stack.git",
+    "directory": "packages/web"
+  },
+  "license": "Apache-2.0",
   "keywords": [
     "web",
     "typescript",

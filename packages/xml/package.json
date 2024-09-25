@@ -3,7 +3,17 @@
   "packageManager": "yarn@4.4.0",
   "type": "module",
   "version": "1.0.0",
-  "description": "Lax, non spec-compliant XML parsing for LLMs",
+  "description": "Lax, non spec-compliant XML utils tailored for LLMs",
+  "author": {
+    "name": "pAIrprog",
+    "url": "https://pairprog.io"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/pAIrprog/syn-stack.git",
+    "directory": "packages/xml"
+  },
+  "license": "Apache-2.0",
   "keywords": [
     "xml",
     "parsing",

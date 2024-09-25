@@ -4,6 +4,16 @@
   "type": "module",
   "version": "1.0.0",
   "description": "Safe JSON serialization and deserialization",
+  "author": {
+    "name": "pAIrprog",
+    "url": "https://pairprog.io"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/pAIrprog/syn-stack.git",
+    "directory": "packages/json"
+  },
+  "license": "Apache-2.0",
   "keywords": [
     "json",
     "typescript",

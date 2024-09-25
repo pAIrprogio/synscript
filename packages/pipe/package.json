@@ -1,9 +1,19 @@
 {
   "name": "@syn-stack/pipe",
   "packageManager": "yarn@4.4.0",
-  "version": "1.0.0",
   "type": "module",
+  "version": "1.0.0",
   "description": "Simple typesafe pipe utility for Functional Programming",
+  "author": {
+    "name": "pAIrprog",
+    "url": "https://pairprog.io"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/pAIrprog/syn-stack.git",
+    "directory": "packages/pipe"
+  },
+  "license": "Apache-2.0",
   "keywords": [
     "fp",
     "functional",
@@ -32,6 +42,7 @@
       "default": "./dist/pipe.index.cjs"
     }
   },
+  "dependencies": {},
   "devDependencies": {
     "@types/node": "^22.7.0",
     "tsup": "^8.3.0",

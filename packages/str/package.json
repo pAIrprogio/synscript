@@ -1,9 +1,19 @@
 {
   "name": "@syn-stack/str",
   "packageManager": "yarn@4.4.0",
-  "version": "1.0.0",
   "type": "module",
+  "version": "1.0.0",
   "description": "Advanced chainable string manipulation",
+  "author": {
+    "name": "pAIrprog",
+    "url": "https://pairprog.io"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/pAIrprog/syn-stack.git",
+    "directory": "packages/str"
+  },
+  "license": "Apache-2.0",
   "keywords": [
     "string",
     "typescript",
