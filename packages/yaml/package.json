@@ -1,0 +1,39 @@
+{
+  "name": "@syn-stack/yaml",
+  "packageManager": "yarn@4.4.0",
+  "type": "module",
+  "scripts": {
+    "prepublish": "yarn test && yarn build",
+    "build": "tsup",
+    "build:watch": "tsup --watch",
+    "test:types": "tsc --noEmit",
+    "test:unit": "node --import tsx --test src/**/*.test.ts",
+    "test:unit:watch": "node --import tsx --watch --test src/**/*.test.ts",
+    "test": "yarn test:types && yarn test:unit"
+  },
+  "exports": {
+    "import": {
+      "types": "./src/yaml.index.ts",
+      "default": "./dist/yaml.index.js"
+    },
+    "require": {
+      "types": "./src/yaml.index.d.cts",
+      "default": "./dist/yaml.index.cjs"
+    }
+  },
+  "dependencies": {
+    "yaml": "^2.5.1",
+    "zod": "^3.23.8"
+  },
+  "devDependencies": {
+    "@types/node": "^22.7.0",
+    "tsup": "^8.3.0",
+    "tsx": "^4.19.1",
+    "typescript": "^5.6.2"
+  },
+  "include": [
+    "src/**/*.ts",
+    "!src/**/*.test.ts",
+    "dist/**/*"
+  ]
+}
