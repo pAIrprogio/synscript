@@ -12,6 +12,8 @@ This is a strongly opinionated implementation of string templating. It's basical
 Turns this:
 
 ```ts
+import { t } from "@synstack/text";
+
 const items = ["Hello", "World"];
 
 const text: string = await t`
@@ -45,8 +47,8 @@ List of items:
 **What's baked in ?**
 
 - Functions are called
-- Promises are resolved in parallel
-- Arrays are joined with a newline
+- Promises even nested in arrays are resolved in parallel
+- Array values are joined with a newline
 - Text is trimmed
 - Base indentation is removed
 - Nested indentation is preserved for multi-line values
@@ -150,7 +152,7 @@ This is a list of items:
   - The returned value will be `string & { __extra: TExtraObject }`
 - The value can then be accessed through the `tParse(resultingString)` property.
 - You can constrain the type of the extra object by using a type assertion from `Text.String`
-- You can infer the value type of the extra object by using a type assertion from `Text.String`
+- You can infer the value type of the extra object by using a type assertion from `Text.ExtraObject.Infer`
 
 ```ts
 import { t, tParse, type Text } from "@pairprog/text";
