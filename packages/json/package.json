@@ -2,7 +2,18 @@
   "name": "@syn-stack/json",
   "packageManager": "yarn@4.4.0",
   "type": "module",
+  "version": "1.0.0",
+  "description": "Safe JSON serialization and deserialization",
+  "keywords": [
+    "json",
+    "typescript",
+    "ts",
+    "serialization",
+    "deserialization",
+    "zod"
+  ],
   "scripts": {
+    "publish": "yarn npm publish --access public",
     "prepublish": "yarn test && yarn build",
     "build": "tsup",
     "build:watch": "tsup --watch",

@@ -1,7 +1,13 @@
 import YAML from "yaml";
-import { ZodSchema } from "zod";
+import { type ZodSchema } from "zod";
 
-const deserialize = <T = unknown>(
+/**
+ * Deserializes YAML to a TypeScript type
+ * @param data The YAML content to deserialize
+ * @param options.schema Optional Zod schema to validate the data against after deserializing
+ * @returns The deserialized data as a js entity
+ */
+export const deserialize = <T = unknown>(
   data: string,
   options: { schema?: ZodSchema<T> } = {},
 ) => {
@@ -10,7 +16,16 @@ const deserialize = <T = unknown>(
   return validatedData as T;
 };
 
-const serialize = (data: any, options: { schema?: ZodSchema<any> } = {}) => {
+/**
+ * Serializes data to YAML
+ * @param data The data to serialize
+ * @param options.schema Optional Zod schema to validate the data against before serializing
+ * @returns The yaml as a string
+ */
+export const serialize = (
+  data: any,
+  options: { schema?: ZodSchema<any> } = {},
+) => {
   const validatedData = options.schema ? options.schema.parse(data) : data;
   return YAML.stringify(validatedData, {
     blockQuote: "literal", // Avoid unnecessary whitespace on preview
@@ -18,7 +33,20 @@ const serialize = (data: any, options: { schema?: ZodSchema<any> } = {}) => {
 };
 
 export const yaml = {
+  /**
+   * Serializes data to YAML
+   * @param data The data to serialize
+   * @param options.schema Optional Zod schema to validate the data against before serializing
+   * @returns The yaml as a string
+   */
   serialize,
+
+  /**
+   * Deserializes YAML to a TypeScript type
+   * @param data The YAML content to deserialize
+   * @param options.schema Optional Zod schema to validate the data against after deserializing
+   * @returns The deserialized data as a js entity
+   */
   deserialize,
 };
 

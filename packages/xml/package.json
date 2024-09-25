@@ -1,19 +1,19 @@
 {
-  "name": "@syn-stack/yaml",
+  "name": "@syn-stack/xml",
   "packageManager": "yarn@4.4.0",
   "type": "module",
   "version": "1.0.0",
-  "description": "Safe and opiniated YAML serialization and deserialization",
+  "description": "Lax, non spec-compliant XML parsing for LLMs",
   "keywords": [
-    "yaml",
+    "xml",
+    "parsing",
     "typescript",
-    "ts",
-    "serialization",
-    "deserialization",
-    "zod"
+    "llm",
+    "prompt",
+    "ai"
   ],
   "scripts": {
-    "publish": "yarn npm publish --access public --tolerate-republish",
+    "publish": "yarn npm publish --access public",
     "prepublish": "yarn test && yarn build",
     "build": "tsup",
     "build:watch": "tsup --watch",
@@ -24,17 +24,16 @@
   },
   "exports": {
     "import": {
-      "types": "./src/yaml.index.ts",
-      "default": "./dist/yaml.index.js"
+      "types": "./src/xml.index.ts",
+      "default": "./dist/xml.index.js"
     },
     "require": {
-      "types": "./src/yaml.index.d.cts",
-      "default": "./dist/yaml.index.cjs"
+      "types": "./src/xml.index.d.cts",
+      "default": "./dist/xml.index.cjs"
     }
   },
   "dependencies": {
-    "yaml": "^2.5.1",
-    "zod": "^3.23.8"
+    "immer": "^10.1.1"
   },
   "devDependencies": {
     "@types/node": "^22.7.0",
