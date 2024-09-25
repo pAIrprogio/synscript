@@ -15,8 +15,8 @@
     "sourceMap": true,
 
     // Decorators
-    "experimentalDecorators": true,
-    "emitDecoratorMetadata": true,
+    // "experimentalDecorators": true,
+    // "emitDecoratorMetadata": true,
 
     // Modules
     "isolatedModules": true,
@@ -30,6 +30,11 @@
     "strict": true,
     "noImplicitThis": true,
     "noImplicitAny": true,
-    "noFallthroughCasesInSwitch": true
+    "noFallthroughCasesInSwitch": true,
+
+    // Aliases
+    "paths": {
+      "@shared/*": ["./packages/shared/*"]
+    }
   }
 }

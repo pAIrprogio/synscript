@@ -1,0 +1,16 @@
+{
+  "name": "@syn-stack/shared",
+  "private": true,
+  "scripts": {
+    "test:types": "tsc --noEmit",
+    "test:unit": "node --import tsx --test src/**/*.test.ts",
+    "test:unit:watch": "node --import tsx --watch --test src/**/*.test.ts",
+    "test": "yarn test:types && yarn test:unit"
+  },
+  "devDependencies": {
+    "@types/node": "^22.7.0",
+    "tsup": "^8.3.0",
+    "tsx": "^4.19.1",
+    "typescript": "^5.6.2"
+  }
+}

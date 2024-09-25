@@ -494,6 +494,42 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@syn-stack/json@workspace:packages/json":
+  version: 0.0.0-use.local
+  resolution: "@syn-stack/json@workspace:packages/json"
+  dependencies:
+    "@types/node": "npm:^22.7.0"
+    tsup: "npm:^8.3.0"
+    tsx: "npm:^4.19.1"
+    typescript: "npm:^5.6.2"
+    zod: "npm:^3.23.8"
+  languageName: unknown
+  linkType: soft
+
+"@syn-stack/shared@workspace:packages/shared":
+  version: 0.0.0-use.local
+  resolution: "@syn-stack/shared@workspace:packages/shared"
+  dependencies:
+    "@types/node": "npm:^22.7.0"
+    tsup: "npm:^8.3.0"
+    tsx: "npm:^4.19.1"
+    typescript: "npm:^5.6.2"
+  languageName: unknown
+  linkType: soft
+
+"@syn-stack/yaml@workspace:packages/yaml":
+  version: 0.0.0-use.local
+  resolution: "@syn-stack/yaml@workspace:packages/yaml"
+  dependencies:
+    "@types/node": "npm:^22.7.0"
+    tsup: "npm:^8.3.0"
+    tsx: "npm:^4.19.1"
+    typescript: "npm:^5.6.2"
+    yaml: "npm:^2.5.1"
+    zod: "npm:^3.23.8"
+  languageName: unknown
+  linkType: soft
+
 "@types/eslint@npm:*, @types/eslint@npm:^9.6.1":
   version: 9.6.1
   resolution: "@types/eslint@npm:9.6.1"
@@ -531,6 +567,15 @@ __metadata:
   version: 7.0.15
   resolution: "@types/json-schema@npm:7.0.15"
   checksum: 10c0/a996a745e6c5d60292f36731dd41341339d4eeed8180bb09226e5c8d23759067692b1d88e5d91d72ee83dfc00d3aca8e7bd43ea120516c17922cbcb7c3e252db
+  languageName: node
+  linkType: hard
+
+"@types/node@npm:^22.7.0":
+  version: 22.7.0
+  resolution: "@types/node@npm:22.7.0"
+  dependencies:
+    undici-types: "npm:~6.19.2"
+  checksum: 10c0/127b1ac3eebe8c2b09e3d2de277ee906710c4908b4573cde23b9c7cec1cb1aaf1af8bdabbccdac08d005f820b770e7447b22c8eb56ca63344f4d2e26bcdc29fb
   languageName: node
   linkType: hard
 
@@ -2517,6 +2562,7 @@ __metadata:
     tsx: "npm:^4.19.1"
     typescript: "npm:^5.6.2"
     typescript-eslint: "npm:^8.7.0"
+    zod: "npm:^3.23.8"
   languageName: unknown
   linkType: soft
 
@@ -2712,6 +2758,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"undici-types@npm:~6.19.2":
+  version: 6.19.8
+  resolution: "undici-types@npm:6.19.8"
+  checksum: 10c0/078afa5990fba110f6824823ace86073b4638f1d5112ee26e790155f481f2a868cc3e0615505b6f4282bdf74a3d8caad715fd809e870c2bb0704e3ea6082f344
+  languageName: node
+  linkType: hard
+
 "unique-filename@npm:^3.0.0":
   version: 3.0.0
   resolution: "unique-filename@npm:3.0.0"
@@ -2815,9 +2868,25 @@ __metadata:
   languageName: node
   linkType: hard
 
+"yaml@npm:^2.5.1":
+  version: 2.5.1
+  resolution: "yaml@npm:2.5.1"
+  bin:
+    yaml: bin.mjs
+  checksum: 10c0/40fba5682898dbeeb3319e358a968fe886509fab6f58725732a15f8dda3abac509f91e76817c708c9959a15f786f38ff863c1b88062d7c1162c5334a7d09cb4a
+  languageName: node
+  linkType: hard
+
 "yocto-queue@npm:^0.1.0":
   version: 0.1.0
   resolution: "yocto-queue@npm:0.1.0"
   checksum: 10c0/dceb44c28578b31641e13695d200d34ec4ab3966a5729814d5445b194933c096b7ced71494ce53a0e8820685d1d010df8b2422e5bf2cdea7e469d97ffbea306f
+  languageName: node
+  linkType: hard
+
+"zod@npm:^3.23.8":
+  version: 3.23.8
+  resolution: "zod@npm:3.23.8"
+  checksum: 10c0/8f14c87d6b1b53c944c25ce7a28616896319d95bc46a9660fe441adc0ed0a81253b02b5abdaeffedbeb23bdd25a0bf1c29d2c12dd919aef6447652dd295e3e69
   languageName: node
   linkType: hard
