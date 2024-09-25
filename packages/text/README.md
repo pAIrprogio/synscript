@@ -5,7 +5,7 @@
 This is a strongly opinionated implementation of string templating. It's basically JSX for text and solves many quirks of string interpolation and formatting.
 
 > [!WARNING]
-> This package is included in the [@synstack/synscript](https://github.com/pairprogio/synscript) package. It is not recommended to install both packages at the same time.
+> This package is included in the [@synstack/synscript](https://github.com/pAIrprogioio/synscript) package. It is not recommended to install both packages at the same time.
 
 ## What is it for ?
 

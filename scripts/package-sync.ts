@@ -33,9 +33,10 @@ await Promise.all(
         name: "pAIrprog",
         url: "https://pairprog.io",
       },
+      homepage: `https://github.com/pAIrprogio/synscript/tree/main/packages/${name}`,
       repository: {
         type: "git",
-        url: "https://github.com/pAIrprog/syn-stack.git",
+        url: "https://github.com/pAIrprogio/syn-stack.git",
         directory: `packages/${name}`,
       },
       license: "Apache-2.0",

@@ -7,9 +7,10 @@
     "name": "pAIrprog",
     "url": "https://pairprog.io"
   },
+  "homepage": "https://github.com/pAIrprogio/synscript/tree/main/packages/synscript",
   "repository": {
     "type": "git",
-    "url": "https://github.com/pAIrprog/syn-stack.git",
+    "url": "https://github.com/pAIrprogio/syn-stack.git",
     "directory": "packages/synscript"
   },
   "license": "Apache-2.0",
@@ -40,10 +41,10 @@
     "@synstack/pipe": "workspace:*",
     "@synstack/resolved": "workspace:*",
     "@synstack/str": "workspace:*",
+    "@synstack/text": "workspace:*",
     "@synstack/web": "workspace:*",
     "@synstack/xml": "workspace:*",
-    "@synstack/yaml": "workspace:*",
-    "@synstack/text": "workspace:*"
+    "@synstack/yaml": "workspace:*"
   },
   "devDependencies": {
     "@types/node": "^22.7.0",

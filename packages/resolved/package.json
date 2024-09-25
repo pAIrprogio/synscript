@@ -7,9 +7,10 @@
     "name": "pAIrprog",
     "url": "https://pairprog.io"
   },
+  "homepage": "https://github.com/pAIrprogio/synscript/tree/main/packages/resolved",
   "repository": {
     "type": "git",
-    "url": "https://github.com/pAIrprog/syn-stack.git",
+    "url": "https://github.com/pAIrprogio/syn-stack.git",
     "directory": "packages/resolved"
   },
   "license": "Apache-2.0",
@@ -45,6 +46,7 @@
       }
     }
   },
+  "dependencies": {},
   "devDependencies": {
     "@types/node": "^22.7.0",
     "tsup": "^8.3.0",

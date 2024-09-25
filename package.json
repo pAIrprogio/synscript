@@ -8,6 +8,16 @@
     ]
   },
   "packageManager": "yarn@4.4.0",
+  "author": {
+    "name": "pAIrprog",
+    "url": "https://pairprog.io"
+  },
+  "homepage": "https://github.com/pAIrprogio/synscript",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/pAIrprogio/synscript.git"
+  },
+  "license": "Apache-2.0",
   "scripts": {
     "build": "yarn workspaces foreach --parallel --all --topological-dev --interlaced --verbose run build",
     "build:watch": "yarn workspaces foreach --parallel --all --interlaced --verbose run build:watch",

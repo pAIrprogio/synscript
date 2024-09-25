@@ -4,7 +4,7 @@
 
 ## Packages
 
-### Bundle Packages
+### Bundle Package
 
 - [@synstack/synscript](./packages/synscript/README.md) - The one for all package, includes bundled exports from all other packages
 
