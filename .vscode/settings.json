@@ -1,0 +1,22 @@
+{
+  "editor.formatOnSave": true,
+  "editor.codeActionsOnSave": {
+    "source.organizeImports": "always"
+  },
+  // "typescript.tsserver.experimental.enableProjectDiagnostics": true,
+  "typescript.tsdk": "node_modules/typescript/lib",
+  "typescript.tsc.autoDetect": "off",
+  "files.exclude": { "dist": true },
+  "search.exclude": { "dist": true },
+  "nodejs-testing.extensions": [
+    {
+      "extensions": ["mjs", "cjs", "js"],
+      "parameters": []
+    },
+    {
+      "extensions": ["mts", "cts", "ts"],
+      "parameters": ["--import", "tsx"]
+    }
+  ],
+  "typescript.preferences.autoImportFileExcludePatterns": ["**/*.index.ts"]
+}
