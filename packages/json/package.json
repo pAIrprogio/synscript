@@ -36,7 +36,7 @@
   "exports": {
     ".": {
       "import": {
-        "types": "./src/json.index.ts",
+        "types": "./dist/json.index.d.ts",
         "default": "./dist/json.index.js"
       },
       "require": {
@@ -54,7 +54,7 @@
     "tsx": "^4.19.1",
     "typescript": "^5.6.2"
   },
-  "include": [
+  "files": [
     "src/**/*.ts",
     "!src/**/*.test.ts",
     "dist/**/*"

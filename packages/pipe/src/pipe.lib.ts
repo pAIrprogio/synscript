@@ -47,5 +47,3 @@ export class Pipe<V> {
  * @returns a pipe instance with the initial value
  */
 export const pipe = <T>(value: T) => new Pipe(value);
-
-export default pipe;

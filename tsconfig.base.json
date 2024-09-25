@@ -34,7 +34,8 @@
 
     // Aliases
     "paths": {
-      "@shared/*": ["./packages/shared/*"]
+      "@shared/*": ["./packages/shared/*", "../shared/*"]
     }
-  }
+  },
+  "exclude": ["node_modules", "dist"]
 }

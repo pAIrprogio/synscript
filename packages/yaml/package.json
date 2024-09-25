@@ -36,7 +36,7 @@
   "exports": {
     ".": {
       "import": {
-        "types": "./src/yaml.index.ts",
+        "types": "./dist/yaml.index.d.ts",
         "default": "./dist/yaml.index.js"
       },
       "require": {
@@ -55,7 +55,7 @@
     "tsx": "^4.19.1",
     "typescript": "^5.6.2"
   },
-  "include": [
+  "files": [
     "src/**/*.ts",
     "!src/**/*.test.ts",
     "dist/**/*"

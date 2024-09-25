@@ -1,4 +1,4 @@
-import pipe from "@synstack/pipe";
+import { pipe } from "@synstack/pipe";
 import * as changeCase from "change-case";
 import * as lib from "./str.lib";
 

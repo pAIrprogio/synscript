@@ -56,7 +56,7 @@ await Promise.all(
         ...packageJson.exports,
         ".": {
           import: {
-            types: `./src/${name}.index.ts`,
+            types: `./dist/${name}.index.d.ts`,
             default: `./dist/${name}.index.js`,
           },
           require: {
@@ -75,7 +75,7 @@ await Promise.all(
         tsx: "^4.19.1",
         typescript: "^5.6.2",
       } as {}),
-      include: ["src/**/*.ts", "!src/**/*.test.ts", "dist/**/*"],
+      files: ["src/**/*.ts", "!src/**/*.test.ts", "dist/**/*"],
     };
     await writeFile(
       packagePath,

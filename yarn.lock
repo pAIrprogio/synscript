@@ -567,6 +567,7 @@ __metadata:
     "@synstack/pipe": "workspace:*"
     "@synstack/resolved": "workspace:*"
     "@synstack/str": "workspace:*"
+    "@synstack/text": "workspace:*"
     "@synstack/web": "workspace:*"
     "@synstack/xml": "workspace:*"
     "@synstack/yaml": "workspace:*"
@@ -577,7 +578,7 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@synstack/text@workspace:packages/text":
+"@synstack/text@workspace:*, @synstack/text@workspace:packages/text":
   version: 0.0.0-use.local
   resolution: "@synstack/text@workspace:packages/text"
   dependencies:

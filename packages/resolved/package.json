@@ -27,7 +27,7 @@
   "exports": {
     ".": {
       "import": {
-        "types": "./src/resolved.index.ts",
+        "types": "./dist/resolved.index.d.ts",
         "default": "./dist/resolved.index.js"
       },
       "require": {
@@ -53,7 +53,7 @@
     "tsx": "^4.19.1",
     "typescript": "^5.6.2"
   },
-  "include": [
+  "files": [
     "src/**/*.ts",
     "!src/**/*.test.ts",
     "dist/**/*"

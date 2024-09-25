@@ -27,7 +27,7 @@
   "exports": {
     ".": {
       "import": {
-        "types": "./src/synscript.index.ts",
+        "types": "./dist/synscript.index.d.ts",
         "default": "./dist/synscript.index.js"
       },
       "require": {
@@ -52,7 +52,7 @@
     "tsx": "^4.19.1",
     "typescript": "^5.6.2"
   },
-  "include": [
+  "files": [
     "src/**/*.ts",
     "!src/**/*.test.ts",
     "dist/**/*"
