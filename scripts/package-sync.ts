@@ -29,6 +29,7 @@ await Promise.all(
       type: "module",
       version: packageJson.version ?? "1.0.0",
       description: packageJson.description,
+      keywords: packageJson.keywords,
       author: {
         name: "pAIrprog",
         url: "https://pairprog.io",
@@ -40,7 +41,6 @@ await Promise.all(
         directory: `packages/${name}`,
       },
       license: "Apache-2.0",
-      keywords: packageJson.keywords,
       scripts: {
         ...packageJson.scripts,
         publish: "yarn npm publish --access public",

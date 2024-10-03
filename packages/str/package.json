@@ -4,6 +4,13 @@
   "type": "module",
   "version": "1.0.0",
   "description": "Advanced chainable string manipulation",
+  "keywords": [
+    "string",
+    "typescript",
+    "ts",
+    "chaining",
+    "case"
+  ],
   "author": {
     "name": "pAIrprog",
     "url": "https://pairprog.io"
@@ -15,13 +22,6 @@
     "directory": "packages/str"
   },
   "license": "Apache-2.0",
-  "keywords": [
-    "string",
-    "typescript",
-    "ts",
-    "chaining",
-    "case"
-  ],
   "scripts": {
     "publish": "yarn npm publish --access public",
     "prepublish": "yarn test && yarn build",

@@ -4,6 +4,14 @@
   "type": "module",
   "version": "1.0.0",
   "description": "Lax, non spec-compliant XML utils tailored for LLMs",
+  "keywords": [
+    "xml",
+    "parsing",
+    "typescript",
+    "llm",
+    "prompt",
+    "ai"
+  ],
   "author": {
     "name": "pAIrprog",
     "url": "https://pairprog.io"
@@ -15,14 +23,6 @@
     "directory": "packages/xml"
   },
   "license": "Apache-2.0",
-  "keywords": [
-    "xml",
-    "parsing",
-    "typescript",
-    "llm",
-    "prompt",
-    "ai"
-  ],
   "scripts": {
     "publish": "yarn npm publish --access public",
     "prepublish": "yarn test && yarn build",
