@@ -7,13 +7,13 @@ import { type ZodSchema } from "zod";
  * @param options.schema Optional Zod schema to validate the data against after deserializing
  * @returns The deserialized data as a js entity
  */
-export const deserialize = <T = unknown>(
+export const deserialize = <TFormat = any>(
   data: string,
-  options: { schema?: ZodSchema<T> } = {},
+  options: { schema?: ZodSchema<TFormat> } = {},
 ) => {
   const validatedData = YAML.parse(data);
   if (options.schema) return options.schema.parse(validatedData);
-  return validatedData as T;
+  return validatedData as TFormat;
 };
 
 /**
@@ -22,9 +22,9 @@ export const deserialize = <T = unknown>(
  * @param options.schema Optional Zod schema to validate the data against before serializing
  * @returns The yaml as a string
  */
-export const serialize = (
+export const serialize = <TFormat = any>(
   data: any,
-  options: { schema?: ZodSchema<any> } = {},
+  options: { schema?: ZodSchema<TFormat> } = {},
 ) => {
   const validatedData = options.schema ? options.schema.parse(data) : data;
   return YAML.stringify(validatedData, {
