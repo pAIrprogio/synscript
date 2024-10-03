@@ -4,6 +4,14 @@
   "type": "module",
   "version": "1.0.0",
   "description": "Safe JSON serialization and deserialization",
+  "keywords": [
+    "json",
+    "typescript",
+    "ts",
+    "serialization",
+    "deserialization",
+    "zod"
+  ],
   "author": {
     "name": "pAIrprog",
     "url": "https://pairprog.io"
@@ -15,14 +23,6 @@
     "directory": "packages/json"
   },
   "license": "Apache-2.0",
-  "keywords": [
-    "json",
-    "typescript",
-    "ts",
-    "serialization",
-    "deserialization",
-    "zod"
-  ],
   "scripts": {
     "publish": "yarn npm publish --access public",
     "prepublish": "yarn test && yarn build",
@@ -45,18 +45,19 @@
       }
     }
   },
-  "dependencies": {
-    "zod": "^3.23.8"
-  },
   "devDependencies": {
     "@types/node": "^22.7.0",
     "tsup": "^8.3.0",
     "tsx": "^4.19.1",
-    "typescript": "^5.6.2"
+    "typescript": "^5.6.2",
+    "zod": "^3.23.8"
   },
   "files": [
     "src/**/*.ts",
     "!src/**/*.test.ts",
     "dist/**/*"
-  ]
+  ],
+  "peerDependencies": {
+    "zod": "*"
+  }
 }
