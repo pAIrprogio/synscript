@@ -1,49 +1,66 @@
-// Todo: rework to handle promises + arrays, allow chains such as "batch"
-export class Pipe<V> {
-  private readonly _value: V;
+export type PipeFn<V, R> = (value: V) => R;
 
-  public constructor(value: V) {
-    this._value = value;
+export abstract class Pipeable<TInstance = any, TValue = any> {
+  public _<R extends Pipeable>(fn: PipeFn<TInstance, R>): R;
+  public _<R extends Promise<any>>(fn: PipeFn<TInstance, R>): R;
+  public _<R>(fn: PipeFn<TInstance, R>): Pipe<R>;
+  public _<R>(fn: PipeFn<TInstance, R>): R | Pipe<R> {
+    const value = this.instanceOf();
+
+    const res = fn(value);
+    if (res instanceof Promise) return res;
+    if (res instanceof Pipeable) return res;
+    return new Pipe(res);
   }
 
-  /**
-   * Pipe the current value through a function
-   * @param fn the function to pipe the value through
-   * @returns a pipe instance with the result as a new value
-   */
-  public _<R>(
-    fn: (value: V) => R,
-  ): R extends Promise<infer U> ? Promise<U> : Pipe<R> {
-    const result = fn(this._value);
-    if (result instanceof Promise)
-      // @ts-expect-error - We know that result is Promise and it's tested
-      return result;
-
-    // @ts-expect-error - We know that result is non Promise and it's tested
-    return new Pipe(result);
+  public _$<R extends Pipeable<any, any>>(fn: PipeFn<TValue, R>): R;
+  public _$<R extends Promise<any>>(fn: PipeFn<TValue, R>): R;
+  public _$<R>(fn: PipeFn<TValue, R>): Pipe<R>;
+  public _$<R>(fn: PipeFn<TValue, R>): R | Pipe<R> {
+    const res = fn(this.valueOf());
+    if (res instanceof Promise) return res;
+    if (res instanceof Pipeable) return res;
+    return new Pipe(res);
   }
 
-  /**
-   * Get the raw value
-   * @alias valueOf
-   * @returns the raw value
-   */
-  public get $(): V {
-    return this._value;
+  public get $(): TValue {
+    return this.valueOf();
+  }
+
+  public abstract instanceOf(): TInstance;
+
+  public abstract valueOf(): TValue;
+}
+
+export class Pipe<V> extends Pipeable<V, V> {
+  public constructor(private readonly value: V) {
+    super();
+  }
+
+  public static from<V>(value: V) {
+    return new Pipe<V>(value);
   }
 
   public valueOf(): V {
-    return this._value;
+    return this.value;
   }
 
-  public toString(): string {
-    return String(this._value);
+  public instanceOf(): V {
+    return this.value;
   }
 }
+
+// Todo: add promise support
 
 /**
  * Create a new pipe
  * @param value the initial value
  * @returns a pipe instance with the initial value
  */
-export const pipe = <T>(value: T) => new Pipe(value);
+export function pipe<V extends Pipeable>(value: V): V;
+export function pipe<V extends Promise<any>>(value: V): V;
+export function pipe<V>(value: V): Pipe<V>;
+export function pipe<V>(value: V) {
+  if (value instanceof Pipeable) return value;
+  return new Pipe(value);
+}

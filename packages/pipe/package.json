@@ -4,6 +4,14 @@
   "type": "module",
   "version": "1.0.0",
   "description": "Simple typesafe pipe utility for Functional Programming",
+  "keywords": [
+    "fp",
+    "functional",
+    "programming",
+    "pipe",
+    "typescript",
+    "ts"
+  ],
   "author": {
     "name": "pAIrprog",
     "url": "https://pairprog.io"
@@ -15,14 +23,6 @@
     "directory": "packages/pipe"
   },
   "license": "Apache-2.0",
-  "keywords": [
-    "fp",
-    "functional",
-    "programming",
-    "pipe",
-    "typescript",
-    "ts"
-  ],
   "scripts": {
     "publish": "yarn npm publish --access public",
     "prepublish": "yarn test && yarn build",
@@ -45,7 +45,9 @@
       }
     }
   },
-  "dependencies": {},
+  "dependencies": {
+    "@synstack/enhance": "workspace:*"
+  },
   "devDependencies": {
     "@types/node": "^22.7.0",
     "tsup": "^8.3.0",
