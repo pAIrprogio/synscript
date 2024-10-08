@@ -1,1 +1,16 @@
-export * as path from "./path.lib";
+export {
+  addMissingExtension,
+  dirname,
+  ensureFileExtension,
+  fileExtension,
+  filename,
+  filenameWithoutExtension,
+  importUrlToAbsolutePath,
+  isAbsolute,
+  isInPath,
+  join,
+  mimeType,
+  relative,
+  removeRelativeIndicator,
+  resolve,
+} from "./path.lib";

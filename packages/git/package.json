@@ -1,5 +1,5 @@
 {
-  "name": "@synstack/synscript",
+  "name": "@synstack/git",
   "packageManager": "yarn@4.4.0",
   "type": "module",
   "version": "1.0.0",
@@ -7,11 +7,11 @@
     "name": "pAIrprog",
     "url": "https://pairprog.io"
   },
-  "homepage": "https://github.com/pAIrprogio/synscript/tree/main/packages/synscript",
+  "homepage": "https://github.com/pAIrprogio/synscript/tree/main/packages/git",
   "repository": {
     "type": "git",
     "url": "https://github.com/pAIrprogio/syn-stack.git",
-    "directory": "packages/synscript"
+    "directory": "packages/git"
   },
   "license": "Apache-2.0",
   "scripts": {
@@ -27,27 +27,18 @@
   "exports": {
     ".": {
       "import": {
-        "types": "./dist/synscript.index.d.ts",
-        "default": "./dist/synscript.index.js"
+        "types": "./dist/git.index.d.ts",
+        "default": "./dist/git.index.js"
       },
       "require": {
-        "types": "./dist/synscript.index.d.cts",
-        "default": "./dist/synscript.index.cjs"
+        "types": "./dist/git.index.d.cts",
+        "default": "./dist/git.index.cjs"
       }
     }
   },
   "dependencies": {
-    "@synstack/fs": "workspace:*",
-    "@synstack/fs-cache": "workspace:*",
-    "@synstack/git": "workspace:*",
-    "@synstack/json": "workspace:*",
-    "@synstack/pipe": "workspace:*",
-    "@synstack/resolved": "workspace:*",
-    "@synstack/str": "workspace:*",
-    "@synstack/text": "workspace:*",
-    "@synstack/web": "workspace:*",
-    "@synstack/xml": "workspace:*",
-    "@synstack/yaml": "workspace:*"
+    "@synstack/enhance": "workspace:*",
+    "execa": "^9.4.0"
   },
   "devDependencies": {
     "@types/node": "^22.7.0",

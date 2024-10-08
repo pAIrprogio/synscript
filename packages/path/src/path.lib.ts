@@ -53,7 +53,7 @@ export function addMissingExtension(path: AnyPath, ext: string) {
 
 export function join(cwd: AbsolutePath, ...paths: Array<AnyPath>): AbsolutePath;
 export function join(cwd: RelativePath, ...paths: Array<AnyPath>): RelativePath;
-export function join(cwd: AnyPath, ...paths: Array<AnyPath>): AnyPath;
+export function join(...paths: Array<AnyPath>): AnyPath;
 export function join(cwd: AnyPath, ...paths: Array<AnyPath>): AnyPath {
   return fsPath.join(cwd, ...paths);
 }
