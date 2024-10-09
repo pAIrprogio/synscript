@@ -2,7 +2,7 @@
   "name": "@synstack/str",
   "packageManager": "yarn@4.4.0",
   "type": "module",
-  "version": "1.0.0",
+  "version": "1.0.1-alpha.0",
   "description": "Advanced chainable string manipulation",
   "keywords": [
     "string",
