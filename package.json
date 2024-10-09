@@ -20,6 +20,7 @@
   "license": "Apache-2.0",
   "scripts": {
     "build": "yarn workspaces foreach --parallel --all --topological-dev --interlaced --verbose run build",
+    "test": "yarn workspaces foreach --parallel --all --interlaced --verbose run test",
     "build:watch": "yarn workspaces foreach --parallel --all --interlaced --verbose run build:watch",
     "publish": "yarn workspaces foreach --parallel --topological-dev --interlaced --no-private --verbose run publish",
     "package:sync": "./scripts/package-sync.ts"
