@@ -46,8 +46,7 @@ await Promise.all(
       license: "Apache-2.0",
       scripts: {
         ...packageJson.scripts,
-        publish: "yarn npm publish --access public",
-        prepublish: "yarn test && yarn build",
+        prepare: "yarn test && yarn build",
         build: "tsup",
         "build:watch": "tsup --watch",
         "test:types": "tsc --noEmit",
@@ -84,6 +83,8 @@ await Promise.all(
       files: ["src/**/*.ts", "!src/**/*.test.ts", "dist/**/*"],
       gitHead: packageJson.gitHead,
     };
+    delete newPackageJson.scripts.publish;
+    delete newPackageJson.scripts.prepublish;
     await writeFile(
       packagePath,
       JSON.stringify(newPackageJson, null, 2) + "\n",

@@ -18,14 +18,13 @@
   },
   "license": "Apache-2.0",
   "scripts": {
-    "publish": "yarn npm publish --access public",
-    "prepublish": "yarn test && yarn build",
     "build": "tsup",
     "build:watch": "tsup --watch",
     "test:types": "tsc --noEmit",
     "test:unit": "node --import tsx --test src/**/*.test.ts",
     "test:unit:watch": "node --import tsx --watch --test src/**/*.test.ts",
-    "test": "yarn test:types && yarn test:unit"
+    "test": "yarn test:types && yarn test:unit",
+    "prepare": "yarn test && yarn build"
   },
   "exports": {
     ".": {
@@ -50,6 +49,7 @@
     "tsx": "^4.19.1",
     "typescript": "^5.6.2"
   },
+  "peerDependencies": {},
   "files": [
     "src/**/*.ts",
     "!src/**/*.test.ts",
