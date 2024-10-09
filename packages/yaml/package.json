@@ -1,8 +1,10 @@
 {
   "name": "@synstack/yaml",
-  "private": false,
-  "packageManager": "yarn@4.4.0",
   "type": "module",
+  "publishConfig": {
+    "access": "public"
+  },
+  "packageManager": "yarn@4.4.0",
   "version": "1.0.0",
   "description": "Safe and opiniated YAML serialization and deserialization",
   "keywords": [

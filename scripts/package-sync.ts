@@ -25,9 +25,11 @@ await Promise.all(
     if (!name) throw new Error("Couldn't extract package name " + packagePath);
     const newPackageJson = {
       name: `@synstack/${name}`,
-      private: false,
-      packageManager: "yarn@4.4.0",
       type: "module",
+      publishConfig: {
+        access: "public",
+      },
+      packageManager: "yarn@4.4.0",
       version: packageJson.version ?? "1.0.0",
       description: packageJson.description,
       keywords: packageJson.keywords,

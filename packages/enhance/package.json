@@ -1,8 +1,10 @@
 {
   "name": "@synstack/enhance",
-  "private": false,
-  "packageManager": "yarn@4.4.0",
   "type": "module",
+  "publishConfig": {
+    "access": "public"
+  },
+  "packageManager": "yarn@4.4.0",
   "version": "1.0.0",
   "description": "Safely enhance a JS object with additional properties",
   "keywords": [

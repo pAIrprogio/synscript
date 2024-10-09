@@ -1,8 +1,10 @@
 {
   "name": "@synstack/xml",
-  "private": false,
-  "packageManager": "yarn@4.4.0",
   "type": "module",
+  "publishConfig": {
+    "access": "public"
+  },
+  "packageManager": "yarn@4.4.0",
   "version": "1.0.0",
   "description": "Lax, non spec-compliant XML utils tailored for LLMs",
   "keywords": [
