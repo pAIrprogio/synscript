@@ -1284,8 +1284,6 @@ __metadata:
     tsx: "npm:^4.19.1"
     typescript: "npm:^5.6.2"
     zod: "npm:^3.23.8"
-  peerDependencies:
-    zod: "*"
   languageName: unknown
   linkType: soft
 
