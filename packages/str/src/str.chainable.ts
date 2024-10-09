@@ -1,4 +1,4 @@
-import { pipe } from "@synstack/pipe";
+import { Pipeable } from "@synstack/pipe";
 import * as changeCase from "change-case";
 import * as lib from "./str.lib";
 
@@ -6,8 +6,22 @@ export type Stringable = {
   toString: () => string;
 };
 
-export class Str {
-  public constructor(private readonly text: string) {}
+export class Str extends Pipeable<Str, string> {
+  public constructor(private readonly text: string) {
+    super();
+  }
+
+  public valueOf(): string {
+    return this.text;
+  }
+
+  public toString() {
+    return this.text;
+  }
+
+  public instanceOf(): Str {
+    return this;
+  }
 
   /**
    * Remove empty lines at the start of the text but leave whitespace on the first line with content
@@ -269,35 +283,6 @@ export class Str {
    */
   public get str() {
     return this.toString();
-  }
-
-  public toString() {
-    return this.text;
-  }
-
-  public valueOf() {
-    return this.text;
-  }
-
-  /**
-   * Shorthand for `.valueOf()`
-   */
-  public get $() {
-    return this.valueOf();
-  }
-
-  /**
-   * Pipe the string to a custom function
-   */
-  public _<R>(fn: (value: Str) => R) {
-    return pipe(this)._<R>(fn);
-  }
-
-  /**
-   * Pipe the .valueOf() of the string to a custom function
-   */
-  public $_<R>(fn: (value: string) => R) {
-    return pipe(this.valueOf())._<R>(fn);
   }
 }
 

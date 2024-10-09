@@ -5,11 +5,11 @@ import { type Str, str } from "./str.chainable";
 
 describe("Str", () => {
   const _types = () => {
-    assertType<Str>(str("Hello World")._((t) => t.chopEmptyLinesStart()).$);
+    assertType<Str>(str("Hello World")._((t) => t.chopEmptyLinesStart()));
     assertType<string>(str("Hello World").$);
-    assertType<number>(str("Hello World").$_((t) => t.length).$);
+    assertType<number>(str("Hello World")._$((t) => t.length).$);
     assertType<Promise<string>>(
-      str("Hello World").$_((t) => Promise.resolve(t)),
+      str("Hello World")._$((t) => Promise.resolve(t)),
     );
     assertType<Promise<Str>>(str("Hello World")._((t) => Promise.resolve(t)));
   };
