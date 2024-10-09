@@ -1,5 +1,6 @@
 {
   "name": "@synstack/markdown",
+  "private": false,
   "packageManager": "yarn@4.4.0",
   "type": "module",
   "version": "1.0.0",

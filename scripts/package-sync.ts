@@ -25,6 +25,7 @@ await Promise.all(
     if (!name) throw new Error("Couldn't extract package name " + packagePath);
     const newPackageJson = {
       name: `@synstack/${name}`,
+      private: false,
       packageManager: "yarn@4.4.0",
       type: "module",
       version: packageJson.version ?? "1.0.0",
@@ -79,6 +80,7 @@ await Promise.all(
         ...packageJson.peerDependencies,
       } as {}),
       files: ["src/**/*.ts", "!src/**/*.test.ts", "dist/**/*"],
+      gitHead: packageJson.gitHead,
     };
     await writeFile(
       packagePath,
