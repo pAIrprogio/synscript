@@ -37,10 +37,14 @@
     }
   },
   "dependencies": {
+    "@synstack/enhance": "workspace:*",
     "@synstack/fs": "workspace:*",
     "@synstack/fs-cache": "workspace:*",
     "@synstack/git": "workspace:*",
+    "@synstack/glob": "workspace:*",
     "@synstack/json": "workspace:*",
+    "@synstack/markdown": "workspace:*",
+    "@synstack/path": "workspace:*",
     "@synstack/pipe": "workspace:*",
     "@synstack/resolved": "workspace:*",
     "@synstack/str": "workspace:*",
