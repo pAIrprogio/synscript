@@ -61,11 +61,10 @@
     "tsx": "^4.19.1",
     "typescript": "^5.6.2"
   },
-  "peerDependencies": {},
   "files": [
     "src/**/*.ts",
     "!src/**/*.test.ts",
     "dist/**/*"
   ],
-  "gitHead": "7a58577491cf08e6aad885b39c70bbd564b721b4"
+  "gitHead": "4c97c7cea4508afb05ee10bef0e1d2c3deb71eca"
 }
