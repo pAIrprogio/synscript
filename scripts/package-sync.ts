@@ -75,6 +75,9 @@ await Promise.all(
         tsx: "^4.19.1",
         typescript: "^5.6.2",
       } as {}),
+      peerDependencies: orderKeys({
+        ...packageJson.peerDependencies,
+      } as {}),
       files: ["src/**/*.ts", "!src/**/*.test.ts", "dist/**/*"],
     };
     await writeFile(

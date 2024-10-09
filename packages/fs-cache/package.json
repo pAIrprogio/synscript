@@ -32,12 +32,12 @@
   "exports": {
     ".": {
       "import": {
-        "types": "./dist/enhance.index.d.ts",
-        "default": "./dist/enhance.index.js"
+        "types": "./dist/fs-cache.index.d.ts",
+        "default": "./dist/fs-cache.index.js"
       },
       "require": {
-        "types": "./dist/enhance.index.d.cts",
-        "default": "./dist/enhance.index.cjs"
+        "types": "./dist/fs-cache.index.d.cts",
+        "default": "./dist/fs-cache.index.cjs"
       }
     }
   },
@@ -50,6 +50,7 @@
     "tsx": "^4.19.1",
     "typescript": "^5.6.2"
   },
+  "peerDependencies": {},
   "files": [
     "src/**/*.ts",
     "!src/**/*.test.ts",

@@ -36,6 +36,10 @@
       }
     }
   },
+  "dependencies": {
+    "@synstack/pipe": "workspace:*",
+    "mime-types": "^2.1.35"
+  },
   "devDependencies": {
     "@types/mime-types": "^2.1.4",
     "@types/node": "^22.7.0",
@@ -43,13 +47,10 @@
     "tsx": "^4.19.1",
     "typescript": "^5.6.2"
   },
+  "peerDependencies": {},
   "files": [
     "src/**/*.ts",
     "!src/**/*.test.ts",
     "dist/**/*"
-  ],
-  "dependencies": {
-    "@synstack/pipe": "workspace:*",
-    "mime-types": "^2.1.35"
-  }
+  ]
 }
