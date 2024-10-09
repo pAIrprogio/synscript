@@ -37,21 +37,21 @@
     }
   },
   "dependencies": {
-    "@synstack/enhance": "workspace:*",
-    "@synstack/fs": "workspace:*",
-    "@synstack/fs-cache": "workspace:*",
-    "@synstack/git": "workspace:*",
-    "@synstack/glob": "workspace:*",
-    "@synstack/json": "workspace:*",
-    "@synstack/markdown": "workspace:*",
-    "@synstack/path": "workspace:*",
-    "@synstack/pipe": "workspace:*",
-    "@synstack/resolved": "workspace:*",
-    "@synstack/str": "workspace:*",
-    "@synstack/text": "workspace:*",
-    "@synstack/web": "workspace:*",
-    "@synstack/xml": "workspace:*",
-    "@synstack/yaml": "workspace:*"
+    "@synstack/enhance": "1.0.0",
+    "@synstack/fs": "1.0.1-alpha.0",
+    "@synstack/fs-cache": "1.0.1-alpha.0",
+    "@synstack/git": "1.0.0",
+    "@synstack/glob": "1.0.0",
+    "@synstack/json": "1.0.0",
+    "@synstack/markdown": "1.0.0",
+    "@synstack/path": "1.0.0",
+    "@synstack/pipe": "1.0.0",
+    "@synstack/resolved": "1.0.0",
+    "@synstack/str": "1.0.1-alpha.0",
+    "@synstack/text": "1.0.1-alpha.0",
+    "@synstack/web": "1.0.0",
+    "@synstack/xml": "1.0.0",
+    "@synstack/yaml": "1.0.0"
   },
   "devDependencies": {
     "@types/node": "^22.7.0",
@@ -63,5 +63,6 @@
     "src/**/*.ts",
     "!src/**/*.test.ts",
     "dist/**/*"
-  ]
+  ],
+  "gitHead": "fb0cc17aca631eceb2ed735e58bb5efca2d36472"
 }

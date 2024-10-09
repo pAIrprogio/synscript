@@ -37,15 +37,15 @@
     }
   },
   "dependencies": {
-    "@synstack/enhance": "workspace:*",
-    "@synstack/git": "workspace:*",
-    "@synstack/glob": "workspace:*",
-    "@synstack/json": "workspace:*",
-    "@synstack/path": "workspace:*",
-    "@synstack/pipe": "workspace:*",
-    "@synstack/str": "workspace:*",
-    "@synstack/xml": "workspace:*",
-    "@synstack/yaml": "workspace:*",
+    "@synstack/enhance": "1.0.0",
+    "@synstack/git": "1.0.0",
+    "@synstack/glob": "1.0.0",
+    "@synstack/json": "1.0.0",
+    "@synstack/path": "1.0.0",
+    "@synstack/pipe": "1.0.0",
+    "@synstack/str": "1.0.1-alpha.0",
+    "@synstack/xml": "1.0.0",
+    "@synstack/yaml": "1.0.0",
     "mime-types": "^2.1.35"
   },
   "devDependencies": {
@@ -60,5 +60,6 @@
     "src/**/*.ts",
     "!src/**/*.test.ts",
     "dist/**/*"
-  ]
+  ],
+  "gitHead": "fb0cc17aca631eceb2ed735e58bb5efca2d36472"
 }

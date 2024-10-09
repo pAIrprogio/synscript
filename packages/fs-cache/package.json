@@ -42,7 +42,7 @@
     }
   },
   "dependencies": {
-    "@synstack/fs": "workspace:*"
+    "@synstack/fs": "1.0.1-alpha.0"
   },
   "devDependencies": {
     "@types/node": "^22.7.0",
@@ -54,5 +54,6 @@
     "src/**/*.ts",
     "!src/**/*.test.ts",
     "dist/**/*"
-  ]
+  ],
+  "gitHead": "fb0cc17aca631eceb2ed735e58bb5efca2d36472"
 }

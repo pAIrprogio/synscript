@@ -37,7 +37,7 @@
     }
   },
   "dependencies": {
-    "@synstack/enhance": "workspace:*",
+    "@synstack/enhance": "1.0.0",
     "execa": "^9.4.0"
   },
   "devDependencies": {
@@ -50,5 +50,6 @@
     "src/**/*.ts",
     "!src/**/*.test.ts",
     "dist/**/*"
-  ]
+  ],
+  "gitHead": "fb0cc17aca631eceb2ed735e58bb5efca2d36472"
 }

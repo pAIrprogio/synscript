@@ -53,5 +53,6 @@
     "src/**/*.ts",
     "!src/**/*.test.ts",
     "dist/**/*"
-  ]
+  ],
+  "gitHead": "fb0cc17aca631eceb2ed735e58bb5efca2d36472"
 }
