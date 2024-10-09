@@ -1,5 +1,4 @@
 import mime from "mime-types";
-import os from "os";
 import * as fsPath from "path";
 import { fileURLToPath } from "url";
 
@@ -12,8 +11,6 @@ export class PathNotInCwdException extends Error {
     super(`Path ${path} is not in cwd ${cwd}`);
   }
 }
-
-const isOsx = os.platform() === "darwin";
 
 export function resolve(...paths: Array<AnyPath>) {
   return fsPath.resolve(...paths) as AbsolutePath;

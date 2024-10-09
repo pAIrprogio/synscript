@@ -38,8 +38,8 @@ export class FsFile<
   private constructor(path: AnyPath, encoding?: TEncoding, schema?: TSchema) {
     super();
     this._path = path;
-    this._encoding = "utf-8" as TEncoding;
-    this._schema = undefined;
+    this._encoding = encoding ?? ("utf-8" as TEncoding);
+    this._schema = schema ?? undefined;
   }
 
   public schema(schema: TSchema) {
@@ -189,11 +189,11 @@ class FsFileRead<
   // #region sync
 
   public async text() {
-    return fs.readFile(this._path, this._encoding) as Promise<string>;
+    return fs.readFile(this._path, this._encoding);
   }
 
   public textSync() {
-    return fsSync.readFileSync(this._path, this._encoding) as string;
+    return fsSync.readFileSync(this._path, this._encoding);
   }
 
   public async str() {

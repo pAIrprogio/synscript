@@ -63,7 +63,6 @@ export const assertType = <Expected, Value extends Expected = Expected>(
  * Used to assert that a value is never in case of a switch/case
  */
 export function never(neverCheck: never, value?: unknown): never {
-  // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
   throw new Error(
     `Unexpected value, received: ${JSON.stringify(value ?? neverCheck, null, 2)}`,
   );

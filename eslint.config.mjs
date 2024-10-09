@@ -3,14 +3,20 @@ import globals from "globals";
 import tseslint from "typescript-eslint";
 
 export default [
-  { files: ["**/*.{js,mjs,cjs,ts}"] },
+  {
+    files: ["**/*.{ts,mts,cts}"],
+  },
   { languageOptions: { globals: globals.node } },
   eslint.configs.recommended,
   ...tseslint.configs.recommendedTypeChecked,
   {
-    ignores: ["out", "dist"],
     languageOptions: {
-      parserOptions: {},
+      parserOptions: {
+        projectService: {
+          allowDefaultProject: ["*.js", "*.mjs"],
+        },
+        tsconfigRootDir: import.meta.dirname,
+      },
     },
     rules: {
       "@typescript-eslint/no-restricted-imports": [
@@ -65,5 +71,8 @@ export default [
         },
       ],
     },
+  },
+  {
+    ignores: ["**/dist"],
   },
 ];

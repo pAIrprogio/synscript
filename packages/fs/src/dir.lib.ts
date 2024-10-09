@@ -82,7 +82,6 @@ export class FsDir<
   }
 
   public async glob(...patterns: Array<string> | [Array<string>]) {
-    const currentDir = this;
     return glob
       .cwd(this._path)
       .find(...patterns)

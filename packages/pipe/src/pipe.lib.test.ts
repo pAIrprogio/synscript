@@ -104,14 +104,14 @@ describe("pipe", () => {
       }
     }
 
-    it.skip("allows chaining promises", async () => {
+    void it.skip("allows chaining promises", async () => {
       // @ts-expect-error For future implementation
       const value = pipe(Promise.resolve(1))._((v) => v + 1).$;
       assert.equal(value instanceof Promise, true);
       assert.equal(await value, 2);
     });
 
-    it.skip("allows chaining promisifed pipeables", async () => {
+    void it.skip("allows chaining promisifed pipeables", async () => {
       // @ts-expect-error For future implementation
       const value = pipe(Promise.resolve(new Test(1))).add(1).$;
       assert.equal(value instanceof Promise, true);
