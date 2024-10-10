@@ -1,0 +1,97 @@
+{
+  "name": "@synstack/llm",
+  "type": "module",
+  "publishConfig": {
+    "access": "public"
+  },
+  "packageManager": "yarn@4.4.0",
+  "version": "1.0.0",
+  "description": "Immutable & chainable LLM tools",
+  "keywords": [
+    "llm",
+    "prompt",
+    "ai",
+    "immutable",
+    "anthropic",
+    "openai"
+  ],
+  "author": {
+    "name": "pAIrprog",
+    "url": "https://pairprog.io"
+  },
+  "homepage": "https://github.com/pAIrprogio/synscript/tree/main/packages/llm",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/pAIrprogio/syn-stack.git",
+    "directory": "packages/llm"
+  },
+  "license": "Apache-2.0",
+  "scripts": {
+    "build": "tsup",
+    "build:watch": "tsup --watch",
+    "test:types": "tsc --noEmit",
+    "test:unit": "node --import tsx --test src/**/*.test.ts",
+    "test:unit:watch": "node --import tsx --watch --test src/**/*.test.ts",
+    "test": "yarn test:types && yarn test:unit",
+    "prepare": "yarn test && yarn build"
+  },
+  "exports": {
+    ".": {
+      "import": {
+        "types": "./dist/llm.index.d.ts",
+        "default": "./dist/llm.index.js"
+      },
+      "require": {
+        "types": "./dist/llm.index.d.cts",
+        "default": "./dist/llm.index.cjs"
+      }
+    },
+    "./anthropic": {
+      "import": {
+        "types": "./dist/anthropic/anthropic.index.d.ts",
+        "default": "./dist/anthropic/anthropic.index.js"
+      },
+      "require": {
+        "types": "./dist/anthropic/anthropic.index.d.cts",
+        "default": "./dist/anthropic/anthropic.index.cjs"
+      }
+    },
+    "./openai": {
+      "import": {
+        "types": "./dist/openai/openai.index.d.ts",
+        "default": "./dist/openai/openai.index.js"
+      },
+      "require": {
+        "types": "./dist/openai/openai.index.d.cts",
+        "default": "./dist/openai/openai.index.cjs"
+      }
+    }
+  },
+  "dependencies": {
+    "@synstack/enhance": "workspace:*",
+    "@synstack/json": "workspace:*",
+    "@synstack/resolved": "workspace:*",
+    "@synstack/text": "workspace:*",
+    "zod-to-json-schema": "^3.23.3"
+  },
+  "devDependencies": {
+    "@anthropic-ai/sdk": "^0.29.0",
+    "@synstack/fs": "workspace:*",
+    "@types/node": "^22.7.0",
+    "openai": "^4.67.3",
+    "tsup": "^8.3.0",
+    "tsx": "^4.19.1",
+    "typescript": "^5.6.2",
+    "zod": "^3.23.8"
+  },
+  "files": [
+    "src/**/*.ts",
+    "!src/**/*.test.ts",
+    "dist/**/*"
+  ],
+  "peerDependencies": {
+    "@anthropic-ai/sdk": "*",
+    "openai": "*",
+    "zod": "*"
+  }
+}

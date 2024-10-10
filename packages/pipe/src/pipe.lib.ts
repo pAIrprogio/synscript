@@ -50,7 +50,7 @@ export class Pipe<V> extends Pipeable<V, V> {
   }
 }
 
-// Todo: add promise support
+// Todo: merge with resolved pipe
 
 /**
  * Create a new pipe
