@@ -1,6 +1,6 @@
 import { type Anthropic } from "@anthropic-ai/sdk";
-import { Cache } from "@shared/src/cache.types";
-import { Merge, never } from "@shared/src/ts.utils";
+import { Cache } from "@shared/cache.types";
+import { Merge, never } from "@shared/ts.utils";
 import { Resolvable } from "@synstack/resolved";
 import zodToJsonSchema from "zod-to-json-schema";
 import { CompletionBuilder } from "../completion.builder";

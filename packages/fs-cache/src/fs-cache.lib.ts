@@ -1,4 +1,4 @@
-import { OneToN } from "@shared/src/ts.utils";
+import { OneToN } from "@shared/ts.utils";
 import { dir } from "@synstack/fs";
 import { deepEqual } from "./deepEqual.lib";
 

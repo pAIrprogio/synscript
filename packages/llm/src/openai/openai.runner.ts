@@ -1,4 +1,4 @@
-import { never } from "@shared/src/ts.utils";
+import { never } from "@shared/ts.utils";
 import type {
   ChatCompletionAssistantMessageParam,
   ChatCompletionContentPartImage,

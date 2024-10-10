@@ -1,4 +1,4 @@
-import { never } from "@shared/src/ts.utils";
+import { never } from "@shared/ts.utils";
 import { pipe, Resolvable } from "@synstack/resolved";
 // We want to avoid importing the whole library for a single type
 import { type Base64Data } from "../../fs/src/file.lib";
