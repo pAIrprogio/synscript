@@ -85,6 +85,10 @@ export class FsFile<
 
   // #region sync
 
+  public get path() {
+    return this._path;
+  }
+
   public dirPath() {
     // Todo: align function names
     return path.dirname(this._path);
