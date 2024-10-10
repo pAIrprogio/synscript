@@ -359,3 +359,5 @@ export class AnthropicRunner<TConfig extends AnthropicRunner.Config.Partial>
 
   // #endregion
 }
+
+export const runner = AnthropicRunner.new();
