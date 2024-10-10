@@ -36,6 +36,26 @@
         "types": "./dist/synscript.index.d.cts",
         "default": "./dist/synscript.index.cjs"
       }
+    },
+    "./llm": {
+      "import": {
+        "types": "./dist/llm.index.d.ts",
+        "default": "./dist/llm.index.js"
+      },
+      "require": {
+        "types": "./dist/llm.index.d.cts",
+        "default": "./dist/llm.index.cjs"
+      }
+    },
+    "./anthropic": {
+      "import": {
+        "types": "./dist/anthropic.index.d.ts",
+        "default": "./dist/anthropic.index.js"
+      },
+      "require": {
+        "types": "./dist/anthropic.index.d.cts",
+        "default": "./dist/anthropic.index.cjs"
+      }
     }
   },
   "dependencies": {
