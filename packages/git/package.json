@@ -39,7 +39,7 @@
     }
   },
   "dependencies": {
-    "@synstack/enhance": "^1.0.1",
+    "@synstack/enhance": "workspace:*",
     "execa": "^9.4.0"
   },
   "devDependencies": {

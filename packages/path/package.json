@@ -39,7 +39,7 @@
     }
   },
   "dependencies": {
-    "@synstack/pipe": "^1.0.1",
+    "@synstack/pipe": "workspace:*",
     "mime-types": "^2.1.35"
   },
   "devDependencies": {

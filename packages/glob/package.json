@@ -39,7 +39,7 @@
     }
   },
   "dependencies": {
-    "@synstack/path": "^1.0.1",
+    "@synstack/path": "workspace:*",
     "glob": "^11.0.0",
     "minimatch": "^10.0.1"
   },

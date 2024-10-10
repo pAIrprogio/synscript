@@ -47,7 +47,7 @@
     }
   },
   "dependencies": {
-    "@synstack/pipe": "^1.0.1",
+    "@synstack/pipe": "workspace:*",
     "change-case": "^5.4.4"
   },
   "devDependencies": {

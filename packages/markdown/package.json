@@ -44,7 +44,7 @@
     }
   },
   "dependencies": {
-    "@synstack/yaml": "^1.0.1",
+    "@synstack/yaml": "workspace:*",
     "turndown": "^7.2.0"
   },
   "devDependencies": {

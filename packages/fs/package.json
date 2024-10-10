@@ -39,15 +39,15 @@
     }
   },
   "dependencies": {
-    "@synstack/enhance": "^1.0.1",
-    "@synstack/git": "^1.0.1",
-    "@synstack/glob": "^1.0.1",
-    "@synstack/json": "^1.0.1",
-    "@synstack/path": "^1.0.1",
-    "@synstack/pipe": "^1.0.1",
-    "@synstack/str": "^1.0.1",
-    "@synstack/xml": "^1.0.1",
-    "@synstack/yaml": "^1.0.1",
+    "@synstack/enhance": "workspace:*",
+    "@synstack/git": "workspace:*",
+    "@synstack/glob": "workspace:*",
+    "@synstack/json": "workspace:*",
+    "@synstack/path": "workspace:*",
+    "@synstack/pipe": "workspace:*",
+    "@synstack/str": "workspace:*",
+    "@synstack/xml": "workspace:*",
+    "@synstack/yaml": "workspace:*",
     "mime-types": "^2.1.35"
   },
   "devDependencies": {

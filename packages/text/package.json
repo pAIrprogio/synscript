@@ -51,9 +51,9 @@
     }
   },
   "dependencies": {
-    "@synstack/json": "^1.0.1",
-    "@synstack/resolved": "^1.0.1",
-    "@synstack/str": "^1.0.1"
+    "@synstack/json": "workspace:*",
+    "@synstack/resolved": "workspace:*",
+    "@synstack/str": "workspace:*"
   },
   "devDependencies": {
     "@types/node": "^22.7.0",

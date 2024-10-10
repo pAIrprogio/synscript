@@ -48,7 +48,7 @@
     }
   },
   "dependencies": {
-    "@synstack/enhance": "^1.0.1"
+    "@synstack/enhance": "workspace:*"
   },
   "devDependencies": {
     "@types/node": "^22.7.0",
