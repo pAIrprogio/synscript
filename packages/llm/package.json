@@ -68,15 +68,15 @@
     }
   },
   "dependencies": {
-    "@synstack/enhance": "workspace:*",
-    "@synstack/json": "workspace:*",
-    "@synstack/resolved": "workspace:*",
-    "@synstack/text": "workspace:*",
+    "@synstack/enhance": "1.0.1",
+    "@synstack/json": "1.0.1",
+    "@synstack/resolved": "1.0.1",
+    "@synstack/text": "1.0.1",
     "zod-to-json-schema": "^3.23.3"
   },
   "devDependencies": {
     "@anthropic-ai/sdk": "^0.29.0",
-    "@synstack/fs": "workspace:*",
+    "@synstack/fs": "1.0.1",
     "@types/node": "^22.7.0",
     "openai": "^4.67.3",
     "tsup": "^8.3.0",
@@ -93,5 +93,6 @@
     "@anthropic-ai/sdk": "*",
     "openai": "*",
     "zod": "*"
-  }
+  },
+  "gitHead": "c743297f6665c317dca929c1ab9dc7e756076321"
 }
