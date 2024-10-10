@@ -5,7 +5,7 @@
     "access": "public"
   },
   "packageManager": "yarn@4.4.0",
-  "version": "1.0.1-alpha.0",
+  "version": "1.0.1",
   "author": {
     "name": "pAIrprog",
     "url": "https://pairprog.io"
@@ -39,21 +39,21 @@
     }
   },
   "dependencies": {
-    "@synstack/enhance": "1.0.0",
-    "@synstack/fs": "1.0.1-alpha.0",
-    "@synstack/fs-cache": "1.0.1-alpha.0",
-    "@synstack/git": "1.0.0",
-    "@synstack/glob": "1.0.0",
-    "@synstack/json": "1.0.0",
-    "@synstack/markdown": "1.0.0",
-    "@synstack/path": "1.0.0",
-    "@synstack/pipe": "1.0.0",
-    "@synstack/resolved": "1.0.0",
-    "@synstack/str": "1.0.1-alpha.0",
-    "@synstack/text": "1.0.1-alpha.0",
-    "@synstack/web": "1.0.0",
-    "@synstack/xml": "1.0.0",
-    "@synstack/yaml": "1.0.0"
+    "@synstack/enhance": "^1.0.1",
+    "@synstack/fs": "^1.0.1",
+    "@synstack/fs-cache": "^1.0.1",
+    "@synstack/git": "^1.0.1",
+    "@synstack/glob": "^1.0.1",
+    "@synstack/json": "^1.0.1",
+    "@synstack/markdown": "^1.0.1",
+    "@synstack/path": "^1.0.1",
+    "@synstack/pipe": "^1.0.1",
+    "@synstack/resolved": "^1.0.1",
+    "@synstack/str": "^1.0.1",
+    "@synstack/text": "^1.0.1",
+    "@synstack/web": "^1.0.1",
+    "@synstack/xml": "^1.0.1",
+    "@synstack/yaml": "^1.0.1"
   },
   "devDependencies": {
     "@types/node": "^22.7.0",

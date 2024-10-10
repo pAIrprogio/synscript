@@ -5,7 +5,7 @@
     "access": "public"
   },
   "packageManager": "yarn@4.4.0",
-  "version": "1.0.1-alpha.0",
+  "version": "1.0.1",
   "description": "String templating as it was meant to be",
   "keywords": [
     "string",
@@ -51,9 +51,9 @@
     }
   },
   "dependencies": {
-    "@synstack/json": "1.0.0",
-    "@synstack/resolved": "1.0.0",
-    "@synstack/str": "1.0.1-alpha.0"
+    "@synstack/json": "^1.0.1",
+    "@synstack/resolved": "^1.0.1",
+    "@synstack/str": "^1.0.1"
   },
   "devDependencies": {
     "@types/node": "^22.7.0",

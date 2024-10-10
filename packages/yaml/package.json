@@ -5,7 +5,7 @@
     "access": "public"
   },
   "packageManager": "yarn@4.4.0",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Schema-safe and opiniated YAML serialization and deserialization",
   "keywords": [
     "yaml",

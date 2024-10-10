@@ -5,7 +5,7 @@
     "access": "public"
   },
   "packageManager": "yarn@4.4.0",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Simple typesafe pipe utility for Functional Programming",
   "keywords": [
     "fp",
@@ -48,7 +48,7 @@
     }
   },
   "dependencies": {
-    "@synstack/enhance": "1.0.0"
+    "@synstack/enhance": "^1.0.1"
   },
   "devDependencies": {
     "@types/node": "^22.7.0",
