@@ -83,8 +83,17 @@ await Promise.all(
       files: ["src/**/*.ts", "!src/**/*.test.ts", "dist/**/*"],
       gitHead: packageJson.gitHead,
     };
-    delete newPackageJson.scripts.publish;
-    delete newPackageJson.scripts.prepublish;
+
+    if (Object.keys(newPackageJson.peerDependencies).length === 0)
+      // @ts-expect-error - This is a script, don't care
+      delete newPackageJson.peerDependencies;
+    if (Object.keys(newPackageJson.dependencies).length === 0)
+      // @ts-expect-error - This is a script, don't care
+      delete newPackageJson.dependencies;
+    if (Object.keys(newPackageJson.devDependencies).length === 0)
+      // @ts-expect-error - This is a script, don't care
+      delete newPackageJson.devDependencies;
+
     await writeFile(
       packagePath,
       JSON.stringify(newPackageJson, null, 2) + "\n",

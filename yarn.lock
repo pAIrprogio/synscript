@@ -1201,7 +1201,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@synstack/enhance@workspace:*, @synstack/enhance@workspace:packages/enhance":
+"@synstack/enhance@npm:1.0.0, @synstack/enhance@workspace:packages/enhance":
   version: 0.0.0-use.local
   resolution: "@synstack/enhance@workspace:packages/enhance"
   dependencies:
@@ -1213,11 +1213,11 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@synstack/fs-cache@workspace:*, @synstack/fs-cache@workspace:packages/fs-cache":
+"@synstack/fs-cache@npm:1.0.1-alpha.0, @synstack/fs-cache@workspace:packages/fs-cache":
   version: 0.0.0-use.local
   resolution: "@synstack/fs-cache@workspace:packages/fs-cache"
   dependencies:
-    "@synstack/fs": "workspace:*"
+    "@synstack/fs": "npm:1.0.1-alpha.0"
     "@types/node": "npm:^22.7.0"
     tsup: "npm:^8.3.0"
     tsx: "npm:^4.19.1"
@@ -1225,19 +1225,19 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@synstack/fs@workspace:*, @synstack/fs@workspace:packages/fs":
+"@synstack/fs@npm:1.0.1-alpha.0, @synstack/fs@workspace:packages/fs":
   version: 0.0.0-use.local
   resolution: "@synstack/fs@workspace:packages/fs"
   dependencies:
-    "@synstack/enhance": "workspace:*"
-    "@synstack/git": "workspace:*"
-    "@synstack/glob": "workspace:*"
-    "@synstack/json": "workspace:*"
-    "@synstack/path": "workspace:*"
-    "@synstack/pipe": "workspace:*"
-    "@synstack/str": "workspace:*"
-    "@synstack/xml": "workspace:*"
-    "@synstack/yaml": "workspace:*"
+    "@synstack/enhance": "npm:1.0.0"
+    "@synstack/git": "npm:1.0.0"
+    "@synstack/glob": "npm:1.0.0"
+    "@synstack/json": "npm:1.0.0"
+    "@synstack/path": "npm:1.0.0"
+    "@synstack/pipe": "npm:1.0.0"
+    "@synstack/str": "npm:1.0.1-alpha.0"
+    "@synstack/xml": "npm:1.0.0"
+    "@synstack/yaml": "npm:1.0.0"
     "@types/mime-types": "npm:^2.1.4"
     "@types/node": "npm:^22.7.0"
     "@types/turndown": "npm:^5.0.5"
@@ -1248,11 +1248,11 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@synstack/git@workspace:*, @synstack/git@workspace:packages/git":
+"@synstack/git@npm:1.0.0, @synstack/git@workspace:packages/git":
   version: 0.0.0-use.local
   resolution: "@synstack/git@workspace:packages/git"
   dependencies:
-    "@synstack/enhance": "workspace:*"
+    "@synstack/enhance": "npm:1.0.0"
     "@types/node": "npm:^22.7.0"
     execa: "npm:^9.4.0"
     tsup: "npm:^8.3.0"
@@ -1261,11 +1261,11 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@synstack/glob@workspace:*, @synstack/glob@workspace:packages/glob":
+"@synstack/glob@npm:1.0.0, @synstack/glob@workspace:packages/glob":
   version: 0.0.0-use.local
   resolution: "@synstack/glob@workspace:packages/glob"
   dependencies:
-    "@synstack/path": "workspace:*"
+    "@synstack/path": "npm:1.0.0"
     "@types/node": "npm:^22.7.0"
     glob: "npm:^11.0.0"
     minimatch: "npm:^10.0.1"
@@ -1275,7 +1275,7 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@synstack/json@workspace:*, @synstack/json@workspace:packages/json":
+"@synstack/json@npm:1.0.0, @synstack/json@workspace:packages/json":
   version: 0.0.0-use.local
   resolution: "@synstack/json@workspace:packages/json"
   dependencies:
@@ -1284,14 +1284,16 @@ __metadata:
     tsx: "npm:^4.19.1"
     typescript: "npm:^5.6.2"
     zod: "npm:^3.23.8"
+  peerDependencies:
+    zod: "*"
   languageName: unknown
   linkType: soft
 
-"@synstack/markdown@workspace:*, @synstack/markdown@workspace:packages/markdown":
+"@synstack/markdown@npm:1.0.0, @synstack/markdown@workspace:packages/markdown":
   version: 0.0.0-use.local
   resolution: "@synstack/markdown@workspace:packages/markdown"
   dependencies:
-    "@synstack/yaml": "workspace:*"
+    "@synstack/yaml": "npm:1.0.0"
     "@types/node": "npm:^22.7.0"
     "@types/turndown": "npm:^5.0.5"
     tsup: "npm:^8.3.0"
@@ -1304,11 +1306,11 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@synstack/path@workspace:*, @synstack/path@workspace:packages/path":
+"@synstack/path@npm:1.0.0, @synstack/path@workspace:packages/path":
   version: 0.0.0-use.local
   resolution: "@synstack/path@workspace:packages/path"
   dependencies:
-    "@synstack/pipe": "workspace:*"
+    "@synstack/pipe": "npm:1.0.0"
     "@types/mime-types": "npm:^2.1.4"
     "@types/node": "npm:^22.7.0"
     mime-types: "npm:^2.1.35"
@@ -1318,11 +1320,11 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@synstack/pipe@workspace:*, @synstack/pipe@workspace:packages/pipe":
+"@synstack/pipe@npm:1.0.0, @synstack/pipe@workspace:packages/pipe":
   version: 0.0.0-use.local
   resolution: "@synstack/pipe@workspace:packages/pipe"
   dependencies:
-    "@synstack/enhance": "workspace:*"
+    "@synstack/enhance": "npm:1.0.0"
     "@types/node": "npm:^22.7.0"
     tsup: "npm:^8.3.0"
     tsx: "npm:^4.19.1"
@@ -1330,7 +1332,7 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@synstack/resolved@workspace:*, @synstack/resolved@workspace:packages/resolved":
+"@synstack/resolved@npm:1.0.0, @synstack/resolved@workspace:packages/resolved":
   version: 0.0.0-use.local
   resolution: "@synstack/resolved@workspace:packages/resolved"
   dependencies:
@@ -1352,11 +1354,11 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@synstack/str@workspace:*, @synstack/str@workspace:packages/str":
+"@synstack/str@npm:1.0.1-alpha.0, @synstack/str@workspace:packages/str":
   version: 0.0.0-use.local
   resolution: "@synstack/str@workspace:packages/str"
   dependencies:
-    "@synstack/pipe": "workspace:*"
+    "@synstack/pipe": "npm:1.0.0"
     "@types/node": "npm:^22.7.0"
     change-case: "npm:^5.4.4"
     tsup: "npm:^8.3.0"
@@ -1369,21 +1371,21 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@synstack/synscript@workspace:packages/synscript"
   dependencies:
-    "@synstack/enhance": "workspace:*"
-    "@synstack/fs": "workspace:*"
-    "@synstack/fs-cache": "workspace:*"
-    "@synstack/git": "workspace:*"
-    "@synstack/glob": "workspace:*"
-    "@synstack/json": "workspace:*"
-    "@synstack/markdown": "workspace:*"
-    "@synstack/path": "workspace:*"
-    "@synstack/pipe": "workspace:*"
-    "@synstack/resolved": "workspace:*"
-    "@synstack/str": "workspace:*"
-    "@synstack/text": "workspace:*"
-    "@synstack/web": "workspace:*"
-    "@synstack/xml": "workspace:*"
-    "@synstack/yaml": "workspace:*"
+    "@synstack/enhance": "npm:1.0.0"
+    "@synstack/fs": "npm:1.0.1-alpha.0"
+    "@synstack/fs-cache": "npm:1.0.1-alpha.0"
+    "@synstack/git": "npm:1.0.0"
+    "@synstack/glob": "npm:1.0.0"
+    "@synstack/json": "npm:1.0.0"
+    "@synstack/markdown": "npm:1.0.0"
+    "@synstack/path": "npm:1.0.0"
+    "@synstack/pipe": "npm:1.0.0"
+    "@synstack/resolved": "npm:1.0.0"
+    "@synstack/str": "npm:1.0.1-alpha.0"
+    "@synstack/text": "npm:1.0.1-alpha.0"
+    "@synstack/web": "npm:1.0.0"
+    "@synstack/xml": "npm:1.0.0"
+    "@synstack/yaml": "npm:1.0.0"
     "@types/node": "npm:^22.7.0"
     tsup: "npm:^8.3.0"
     tsx: "npm:^4.19.1"
@@ -1391,13 +1393,13 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@synstack/text@workspace:*, @synstack/text@workspace:packages/text":
+"@synstack/text@npm:1.0.1-alpha.0, @synstack/text@workspace:packages/text":
   version: 0.0.0-use.local
   resolution: "@synstack/text@workspace:packages/text"
   dependencies:
-    "@synstack/json": "workspace:*"
-    "@synstack/resolved": "workspace:*"
-    "@synstack/str": "workspace:*"
+    "@synstack/json": "npm:1.0.0"
+    "@synstack/resolved": "npm:1.0.0"
+    "@synstack/str": "npm:1.0.1-alpha.0"
     "@types/node": "npm:^22.7.0"
     tsup: "npm:^8.3.0"
     tsx: "npm:^4.19.1"
@@ -1405,7 +1407,7 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@synstack/web@workspace:*, @synstack/web@workspace:packages/web":
+"@synstack/web@npm:1.0.0, @synstack/web@workspace:packages/web":
   version: 0.0.0-use.local
   resolution: "@synstack/web@workspace:packages/web"
   dependencies:
@@ -1416,10 +1418,12 @@ __metadata:
     tsx: "npm:^4.19.1"
     typescript: "npm:^5.6.2"
     zod: "npm:^3.23.8"
+  peerDependencies:
+    zod: "*"
   languageName: unknown
   linkType: soft
 
-"@synstack/xml@workspace:*, @synstack/xml@workspace:packages/xml":
+"@synstack/xml@npm:1.0.0, @synstack/xml@workspace:packages/xml":
   version: 0.0.0-use.local
   resolution: "@synstack/xml@workspace:packages/xml"
   dependencies:
@@ -1431,7 +1435,7 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@synstack/yaml@workspace:*, @synstack/yaml@workspace:packages/yaml":
+"@synstack/yaml@npm:1.0.0, @synstack/yaml@workspace:packages/yaml":
   version: 0.0.0-use.local
   resolution: "@synstack/yaml@workspace:packages/yaml"
   dependencies:
@@ -1441,6 +1445,8 @@ __metadata:
     typescript: "npm:^5.6.2"
     yaml: "npm:^2.5.1"
     zod: "npm:^3.23.8"
+  peerDependencies:
+    zod: "*"
   languageName: unknown
   linkType: soft
 
