@@ -29,10 +29,7 @@ export class FsFile<
 
   // Todo: include cwd to manage globs?
   public static from<U extends Array<AnyPath>>(this: void, ...paths: U) {
-    return new FsFile<U, "utf-8", undefined>(
-      path.relative(".", path.join(...paths)),
-      "utf-8",
-    );
+    return new FsFile<U, "utf-8", undefined>(path.join(...paths), "utf-8");
   }
 
   private constructor(path: AnyPath, encoding?: TEncoding, schema?: TSchema) {
