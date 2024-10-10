@@ -1,3 +1,4 @@
+import { Stringable } from "@shared/ts.utils";
 import YAML from "yaml";
 import { type ZodSchema } from "zod";
 
@@ -8,10 +9,10 @@ import { type ZodSchema } from "zod";
  * @returns The deserialized data as a js entity
  */
 export const deserialize = <TFormat = any>(
-  data: string,
+  data: Stringable,
   options: { schema?: ZodSchema<TFormat> } = {},
 ) => {
-  const validatedData = YAML.parse(data);
+  const validatedData = YAML.parse(data.toString());
   if (options.schema) return options.schema.parse(validatedData);
   return validatedData as TFormat;
 };

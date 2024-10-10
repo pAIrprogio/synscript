@@ -1,3 +1,4 @@
+import { Stringable } from "@shared/ts.utils";
 import { glob } from "@synstack/glob";
 import { json } from "@synstack/json";
 import { AbsolutePath, AnyPath, path } from "@synstack/path";
@@ -286,19 +287,19 @@ class FsFileWrite<
     return new FsFileWrite(this._path, this._encoding, mode, this._schema);
   }
 
-  public async text(content: string): Promise<void> {
+  public async text(content: Stringable): Promise<void> {
     if (this._mode === "touch" && (await FsFile.from(this._path).exists()))
       return;
     const dirname = path.dirname(this._path);
     await fs.mkdir(dirname, { recursive: true });
-    await fs.writeFile(this._path, content, this._encoding);
+    await fs.writeFile(this._path, content.toString(), this._encoding);
   }
 
-  public textSync(content: string): void {
+  public textSync(content: Stringable): void {
     if (this._mode === "touch" && FsFile.from(this._path).existsSync()) return;
     const dirname = path.dirname(this._path);
     fsSync.mkdirSync(dirname, { recursive: true });
-    fsSync.writeFileSync(this._path, content, this._encoding);
+    fsSync.writeFileSync(this._path, content.toString(), this._encoding);
   }
 
   public async json<T>(data: T): Promise<void> {
@@ -317,19 +318,19 @@ class FsFileWrite<
     return this.textSync(yaml.serialize(data, { schema: this._schema }));
   }
 
-  public async base64(data: string): Promise<void> {
+  public async base64(data: Stringable): Promise<void> {
     if (this._mode === "touch" && (await FsFile.from(this._path).exists()))
       return;
     const dirname = path.dirname(this._path);
     await fs.mkdir(dirname, { recursive: true });
-    await fs.writeFile(this._path, data, "base64");
+    await fs.writeFile(this._path, data.toString(), "base64");
   }
 
-  public base64Sync(data: string): void {
+  public base64Sync(data: Stringable): void {
     if (this._mode === "touch" && FsFile.from(this._path).existsSync()) return;
     const dirname = path.dirname(this._path);
     fsSync.mkdirSync(dirname, { recursive: true });
-    return fsSync.writeFileSync(this._path, data, "base64");
+    return fsSync.writeFileSync(this._path, data.toString(), "base64");
   }
 }
 

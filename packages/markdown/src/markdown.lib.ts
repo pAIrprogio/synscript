@@ -1,8 +1,9 @@
+import { Stringable } from "@shared/ts.utils";
 import { yaml } from "@synstack/yaml";
 import TurndownService from "turndown";
 import { ZodSchema } from "zod";
 
-export const fromHtml = (html: string) => {
+export const fromHtml = (html: Stringable) => {
   const turndown = new TurndownService({
     headingStyle: "atx",
     codeBlockStyle: "fenced",
@@ -12,26 +13,26 @@ export const fromHtml = (html: string) => {
     linkStyle: "inlined",
     strongDelimiter: "__",
   });
-  return turndown.turndown(html);
+  return turndown.turndown(html.toString());
 };
 
 const HEADER_REGEX = /^---\n([\s\S]*?)\n---\n/;
 
 export const getHeaderData = <TFormat = any>(
-  text: string,
+  text: Stringable,
   { schema }: { schema?: ZodSchema<TFormat> } = {},
 ): TFormat | undefined => {
-  const header = text.match(HEADER_REGEX)?.[1];
+  const header = text.toString().match(HEADER_REGEX)?.[1];
   if (!header) return undefined;
   return yaml.deserialize(header, { schema });
 };
 
 export const setHeaderData = <TFormat = any>(
-  text: string,
+  text: Stringable,
   data: TFormat,
   options: { schema?: ZodSchema<TFormat> } = {},
 ) => {
-  return `---\n${yaml.serialize(data, { schema: options.schema })}---\n${getBody(text)}`;
+  return `---\n${yaml.serialize(data, { schema: options.schema })}---\n${getBody(text.toString())}`;
 };
 
 export const getBody = (text: string) => {

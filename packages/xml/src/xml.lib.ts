@@ -1,3 +1,4 @@
+import { Stringable } from "@shared/ts.utils";
 import { produce } from "immer";
 
 type XmlPart =
@@ -221,5 +222,5 @@ const buildXmlTree = (parts: Array<XmlPart>) => {
  * @param content The XML like content to parse
  * @returns The parsed XML as a tree of nodes
  */
-export const parse = <T extends Array<Xml.Node>>(content: string): T =>
-  buildXmlTree(splitXmlTags(content)) as T;
+export const parse = <T extends Array<Xml.Node>>(content: Stringable): T =>
+  buildXmlTree(splitXmlTags(content.toString())) as T;

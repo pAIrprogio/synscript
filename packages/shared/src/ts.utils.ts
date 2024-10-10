@@ -48,6 +48,11 @@ export type MaybeArray<T> = T | T[];
 export type OneToN<T> = [...T[], T];
 
 /**
+ * A type serializable to string
+ */
+export type Stringable = { toString(): string };
+
+/**
  * Asserts that the second type extends the first type
  */
 export function assertExtends<Expected, _Value extends Expected>(): void {}

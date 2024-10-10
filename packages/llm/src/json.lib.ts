@@ -1,3 +1,4 @@
+import { Stringable } from "@shared/ts.utils";
 import { type ZodSchema } from "zod";
 
 // Todo: check if passing "zod" as peer dependency breaks the build
@@ -24,17 +25,17 @@ export const serialize = (
  * @returns The deserialized data as a js entity
  */
 export const deserialize = <T = unknown>(
-  content: string,
+  content: Stringable,
   config: {
     schema?: ZodSchema<T>;
   } = {},
 ): T => {
   try {
-    const validatedData = JSON.parse(content);
+    const validatedData = JSON.parse(content.toString());
     if (config.schema) return config.schema.parse(validatedData);
     return validatedData as T;
   } catch (error) {
-    throw new JsonParseException(content, error);
+    throw new JsonParseException(content.toString(), error);
   }
 };
 
