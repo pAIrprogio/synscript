@@ -1,4 +1,4 @@
-import { OneToN } from "@shared/src/ts.utils";
+import { OneToN } from "@shared/ts.utils";
 import { json } from "@synstack/json";
 import { pipe, Resolvable } from "@synstack/resolved";
 import { t } from "@synstack/text";

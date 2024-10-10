@@ -1,4 +1,4 @@
-import { Merge } from "@shared/src/ts.utils";
+import { Merge } from "@shared/ts.utils";
 import { Resolvable } from "@synstack/resolved";
 import { CompletionBuilder } from "./completion.builder";
 import { Llm } from "./llm.types";

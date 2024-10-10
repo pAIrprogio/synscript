@@ -1,4 +1,4 @@
-import { MaybeArray } from "@shared/src/ts.utils";
+import { MaybeArray } from "@shared/ts.utils";
 import { json } from "@synstack/json";
 import { resolvable } from "@synstack/resolved";
 import { callable, type CallableResolvable } from "@synstack/resolved/callable";
