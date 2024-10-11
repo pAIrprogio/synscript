@@ -1,5 +1,6 @@
 export { enhance, enhanceFactory, type Enhanced } from "@synstack/enhance";
 export { FsDir, FsFile, dir, file } from "@synstack/fs";
+export { fsCache, type FsCache } from "@synstack/fs-cache";
 export { git } from "@synstack/git";
 export { glob } from "@synstack/glob";
 export { JsonParseException, json } from "@synstack/json";
