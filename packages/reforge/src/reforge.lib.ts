@@ -174,7 +174,7 @@ export const notifyConfig = {
     type: z.enum(["info", "warning", "error"]).optional().default("info"),
     buttons: z.array(z.string()).optional(),
   }),
-  responseSchema: z.undefined(),
+  responseSchema: z.string().nullable(),
 } as const;
 
 export const notify = toolFactory(notifyConfig);
@@ -184,7 +184,9 @@ export const openFileConfig = {
   requestSchema: z.object({
     path: z.string(),
   }),
-  responseSchema: z.undefined(),
+  responseSchema: z.object({
+    alreadyOpened: z.boolean(),
+  }),
 };
 
 export const openFile = toolFactory(openFileConfig);
