@@ -24,7 +24,8 @@
     "test:unit": "node --import tsx --test src/**/*.test.ts",
     "test:unit:watch": "node --import tsx --watch --test src/**/*.test.ts",
     "test": "yarn test:types && yarn test:unit",
-    "prepare": "yarn test && yarn build"
+    "prepare": "yarn test && yarn build",
+    "sync-exports": "./scripts/sync-exports.mts"
   },
   "exports": {
     ".": {
@@ -37,6 +38,66 @@
         "default": "./dist/synscript.index.cjs"
       }
     },
+    "./anthropic": {
+      "import": {
+        "types": "./dist/anthropic.index.d.ts",
+        "default": "./dist/anthropic.index.js"
+      },
+      "require": {
+        "types": "./dist/anthropic.index.d.cts",
+        "default": "./dist/anthropic.index.cjs"
+      }
+    },
+    "./enhance": {
+      "import": {
+        "types": "./dist/enhance.index.d.ts",
+        "default": "./dist/enhance.index.js"
+      },
+      "require": {
+        "types": "./dist/enhance.index.d.cts",
+        "default": "./dist/enhance.index.cjs"
+      }
+    },
+    "./fs": {
+      "import": {
+        "types": "./dist/fs.index.d.ts",
+        "default": "./dist/fs.index.js"
+      },
+      "require": {
+        "types": "./dist/fs.index.d.cts",
+        "default": "./dist/fs.index.cjs"
+      }
+    },
+    "./fs-cache": {
+      "import": {
+        "types": "./dist/fs-cache.index.d.ts",
+        "default": "./dist/fs-cache.index.js"
+      },
+      "require": {
+        "types": "./dist/fs-cache.index.d.cts",
+        "default": "./dist/fs-cache.index.cjs"
+      }
+    },
+    "./glob": {
+      "import": {
+        "types": "./dist/glob.index.d.ts",
+        "default": "./dist/glob.index.js"
+      },
+      "require": {
+        "types": "./dist/glob.index.d.cts",
+        "default": "./dist/glob.index.cjs"
+      }
+    },
+    "./json": {
+      "import": {
+        "types": "./dist/json.index.d.ts",
+        "default": "./dist/json.index.js"
+      },
+      "require": {
+        "types": "./dist/json.index.d.cts",
+        "default": "./dist/json.index.cjs"
+      }
+    },
     "./llm": {
       "import": {
         "types": "./dist/llm.index.d.ts",
@@ -47,14 +108,94 @@
         "default": "./dist/llm.index.cjs"
       }
     },
-    "./anthropic": {
+    "./llm/extras": {
       "import": {
-        "types": "./dist/anthropic.index.d.ts",
-        "default": "./dist/anthropic.index.js"
+        "types": "./dist/llm/extras.index.d.ts",
+        "default": "./dist/llm/extras.index.js"
       },
       "require": {
-        "types": "./dist/anthropic.index.d.cts",
-        "default": "./dist/anthropic.index.cjs"
+        "types": "./dist/llm/extras.index.d.cts",
+        "default": "./dist/llm/extras.index.cjs"
+      }
+    },
+    "./markdown": {
+      "import": {
+        "types": "./dist/markdown.index.d.ts",
+        "default": "./dist/markdown.index.js"
+      },
+      "require": {
+        "types": "./dist/markdown.index.d.cts",
+        "default": "./dist/markdown.index.cjs"
+      }
+    },
+    "./path": {
+      "import": {
+        "types": "./dist/path.index.d.ts",
+        "default": "./dist/path.index.js"
+      },
+      "require": {
+        "types": "./dist/path.index.d.cts",
+        "default": "./dist/path.index.cjs"
+      }
+    },
+    "./pipe": {
+      "import": {
+        "types": "./dist/pipe.index.d.ts",
+        "default": "./dist/pipe.index.js"
+      },
+      "require": {
+        "types": "./dist/pipe.index.d.cts",
+        "default": "./dist/pipe.index.cjs"
+      }
+    },
+    "./resolved": {
+      "import": {
+        "types": "./dist/resolved.index.d.ts",
+        "default": "./dist/resolved.index.js"
+      },
+      "require": {
+        "types": "./dist/resolved.index.d.cts",
+        "default": "./dist/resolved.index.cjs"
+      }
+    },
+    "./str": {
+      "import": {
+        "types": "./dist/str.index.d.ts",
+        "default": "./dist/str.index.js"
+      },
+      "require": {
+        "types": "./dist/str.index.d.cts",
+        "default": "./dist/str.index.cjs"
+      }
+    },
+    "./text": {
+      "import": {
+        "types": "./dist/text.index.d.ts",
+        "default": "./dist/text.index.js"
+      },
+      "require": {
+        "types": "./dist/text.index.d.cts",
+        "default": "./dist/text.index.cjs"
+      }
+    },
+    "./web": {
+      "import": {
+        "types": "./dist/web.index.d.ts",
+        "default": "./dist/web.index.js"
+      },
+      "require": {
+        "types": "./dist/web.index.d.cts",
+        "default": "./dist/web.index.cjs"
+      }
+    },
+    "./xml": {
+      "import": {
+        "types": "./dist/xml.index.d.ts",
+        "default": "./dist/xml.index.js"
+      },
+      "require": {
+        "types": "./dist/xml.index.d.cts",
+        "default": "./dist/xml.index.cjs"
       }
     }
   },
@@ -69,13 +210,13 @@
     "@synstack/markdown": "workspace:*",
     "@synstack/path": "workspace:*",
     "@synstack/pipe": "workspace:*",
+    "@synstack/reforge": "workspace:*",
     "@synstack/resolved": "workspace:*",
     "@synstack/str": "workspace:*",
     "@synstack/text": "workspace:*",
     "@synstack/web": "workspace:*",
     "@synstack/xml": "workspace:*",
-    "@synstack/yaml": "workspace:*",
-    "@synstack/reforge": "workspace:*"
+    "@synstack/yaml": "workspace:*"
   },
   "devDependencies": {
     "@types/node": "^22.7.0",
