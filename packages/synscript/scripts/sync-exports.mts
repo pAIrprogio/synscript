@@ -18,12 +18,12 @@ const subExports = subPackagesFiles.reduce((acc, file) => {
     ...acc,
     [`./${exportName}`]: {
       import: {
-        types: `./dist/${exportName}.index.d.ts`,
-        default: `./dist/${exportName}.index.js`,
+        types: `./dist/sub-packages/${exportName}.index.d.ts`,
+        default: `./dist/sub-packages/${exportName}.index.js`,
       },
       require: {
-        types: `./dist/${exportName}.index.d.cts`,
-        default: `./dist/${exportName}.index.cjs`,
+        types: `./dist/sub-packages/${exportName}.index.d.cts`,
+        default: `./dist/sub-packages/${exportName}.index.cjs`,
       },
     },
   };
