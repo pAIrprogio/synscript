@@ -1,0 +1,64 @@
+{
+  "name": "@synstack/reforge",
+  "type": "module",
+  "publishConfig": {
+    "access": "public"
+  },
+  "packageManager": "yarn@4.4.0",
+  "version": "1.0.0",
+  "description": "Runtime tools for interactive DevX with the ReForge IDE extension",
+  "keywords": [
+    "vscode",
+    "ui",
+    "tool",
+    "reforge",
+    "devtools",
+    "devx"
+  ],
+  "author": {
+    "name": "pAIrprog",
+    "url": "https://pairprog.io"
+  },
+  "homepage": "https://github.com/pAIrprogio/synscript/tree/main/packages/reforge",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/pAIrprogio/syn-stack.git",
+    "directory": "packages/reforge"
+  },
+  "license": "Apache-2.0",
+  "scripts": {
+    "build": "tsup",
+    "build:watch": "tsup --watch",
+    "test:types": "tsc --noEmit",
+    "test:unit": "node --import tsx --test src/**/*.test.ts",
+    "test:unit:watch": "node --import tsx --watch --test src/**/*.test.ts",
+    "test": "yarn test:types && yarn test:unit",
+    "prepare": "yarn test && yarn build"
+  },
+  "exports": {
+    ".": {
+      "import": {
+        "types": "./dist/reforge.index.d.ts",
+        "default": "./dist/reforge.index.js"
+      },
+      "require": {
+        "types": "./dist/reforge.index.d.cts",
+        "default": "./dist/reforge.index.cjs"
+      }
+    }
+  },
+  "dependencies": {
+    "@synstack/json": "workspace:*"
+  },
+  "devDependencies": {
+    "@types/node": "^22.7.0",
+    "tsup": "^8.3.0",
+    "tsx": "^4.19.1",
+    "typescript": "^5.6.2"
+  },
+  "files": [
+    "src/**/*.ts",
+    "!src/**/*.test.ts",
+    "dist/**/*"
+  ]
+}
