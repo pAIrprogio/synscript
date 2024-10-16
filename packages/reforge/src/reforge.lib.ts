@@ -32,6 +32,8 @@ const getIpcClient = memoize(() => {
   });
 });
 
+export const RESPONSE_SUFFIX = "_RESPONSE";
+
 export interface ToolConfig<
   TName extends string,
   TRequestSchema extends z.ZodSchema | null,
@@ -56,7 +58,7 @@ export const toolFactory = <
 >(
   toolConfig: ToolConfig<TName, TRequestSchema, TResponseSchema>,
 ): ToolFn<TRequestSchema, TResponseSchema> => {
-  const responseName = `${toolConfig.name}_RESPONSE` as const;
+  const responseName = `${toolConfig.name}${RESPONSE_SUFFIX}` as const;
   const responseSchema = z.discriminatedUnion("status", [
     z.object({
       type: z.literal(responseName),

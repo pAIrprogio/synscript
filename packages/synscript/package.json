@@ -148,6 +148,16 @@
         "default": "./dist/pipe.index.cjs"
       }
     },
+    "./reforge": {
+      "import": {
+        "types": "./dist/reforge.index.d.ts",
+        "default": "./dist/reforge.index.js"
+      },
+      "require": {
+        "types": "./dist/reforge.index.d.cts",
+        "default": "./dist/reforge.index.cjs"
+      }
+    },
     "./resolved": {
       "import": {
         "types": "./dist/resolved.index.d.ts",
