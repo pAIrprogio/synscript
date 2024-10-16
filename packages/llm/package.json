@@ -84,15 +84,15 @@
     "typescript": "^5.6.2",
     "zod": "^3.23.8"
   },
-  "files": [
-    "src/**/*.ts",
-    "!src/**/*.test.ts",
-    "dist/**/*"
-  ],
   "peerDependencies": {
     "@anthropic-ai/sdk": "*",
     "openai": "*",
     "zod": "*"
   },
+  "files": [
+    "src/**/*.ts",
+    "!src/**/*.test.ts",
+    "dist/**/*"
+  ],
   "gitHead": "ed339f5b4ef3a70b7371313234250b1e7445ef69"
 }

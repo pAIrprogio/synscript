@@ -1,5 +1,5 @@
 import { never } from "@shared/ts.utils";
-import { pipe, Resolvable } from "@synstack/resolved";
+import { pipe } from "@synstack/resolved";
 // We want to avoid importing the whole library for a single type
 import { type Base64Data } from "../../fs/src/file.lib";
 
@@ -8,7 +8,7 @@ import { Llm } from "./llm.types";
 
 export const userMsg = <
   T extends
-    Array<MessageBuilder.User.TemplateValue> = Array<MessageBuilder.User.TemplateValue>,
+    Array<MessageTemplate.User.TemplateValue> = Array<MessageTemplate.User.TemplateValue>,
 >(
   template: TemplateStringsArray,
   ...values: T
@@ -37,7 +37,7 @@ export const userMsg = <
 
 export const assistantMsg = <
   T extends
-    Array<MessageBuilder.Assistant.TemplateValue> = Array<MessageBuilder.Assistant.TemplateValue>,
+    Array<MessageTemplate.Assistant.TemplateValue> = Array<MessageTemplate.Assistant.TemplateValue>,
 >(
   template: TemplateStringsArray,
   ...values: T
@@ -61,24 +61,8 @@ export const assistantMsg = <
     ).$;
 };
 
-export class Message<T extends Resolvable<Llm.Message>> {
-  private readonly _message: T;
-
-  private constructor(message: T) {
-    this._message = message;
-  }
-
-  public static from(message: Resolvable<Llm.Message>) {
-    return new Message(message);
-  }
-
-  public get message() {
-    return this._message;
-  }
-}
-
-export declare namespace MessageBuilder {
-  export type TemplateFn<TExtraValue extends Text.ExtraObject.Base = never> = (
+export declare namespace MessageTemplate {
+  export type Fn<TExtraValue extends Text.ExtraObject.Base = never> = (
     template: TemplateStringsArray,
     ...values: Array<Text.TemplateValue<TExtraValue>>
   ) => void;
@@ -88,7 +72,7 @@ export declare namespace MessageBuilder {
 
     export type TemplateValue = Text.TemplateValue<ExtraValues>;
 
-    export type TemplateFn = MessageBuilder.TemplateFn<ExtraValues>;
+    export type Fn = MessageTemplate.Fn<ExtraValues>;
   }
 
   export namespace User {
@@ -96,6 +80,6 @@ export declare namespace MessageBuilder {
 
     export type TemplateValue = Text.TemplateValue<ExtraValues>;
 
-    export type TemplateFn = MessageBuilder.TemplateFn<ExtraValues>;
+    export type Fn = MessageTemplate.Fn<ExtraValues>;
   }
 }
