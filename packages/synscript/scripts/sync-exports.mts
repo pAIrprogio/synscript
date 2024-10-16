@@ -1,5 +1,4 @@
 #!/usr/bin/env node --import tsx
-
 import { dir, file } from "@synstack/fs";
 
 const subPackagesDir = dir(import.meta.dirname).to("../src/sub-packages");
@@ -17,7 +16,7 @@ const subExports = subPackagesFiles.reduce((acc, file) => {
   console.log(exportName);
   return {
     ...acc,
-    [exportName]: {
+    [`./${exportName}`]: {
       import: {
         types: `./dist/${exportName}.index.d.ts`,
         default: `./dist/${exportName}.index.js`,
@@ -44,6 +43,7 @@ const exports = {
   ...orderKeys(subExports),
 };
 
-const packageJson: any = await import("../package.json");
+const packageFile = file("package.json");
+const packageJson = await packageFile.read.json<any>();
 packageJson.exports = exports;
-await file("package.json").write.json(packageJson);
+await packageFile.write.prettyJson(packageJson);
