@@ -5,7 +5,7 @@ import { Pipeable } from "@synstack/pipe";
 import * as fsSync from "fs";
 import * as fs from "fs/promises";
 import { FsFile } from "./file.lib";
-import { filesArray } from "./files-array.lib";
+import { dirBasedFilesArray, filesArray } from "./files-array.lib";
 
 export class FsDir<
   TPaths extends Array<string> = ["./<unknown>"],
@@ -85,11 +85,11 @@ export class FsDir<
     return glob
       .cwd(this._path)
       .find(...patterns)
-      .then(filesArray);
+      .then(dirBasedFilesArray(this));
   }
 
   public globSync(...patterns: Array<string> | [Array<string>]) {
-    return filesArray(glob.cwd(this._path).findSync(...patterns));
+    return dirBasedFilesArray(this)(glob.cwd(this._path).findSync(...patterns));
   }
 
   public async gitLs(subPath?: AnyPath) {

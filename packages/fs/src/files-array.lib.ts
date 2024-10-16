@@ -43,6 +43,21 @@ export type FsFileArray = Enhanced<
 export const filesArray = (files: Array<FsFile<any> | AnyPath>): FsFileArray =>
   enhance(
     "files_array",
-    files.map((f) => (f instanceof FsFile ? f : file(f))),
+    files.map((f) => {
+      if (f instanceof FsFile) return f;
+      return file(f);
+    }),
     filesArrayMethods,
   );
+
+export const dirBasedFilesArray =
+  (dir: FsDir) =>
+  (files: Array<FsFile<any> | AnyPath>): FsFileArray =>
+    enhance(
+      "files_array",
+      files.map((f) => {
+        if (f instanceof FsFile) return f;
+        return dir.file(f);
+      }),
+      filesArrayMethods,
+    );
