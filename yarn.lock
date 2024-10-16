@@ -1371,7 +1371,7 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@synstack/reforge@workspace:packages/reforge":
+"@synstack/reforge@workspace:*, @synstack/reforge@workspace:packages/reforge":
   version: 0.0.0-use.local
   resolution: "@synstack/reforge@workspace:packages/reforge"
   dependencies:
@@ -1432,6 +1432,7 @@ __metadata:
     "@synstack/markdown": "workspace:*"
     "@synstack/path": "workspace:*"
     "@synstack/pipe": "workspace:*"
+    "@synstack/reforge": "workspace:*"
     "@synstack/resolved": "workspace:*"
     "@synstack/str": "workspace:*"
     "@synstack/text": "workspace:*"

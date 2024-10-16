@@ -306,8 +306,20 @@ class FsFileWrite<
     return this.text(json.serialize(data, { schema: this._schema }));
   }
 
+  public async prettyJson<T>(data: T): Promise<void> {
+    return this.text(
+      json.serialize(data, { schema: this._schema, pretty: true }) + "\n",
+    );
+  }
+
   public jsonSync<T>(data: T): void {
     return this.textSync(json.serialize(data, { schema: this._schema }));
+  }
+
+  public prettyJsonSync<T>(data: T): void {
+    return this.textSync(
+      json.serialize(data, { schema: this._schema, pretty: true }) + "\n",
+    );
   }
 
   public async yaml<T>(data: T): Promise<void> {
