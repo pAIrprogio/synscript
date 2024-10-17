@@ -8,8 +8,8 @@ export interface CompletionRunner<TCompletion extends Llm.Completion.Partial> {
     completion: CompletionBuilder<Resolvable<TCompletion>>,
   ): Promise<{
     message: Llm.Assistant.Message;
-    usage: Llm.Usage;
-    stopReason: Llm.StopReason;
+    usage: Llm.Completion.Usage;
+    stopReason: Llm.Completion.StopReason;
   }>;
 
   runChatCompletion<T extends TCompletion>(

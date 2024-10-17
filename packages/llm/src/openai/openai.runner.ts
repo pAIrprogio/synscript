@@ -51,7 +51,7 @@ export class OpenAIUtils {
   }
 
   private static tools(
-    toolsConfig?: Llm.Completion.Tool,
+    toolsConfig?: Llm.Completion.ToolConfig,
   ): Array<ChatCompletionTool> | undefined {
     if (toolsConfig === undefined) return undefined;
     if (toolsConfig.type === "multi")
@@ -62,7 +62,7 @@ export class OpenAIUtils {
   }
 
   private static toolChoice(
-    toolsConfig?: Llm.Completion.Tool,
+    toolsConfig?: Llm.Completion.ToolConfig,
   ): ChatCompletionToolChoiceOption {
     if (toolsConfig === undefined) return "none";
 

@@ -119,8 +119,8 @@ export class AnthropicRunner<TConfig extends AnthropicRunner.Config.Partial>
     completion: CompletionBuilder<Resolvable<AnthropicRunner.Completion>>,
   ): Promise<{
     message: Llm.Assistant.Message;
-    stopReason: Llm.StopReason;
-    usage: Llm.Usage;
+    stopReason: Llm.Completion.StopReason;
+    usage: Llm.Completion.Usage;
   }> {
     const rawCompletion = await completion.$;
     const anthropicCompletion = this.mapCompletionQuery(rawCompletion);
@@ -153,7 +153,7 @@ export class AnthropicRunner<TConfig extends AnthropicRunner.Config.Partial>
       };
     }
 
-    const usage: Llm.Usage = {
+    const usage: Llm.Completion.Usage = {
       inputTokens: res.usage.input_tokens,
       outputTokens: res.usage.output_tokens,
     };
@@ -208,7 +208,7 @@ export class AnthropicRunner<TConfig extends AnthropicRunner.Config.Partial>
   // #region map Anthropic -> Domain
   private static mapStopReason(
     reason: Anthropic.Messages.Message["stop_reason"],
-  ): Llm.StopReason {
+  ): Llm.Completion.StopReason {
     if (reason === "end_turn") return "end";
     if (reason === "max_tokens") return "max_tokens";
     if (reason === "tool_use") return "tool_call";
@@ -272,7 +272,10 @@ export class AnthropicRunner<TConfig extends AnthropicRunner.Config.Partial>
     };
   }
 
-  private static mapToolConfig(this: void, toolConfig?: Llm.Completion.Tool) {
+  private static mapToolConfig(
+    this: void,
+    toolConfig?: Llm.Completion.ToolConfig,
+  ) {
     if (!toolConfig) return undefined;
     if (toolConfig.type === "single")
       return [AnthropicRunner.mapTool(toolConfig.tool)];
@@ -290,7 +293,7 @@ export class AnthropicRunner<TConfig extends AnthropicRunner.Config.Partial>
   }
 
   private static mapToolChoice(
-    toolConfig?: Llm.Completion.Tool,
+    toolConfig?: Llm.Completion.ToolConfig,
   ): Anthropic.Messages.MessageCreateParamsNonStreaming["tool_choice"] {
     if (!toolConfig) return undefined;
 

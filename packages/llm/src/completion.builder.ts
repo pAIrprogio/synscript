@@ -37,7 +37,8 @@ export declare namespace CompletionBuilder {
     Resolvable.Infer<TValue> extends undefined ? undefined : TForced;
 }
 
-// @Todo: switch to base pipeable
+// Todo: type tool response based on tools config
+// Todo: switch to base pipeable
 export class CompletionBuilder<T extends Resolvable<Llm.Completion.Partial>> {
   private readonly _completion: T;
 
@@ -167,17 +168,17 @@ export class CompletionBuilder<T extends Resolvable<Llm.Completion.Partial>> {
    * @argument tools The tools to use
    * @argument requireToolUse Whether to require the LLM to use the tools
    */
-  public tools(
-    tools: Resolvable<OneToN<Llm.Tool>>,
-    requireToolUse: boolean = false,
-  ) {
+  public tools<
+    TTools extends Resolvable<OneToN<Llm.Tool>>,
+    TRequire extends boolean = false,
+  >(tools: TTools, requireToolUse: TRequire = false as TRequire) {
     return this.merge(
       pipe(tools)._((tools) => ({
         toolsConfig: {
           type: "multi" as const,
           tools,
-          requireToolUse,
-        } as Llm.Completion.Tool.Multi,
+          requireToolUse: requireToolUse,
+        } as Llm.Completion.ToolConfig.Multi<Awaited<TTools>, TRequire>,
       })).$,
     );
   }
@@ -185,13 +186,13 @@ export class CompletionBuilder<T extends Resolvable<Llm.Completion.Partial>> {
   /**
    * Set a single tool for the LLM to use. The LLM will always respond with this tool
    */
-  public tool<U extends Resolvable<Llm.Tool>>(tool: U) {
+  public tool<TTool extends Resolvable<Llm.Tool>>(tool: TTool) {
     return this.merge(
       pipe(tool)._((tool) => ({
         toolsConfig: {
           type: "single",
           tool,
-        } as Llm.Completion.Tool.Single,
+        } as Llm.Completion.ToolConfig.Single<Awaited<TTool>>,
       })).$,
     );
   }
@@ -199,7 +200,9 @@ export class CompletionBuilder<T extends Resolvable<Llm.Completion.Partial>> {
   /**
    * Set the stop reason for the completion
    */
-  public stopReason<U extends Llm.StopReason | undefined>(stopReason: U) {
+  public stopReason<U extends Llm.Completion.StopReason | undefined>(
+    stopReason: U,
+  ) {
     return this.merge(
       pipe(stopReason)._((stopReason) => ({
         stopReason,
@@ -210,10 +213,12 @@ export class CompletionBuilder<T extends Resolvable<Llm.Completion.Partial>> {
   /**
    * Set the tokens usage
    */
-  public usage<U extends Resolvable<Llm.Usage | undefined>>(usage: U) {
+  public usage<U extends Resolvable<Llm.Completion.Usage | undefined>>(
+    usage: U,
+  ) {
     this.merge(
       pipe(usage)._((usage) => ({
-        usage: usage as CompletionBuilder.ForceValue<U, Llm.Usage>,
+        usage: usage as CompletionBuilder.ForceValue<U, Llm.Completion.Usage>,
       })).$,
     );
   }
@@ -221,7 +226,7 @@ export class CompletionBuilder<T extends Resolvable<Llm.Completion.Partial>> {
   /**
    * Add usage to existing usage
    */
-  public addUsage<U extends Resolvable<Llm.Usage>>(usage: U) {
+  public addUsage<U extends Resolvable<Llm.Completion.Usage>>(usage: U) {
     return this.merge(
       pipe([this.$, usage] as const)._(([$, usage]) => ({
         usage: {
@@ -326,8 +331,24 @@ export class CompletionBuilder<T extends Resolvable<Llm.Completion.Partial>> {
   /**
    * Get last message tool calls
    */
-  public lastMessageToolCalls() {
+  public lastMessageToolCalls<
+    C extends {
+      stopReason: Llm.Completion.StopReason;
+      toolsConfig: Llm.Completion.ToolConfig;
+    },
+  >(
+    this: CompletionBuilder<C>,
+  ): Llm.Message.Content.ToolCall.ResponseFromToolConfig<C["toolsConfig"]> {
+    // @ts-expect-error - To fix
     return pipe(this.lastMessage())._((message) => {
+      /* Todo:
+        We need to decide if we want to allow non-tool_call responses to call this function
+        or if we let it go
+
+        - Forcing stopReason to be "tool_call" will force the user to check if the result
+          is a tool call and handle the error otherwise
+        - But it also implies a lot of boilerplate code on each run where we need the tool response
+      */
       if (message.role !== "assistant") return [];
       return message.content.filter((c) => c.type === "tool_call");
     }).$;

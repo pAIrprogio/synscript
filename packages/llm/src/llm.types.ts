@@ -1,18 +1,15 @@
-import { z } from "zod";
+import { OneToN } from "@shared/ts.utils";
+import { AnyZodObject, z, ZodSchema } from "zod";
 
 type $Partial<T> = Partial<T>;
 
 export declare namespace Llm {
-  export type StopReason = "end" | "max_tokens" | "tool_call" | "stop_sequence";
-
-  export type Usage = {
-    inputTokens: number;
-    outputTokens: number;
-  };
-
-  export type Tool = {
-    name: string;
-    schema: z.ZodSchema; // Todo: force object schema
+  export type Tool<
+    TName extends string = string,
+    TSchema extends ZodSchema = AnyZodObject,
+  > = {
+    name: TName;
+    schema: TSchema; // Todo: force object schema
   };
 
   export type Completion = {
@@ -23,26 +20,40 @@ export declare namespace Llm {
     topK?: number;
     topP?: number;
     stopSequences?: string[];
-    toolsConfig?: Llm.Completion.Tool;
-    usage?: Usage;
-    stopReason?: StopReason;
+    toolsConfig?: Llm.Completion.ToolConfig;
+    usage?: Completion.Usage;
+    stopReason?: Completion.StopReason;
   };
 
   export namespace Completion {
-    export type Tool = Tool.Single | Tool.Multi;
+    export type StopReason =
+      | "end"
+      | "max_tokens"
+      | "tool_call"
+      | "stop_sequence";
 
-    export namespace Tool {
+    export type Usage = {
+      inputTokens: number;
+      outputTokens: number;
+    };
+
+    export type ToolConfig = ToolConfig.Single | ToolConfig.Multi;
+
+    export namespace ToolConfig {
       export type Type = "single" | "multi";
 
-      export type Single = {
+      export type Single<TTool extends Llm.Tool = Llm.Tool> = {
         type: "single";
-        tool: Llm.Tool;
+        tool: TTool;
       };
 
-      export type Multi = {
+      export type Multi<
+        TTools extends Array<Llm.Tool> = Array<Llm.Tool>,
+        TRequire extends boolean = boolean,
+      > = {
         type: "multi";
-        tools: Array<Llm.Tool>;
-        requireToolUse?: boolean;
+        tools: TTools;
+        requireToolUse: TRequire;
       };
     }
 
@@ -91,12 +102,43 @@ export declare namespace Llm {
         };
       }
 
-      export type ToolCall = {
+      export type ToolCall<TTool extends Llm.Tool = Llm.Tool> = {
         type: "tool_call";
         toolCallId: string;
-        toolName: string;
-        toolArgs: any;
+        toolName: TTool["name"];
+        toolArgs: z.output<TTool["schema"]>;
       };
+
+      export namespace ToolCall {
+        export type ResponseFromToolConfig<
+          TConfig extends Completion.ToolConfig,
+        > = TConfig extends Completion.ToolConfig.Single
+          ? [ToolCall<TConfig["tool"]>]
+          : // Remap each Tool to a ToolCall and transform to union
+            TConfig extends Completion.ToolConfig.Multi
+            ? TConfig["requireToolUse"] extends true
+              ? OneToN<
+                  {
+                    // infer is used to extract each type specifically instead of a union of types
+                    [K in keyof TConfig["tools"]]: TConfig["tools"][K] extends infer U
+                      ? U extends Tool
+                        ? ToolCall<U>
+                        : never
+                      : never;
+                  }[number]
+                >
+              : Array<
+                  {
+                    // infer is used to extract each type specifically instead of a union of types
+                    [K in keyof TConfig["tools"]]: TConfig["tools"][K] extends infer U
+                      ? U extends Tool
+                        ? ToolCall<U>
+                        : never
+                      : never;
+                  }[number]
+                >
+            : Array<ToolCall>;
+      }
 
       export type ToolResponse = {
         type: "tool_response";

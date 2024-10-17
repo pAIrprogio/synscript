@@ -8,7 +8,87 @@ import { CompletionRunner } from "./completion.runner";
 import { Llm } from "./llm.types";
 
 describe("CompletionBuilder", () => {
-  const _types = () => {};
+  const _types = () => {
+    // It infers multi tools call structure
+    const multiToolCOmpletion = CompletionBuilder.new
+      .tools([
+        {
+          name: "test" as const,
+          schema: z.object({ value: z.string() }),
+        },
+        {
+          name: "test2" as const,
+          schema: z.object({ value2: z.string() }),
+        },
+      ])
+      .stopReason("tool_call");
+    const multiToolCalls = multiToolCOmpletion.lastMessageToolCalls();
+
+    assertType<
+      Array<
+        | {
+            toolName: "test";
+            type: "tool_call";
+            toolCallId: string;
+            toolArgs: { value: string };
+          }
+        | {
+            toolName: "test2";
+            type: "tool_call";
+            toolCallId: string;
+            toolArgs: { value2: string };
+          }
+      >
+    >(multiToolCalls);
+
+    // It infers single tools call structure
+    const singleToolCOmpletion = CompletionBuilder.new
+      .tool({
+        name: "test" as const,
+        schema: z.object({ value: z.string() }),
+      })
+      .stopReason("tool_call");
+
+    const singleToolCall = singleToolCOmpletion.lastMessageToolCalls();
+
+    assertType<
+      [
+        {
+          toolName: "test";
+          type: "tool_call";
+          toolCallId: string;
+          toolArgs: { value: string };
+        },
+      ]
+    >(singleToolCall);
+
+    // It infers multi tool call with requireToolUse
+    const multiToolCOmpletionWithRequireToolUse = CompletionBuilder.new
+      .tools(
+        [
+          {
+            name: "test" as const,
+            schema: z.object({ value: z.string() }),
+          },
+        ],
+        true,
+      )
+      .stopReason("tool_call");
+    const multiToolCallsWithRequireToolUse =
+      multiToolCOmpletionWithRequireToolUse.lastMessageToolCalls();
+
+    assertType<
+      [
+        ...any[],
+        {
+          toolName: "test";
+          type: "tool_call";
+          toolCallId: string;
+          toolArgs: { value: string };
+        },
+      ]
+    >(multiToolCallsWithRequireToolUse);
+  };
 
   it("can be created", () => {
     const completion = CompletionBuilder.new;
@@ -59,7 +139,7 @@ describe("CompletionBuilder", () => {
       system: string;
       temperature: number;
       maxTokens: number;
-      toolsConfig: Llm.Completion.Tool.Multi;
+      toolsConfig: Llm.Completion.ToolConfig.Multi;
       topK: number;
       topP: number;
       stopSequences: string[];
