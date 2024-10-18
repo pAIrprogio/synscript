@@ -48,7 +48,8 @@
     }
   },
   "dependencies": {
-    "immer": "^10.1.1"
+    "immer": "^10.1.1",
+    "@synstack/str": "workspace:*"
   },
   "devDependencies": {
     "@types/node": "^22.7.0",

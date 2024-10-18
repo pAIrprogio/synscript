@@ -257,7 +257,8 @@ attr2="value2"
     assert.deepEqual(res, [
       { type: "text", text: "Hi\n" },
       {
-        type: "root",
+        type: "tag",
+        tag: "root",
         attrs: {
           attr1: "value1",
           attr2: "value2",
@@ -265,11 +266,18 @@ attr2="value2"
         content: [
           { type: "text", text: "\n" },
           {
-            type: "child",
+            type: "tag",
+            tag: "child",
             attrs: {},
             content: [
               { type: "text", text: "Content" },
-              { type: "alone", attrs: {}, content: [], text: "<alone/>" },
+              {
+                type: "tag",
+                tag: "alone",
+                attrs: {},
+                content: [],
+                text: "<alone/>",
+              },
             ],
             text: "<child>Content<alone/></child>",
           },
@@ -282,7 +290,8 @@ attr2="value2"
   it("transforms unclosed tags as text", () => {
     assert.deepEqual(parse("<root><child>Content<a/></root>"), [
       {
-        type: "root",
+        type: "tag",
+        tag: "root",
         attrs: {},
         content: [{ type: "text", text: "<child>Content<a/>" }],
         text: "<root><child>Content<a/></root>",

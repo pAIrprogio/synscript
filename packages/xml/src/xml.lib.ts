@@ -1,4 +1,5 @@
 import { Stringable } from "@shared/ts.utils";
+import { str } from "@synstack/str";
 import { produce } from "immer";
 
 type XmlPart =
@@ -105,7 +106,8 @@ export declare namespace Xml {
     }
 
     export interface Object {
-      type: string;
+      type: "tag";
+      tag: string;
       attrs?: { [key: string]: string };
       content: Array<Text | Object>;
       text: string;
@@ -132,13 +134,9 @@ const buildXmlTree = (parts: Array<XmlPart>) => {
 
       if (part.type === "text") {
         updateStackText(part.text);
-        if (lastNode?.type === "text") {
-          lastNode.text += part.text;
-          return;
-        }
 
         lastContents.push({
-          type: "text",
+          type: "text" as const,
           text: part.text,
         });
         return;
@@ -147,7 +145,8 @@ const buildXmlTree = (parts: Array<XmlPart>) => {
       if (part.type === "tagSelfClose") {
         updateStackText(part.text);
         lastContents.push({
-          type: part.name,
+          type: "tag" as const,
+          tag: part.name,
           attrs: part.attrs,
           text: part.text,
           content: [],
@@ -158,7 +157,8 @@ const buildXmlTree = (parts: Array<XmlPart>) => {
       if (part.type === "tagOpen") {
         updateStackText(part.text);
         const node = {
-          type: part.name,
+          type: "tag" as const,
+          tag: part.name,
           attrs: part.attrs,
           text: part.text,
           content: [],
@@ -174,7 +174,7 @@ const buildXmlTree = (parts: Array<XmlPart>) => {
           lastContents = lastNode?.content ?? draft.chunks;
 
           // Handle last tag closing
-          if (node.type === part.name) {
+          if (node.tag === part.name) {
             updateStackText(part.text);
             lastContents.push({
               ...node,
@@ -185,7 +185,7 @@ const buildXmlTree = (parts: Array<XmlPart>) => {
 
           // Handle unclosed tag
           lastContents.push({
-            type: "text",
+            type: "text" as const,
             text: node.text,
           });
         }
@@ -223,4 +223,18 @@ const buildXmlTree = (parts: Array<XmlPart>) => {
  * @returns The parsed XML as a tree of nodes
  */
 export const parse = <T extends Array<Xml.Node>>(content: Stringable): T =>
-  buildXmlTree(splitXmlTags(content.toString())) as T;
+  buildXmlTree(splitXmlTags(content.toString().trim())) as T;
+
+interface NodesToTextConfig {
+  trim?: boolean;
+  dedent?: boolean;
+}
+
+export const nodesToText =
+  (config: NodesToTextConfig = {}) =>
+  (nodes: Array<Xml.Node>) => {
+    let nodesStr = str(nodes.map((n) => n.text).join(""));
+    if (config.trim) nodesStr = nodesStr.trim();
+    if (config.dedent) nodesStr = nodesStr.dedent();
+    return nodesStr;
+  };
