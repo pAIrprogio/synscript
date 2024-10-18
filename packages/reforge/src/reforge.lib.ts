@@ -123,7 +123,7 @@ export const getTargetFile = toolFactory(getTargetFileConfig);
 export const getOpenedFilesConfig = {
   name: "GET_OPENED_FILES",
   requestSchema: null,
-  responseSchema: z.array(z.string()).nullable(),
+  responseSchema: z.array(z.string()),
 } as const;
 
 export const getOpenedFiles = toolFactory(getOpenedFilesConfig);
