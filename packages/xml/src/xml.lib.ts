@@ -1,5 +1,4 @@
 import { Stringable } from "@shared/ts.utils";
-import { str } from "@synstack/str";
 import { produce } from "immer";
 
 type XmlPart =
@@ -225,16 +224,5 @@ const buildXmlTree = (parts: Array<XmlPart>) => {
 export const parse = <T extends Array<Xml.Node>>(content: Stringable): T =>
   buildXmlTree(splitXmlTags(content.toString().trim())) as T;
 
-interface NodesToTextConfig {
-  trim?: boolean;
-  dedent?: boolean;
-}
-
-export const nodesToText =
-  (config: NodesToTextConfig = {}) =>
-  (nodes: Array<Xml.Node>) => {
-    let nodesStr = str(nodes.map((n) => n.text).join(""));
-    if (config.trim) nodesStr = nodesStr.trim();
-    if (config.dedent) nodesStr = nodesStr.dedent();
-    return nodesStr;
-  };
+export const nodesToText = (nodes: Array<Xml.Node>) =>
+  nodes.map((n) => n.text).join("");
