@@ -98,18 +98,18 @@ export const splitXmlTags = (content: string): Array<XmlPart> => {
 };
 
 export declare namespace Xml {
-  export type Node = Xml.Node.Text | Xml.Node.Object;
+  export type Node = Xml.Node.Text | Xml.Node.Tag;
   export namespace Node {
     export interface Text {
       type: "text";
       text: string;
     }
 
-    export interface Object {
+    export interface Tag {
       type: "tag";
       tag: string;
       attrs?: { [key: string]: string };
-      content: Array<Text | Object>;
+      content: Array<Text | Tag>;
       text: string;
     }
   }
@@ -117,7 +117,7 @@ export declare namespace Xml {
 
 interface XmlState {
   chunks: Array<Xml.Node>;
-  stack: Array<Xml.Node.Object>;
+  stack: Array<Xml.Node.Tag>;
 }
 
 const buildXmlTree = (parts: Array<XmlPart>) => {
