@@ -5,7 +5,7 @@
     "access": "public"
   },
   "packageManager": "yarn@4.4.0",
-  "version": "1.0.5",
+  "version": "1.1.0",
   "description": "Lax, non spec-compliant XML utils tailored for LLMs",
   "keywords": [
     "xml",
@@ -48,8 +48,8 @@
     }
   },
   "dependencies": {
-    "immer": "^10.1.1",
-    "@synstack/str": "workspace:*"
+    "@synstack/str": "workspace:*",
+    "immer": "^10.1.1"
   },
   "devDependencies": {
     "@types/node": "^22.7.0",

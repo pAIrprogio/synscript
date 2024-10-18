@@ -1480,6 +1480,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@synstack/xml@workspace:packages/xml"
   dependencies:
+    "@synstack/str": "workspace:*"
     "@types/node": "npm:^22.7.0"
     immer: "npm:^10.1.1"
     tsup: "npm:^8.3.0"
