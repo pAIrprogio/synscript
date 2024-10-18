@@ -5,6 +5,7 @@ import { deepEqual } from "./deepEqual.lib";
 type $Partial<T> = Partial<T>;
 
 interface CacheValue<TValue = any> {
+  isLocked?: boolean;
   input: any;
   output: TValue;
 }
@@ -52,6 +53,30 @@ export class FsCache<TConfig extends FsCache.Options.Partial> {
     return `./${key.map((k) => (k instanceof Function ? k(...args) : k)).join("/")}.json`;
   }
 
+  public async lock<TFnArgs extends any[]>(
+    this: FsCache<FsCache.Options<TFnArgs>>,
+    isLocked: boolean,
+    args: TFnArgs,
+  ) {
+    const relativePath = FsCache.keyToRelativePath(this._config.key, args);
+    const cacheDir = dir(this._config.cwd);
+    const file = cacheDir.file(relativePath);
+
+    if (!(await file.exists())) {
+      console.warn(
+        "[fs-cache] Failed to update lock on non-existing file",
+        file.path,
+      );
+      return;
+    }
+
+    const value = await file.read.json<CacheValue>();
+    await file.write.json({
+      isLocked,
+      ...value,
+    });
+  }
+
   public async get<TFnArgs extends any[], TValue = any>(
     this: FsCache<FsCache.Options<TFnArgs>>,
     args: TFnArgs,
@@ -67,10 +92,10 @@ export class FsCache<TConfig extends FsCache.Options.Partial> {
 
     if (value === null) return ["miss", null];
 
-    // Todo: FIX CACHE HIT
-    if (!deepEqual(value.input, args)) return ["miss", null];
+    if (value.isLocked || deepEqual(value.input, args))
+      return ["hit", value.output];
 
-    return ["hit", value.output];
+    return ["miss", null];
   }
 
   public async setDefault<TFnArgs extends any[], TValue = any>(
