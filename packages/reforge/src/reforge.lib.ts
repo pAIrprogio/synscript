@@ -231,6 +231,7 @@ export const getTargetSelectionsConfig = {
     .object({
       path: z.string(),
       selections: z.array(z.object({ start: z.number(), end: z.number() })),
+      content: z.string(),
     })
     .nullable(),
 };
