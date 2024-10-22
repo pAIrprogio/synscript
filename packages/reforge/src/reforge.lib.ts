@@ -196,7 +196,7 @@ export const openFileConfig = {
   }),
   responseSchema: z.object({
     path: z.string(),
-    alreadyOpened: z.boolean(),
+    isAlreadyOpened: z.boolean(),
   }),
 };
 
@@ -218,7 +218,7 @@ export const openFilesConfig = {
       }),
   }),
   responseSchema: z.array(
-    z.object({ path: z.string(), alreadyOpened: z.boolean() }),
+    z.object({ path: z.string(), isAlreadyOpened: z.boolean() }),
   ),
 };
 
