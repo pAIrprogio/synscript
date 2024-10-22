@@ -183,10 +183,56 @@ export const openFileConfig = {
   name: "OPEN_FILE",
   requestSchema: z.object({
     path: z.string(),
+    config: z
+      .object({
+        force: z.boolean().default(false),
+        column: z
+          .union([z.enum(["active", "beside"]), z.number().min(1).max(9)])
+          .optional(),
+      })
+      .default({
+        column: "active",
+      }),
   }),
   responseSchema: z.object({
+    path: z.string(),
     alreadyOpened: z.boolean(),
   }),
 };
 
 export const openFile = toolFactory(openFileConfig);
+
+export const openFilesConfig = {
+  name: "OPEN_FILES",
+  requestSchema: z.object({
+    paths: z.array(z.string()),
+    config: z
+      .object({
+        force: z.boolean().optional().default(false),
+        column: z
+          .union([z.enum(["active", "beside"]), z.number().min(1).max(9)])
+          .optional(),
+      })
+      .default({
+        column: "active",
+      }),
+  }),
+  responseSchema: z.array(
+    z.object({ path: z.string(), alreadyOpened: z.boolean() }),
+  ),
+};
+
+export const openFiles = toolFactory(openFilesConfig);
+
+export const getTargetSelectionsConfig = {
+  name: "GET_SELECTION",
+  requestSchema: null,
+  responseSchema: z
+    .object({
+      path: z.string(),
+      selections: z.array(z.object({ start: z.number(), end: z.number() })),
+    })
+    .nullable(),
+};
+
+export const getTargetSelections = toolFactory(getTargetSelectionsConfig);
