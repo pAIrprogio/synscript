@@ -46,8 +46,8 @@ export class AnthropicRunner<TConfig extends AnthropicRunner.Config.Partial>
     CLAUDE_3_SMALL: "claude-3-haiku-20240307",
     CLAUDE_3_MEDIUM: "claude-3-sonnet-20240229",
     CLAUDE_3_LARGE: "claude-3-opus-20240229",
-    CLAUDE_3_5_MEDIUM: "claude-3-5-sonnet-20240620",
-  };
+    CLAUDE_3_5_MEDIUM: "claude-3-5-sonnet-latest",
+  } satisfies { [key: string]: Anthropic.Model };
 
   // #region build
 
