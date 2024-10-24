@@ -46,6 +46,12 @@ export class FsDir<
   }
 
   public file<TPathPart extends AnyPath>(relativePath: TPathPart) {
+    if (path.isAbsolute(relativePath))
+      throw new Error(`
+Trying to access a dir file from an absolute paths:
+  - Folder path: ${this._path}
+  - File path: ${relativePath}
+`);
     return FsFile.from(this._path, relativePath);
   }
 
