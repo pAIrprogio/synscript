@@ -12,6 +12,11 @@ interface FsFileArrayMethods {
   filterMimeTypes(this: FsFileArray, ...mimeTypes: Array<string>): FsFileArray;
   filterDir(this: FsFileArray, dir: FsDir): FsFileArray;
   filterDir(this: FsFileArray, path: string): FsFileArray;
+  toPaths(this: FsFileArray): Array<string>;
+  relativePathsTo(
+    this: FsFileArray,
+    dir: string | FsDir | FsFile,
+  ): Array<string>;
 }
 
 const filesArrayMethods: FsFileArrayMethods = {
@@ -31,6 +36,12 @@ const filesArrayMethods: FsFileArrayMethods = {
   },
   filterDir(dirOrPath) {
     return this.filter((file) => file.isInDir(dirOrPath));
+  },
+  toPaths() {
+    return this.map((file) => file.path);
+  },
+  relativePathsTo(dirOrFileOrPath) {
+    return this.map((file) => file.relativePathTo(dirOrFileOrPath));
   },
 };
 
