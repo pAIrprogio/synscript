@@ -40,13 +40,13 @@
   },
   "dependencies": {
     "@synstack/enhance": "workspace:*",
-    "execa": "^9.4.0"
+    "execa": "^9.4.1"
   },
   "devDependencies": {
-    "@types/node": "^22.7.0",
+    "@types/node": "^22.7.9",
     "tsup": "^8.3.0",
     "tsx": "^4.19.1",
-    "typescript": "^5.6.2"
+    "typescript": "^5.6.3"
   },
   "files": [
     "src/**/*.ts",
