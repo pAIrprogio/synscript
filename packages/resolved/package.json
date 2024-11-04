@@ -39,7 +39,7 @@
     },
     "./callable": {
       "import": {
-        "types": "./src/callable/callable.index.ts",
+        "types": "./dist/callable/callable.index.d.ts",
         "default": "./dist/callable/callable.index.js"
       },
       "require": {
