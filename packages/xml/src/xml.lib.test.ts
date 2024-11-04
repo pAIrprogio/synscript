@@ -306,4 +306,54 @@ attr2="value2"
       },
     ]);
   });
+  it("works on complex structures", () => {
+    const input = `
+<file path="target/agent/prompt-updater.prompt.mts" source="target">
+import { FsFile } from '@synstack/synscript/fs';
+import { assistantMsg, userMsg } from '@synstack/synscript/llm';
+
+import { targetFilesToPrompt } from '../../agents/agent.utils.mjs';
+import { reforgeDir } from '../../base.runtime.mjs';
+
+type PromptConfig = {
+  agentPromptFile: FsFile;
+};
+
+export const getAgentPrompt = (config: PromptConfig) => [
+  userMsg\`
+    # Objective 
+    Enhance the prompt of the following agent.
+
+    # Existing file 
+    \${targetFilesToPrompt([config.agentPromptFile])}
+
+    # Rules
+    <rule>
+      Edit it following <instruction> tags.
+    </rule> 
+
+    <rule>
+      If there is no <instruction> tag, return content as is.
+    </rule>
+
+    <rule>
+      Remove <instruction/> tag 
+    </rule>
+
+    # Expected response
+    Respond with file content with prompt updated.
+  \`,
+  assistantMsg\`
+    <file path"\${config.agentPromptFile.relativePathFrom(
+      reforgeDir,
+    )}" source="target">
+    \`,
+];
+</file>
+`;
+
+    const res = parse(input);
+
+    assert.deepEqual(res, []);
+  });
 });
