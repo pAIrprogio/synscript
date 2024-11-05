@@ -51,9 +51,9 @@
     "change-case": "^5.4.4"
   },
   "devDependencies": {
-    "@types/node": "^22.7.9",
-    "tsup": "^8.3.0",
-    "tsx": "^4.19.1",
+    "@types/node": "^22.9.0",
+    "tsup": "^8.3.5",
+    "tsx": "^4.19.2",
     "typescript": "^5.6.3"
   },
   "files": [

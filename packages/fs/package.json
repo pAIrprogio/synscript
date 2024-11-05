@@ -52,10 +52,10 @@
   },
   "devDependencies": {
     "@types/mime-types": "^2.1.4",
-    "@types/node": "^22.7.9",
+    "@types/node": "^22.9.0",
     "@types/turndown": "^5.0.5",
-    "tsup": "^8.3.0",
-    "tsx": "^4.19.1",
+    "tsup": "^8.3.5",
+    "tsx": "^4.19.2",
     "typescript": "^5.6.3"
   },
   "files": [
