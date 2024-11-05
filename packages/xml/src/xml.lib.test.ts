@@ -353,7 +353,89 @@ export const getAgentPrompt = (config: PromptConfig) => [
 `;
 
     const res = parse(input);
-
-    assert.deepEqual(res, []);
+    assert.deepEqual(res, [
+      {
+        type: "tag",
+        tag: "file",
+        attrs: {
+          path: "target/agent/prompt-updater.prompt.mts",
+          source: "target",
+        },
+        text: "<file path=\"target/agent/prompt-updater.prompt.mts\" source=\"target\">\nimport { FsFile } from '@synstack/synscript/fs';\nimport { assistantMsg, userMsg } from '@synstack/synscript/llm';\n\nimport { targetFilesToPrompt } from '../../agents/agent.utils.mjs';\nimport { reforgeDir } from '../../base.runtime.mjs';\n\ntype PromptConfig = {\n  agentPromptFile: FsFile;\n};\n\nexport const getAgentPrompt = (config: PromptConfig) => [\n  userMsg`\n    # Objective \n    Enhance the prompt of the following agent.\n\n    # Existing file \n    ${targetFilesToPrompt([config.agentPromptFile])}\n\n    # Rules\n    <rule>\n      Edit it following <instruction> tags.\n    </rule> \n\n    <rule>\n      If there is no <instruction> tag, return content as is.\n    </rule>\n\n    <rule>\n      Remove <instruction/> tag \n    </rule>\n\n    # Expected response\n    Respond with file content with prompt updated.\n  `,\n  assistantMsg`\n    <file path\"${config.agentPromptFile.relativePathFrom(\n      reforgeDir,\n    )}\" source=\"target\">\n    `,\n];\n</file>",
+        content: [
+          {
+            type: "text",
+            text: "\nimport { FsFile } from '@synstack/synscript/fs';\nimport { assistantMsg, userMsg } from '@synstack/synscript/llm';\n\nimport { targetFilesToPrompt } from '../../agents/agent.utils.mjs';\nimport { reforgeDir } from '../../base.runtime.mjs';\n\ntype PromptConfig = {\n  agentPromptFile: FsFile;\n};\n\nexport const getAgentPrompt = (config: PromptConfig) => [\n  userMsg`\n    # Objective \n    Enhance the prompt of the following agent.\n\n    # Existing file \n    ${targetFilesToPrompt([config.agentPromptFile])}\n\n    # Rules\n    ",
+          },
+          {
+            type: "tag",
+            tag: "rule",
+            attrs: {},
+            text: "<rule>\n      Edit it following <instruction> tags.\n    </rule>",
+            content: [
+              {
+                type: "text",
+                text: "\n      Edit it following ",
+              },
+              {
+                type: "text",
+                text: "<instruction> tags.\n    ",
+              },
+            ],
+          },
+          {
+            type: "text",
+            text: " \n\n    ",
+          },
+          {
+            type: "tag",
+            tag: "rule",
+            attrs: {},
+            text: "<rule>\n      If there is no <instruction> tag, return content as is.\n    </rule>",
+            content: [
+              {
+                type: "text",
+                text: "\n      If there is no ",
+              },
+              {
+                type: "text",
+                text: "<instruction> tag, return content as is.\n    ",
+              },
+            ],
+          },
+          {
+            type: "text",
+            text: "\n\n    ",
+          },
+          {
+            type: "tag",
+            tag: "rule",
+            attrs: {},
+            text: "<rule>\n      Remove <instruction/> tag \n    </rule>",
+            content: [
+              {
+                type: "text",
+                text: "\n      Remove ",
+              },
+              {
+                type: "tag",
+                tag: "instruction",
+                attrs: {},
+                text: "<instruction/>",
+                content: [],
+              },
+              {
+                type: "text",
+                text: " tag \n    ",
+              },
+            ],
+          },
+          {
+            type: "text",
+            text: '\n\n    # Expected response\n    Respond with file content with prompt updated.\n  `,\n  assistantMsg`\n    <file path"${config.agentPromptFile.relativePathFrom(\n      reforgeDir,\n    )}" source="target">\n    `,\n];\n',
+          },
+        ],
+      },
+    ]);
   });
 });
