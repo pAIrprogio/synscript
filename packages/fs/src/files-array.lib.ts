@@ -21,7 +21,7 @@ interface FsFileArrayMethods {
 
 const filesArrayMethods: FsFileArrayMethods = {
   filter(fn) {
-    return filesArray(this.$.filter(fn));
+    return files(this.$.filter(fn));
   },
   filterGlobs(...patterns) {
     return this.filter((file) => file.matchesGlobs(...patterns));
@@ -51,7 +51,7 @@ export type FsFileArray = Enhanced<
   FsFileArrayMethods
 >;
 
-export const filesArray = (files: Array<FsFile<any> | AnyPath>): FsFileArray =>
+export const files = (files: Array<FsFile<any> | AnyPath>): FsFileArray =>
   enhance(
     "files_array",
     files.map((f) => {
@@ -61,7 +61,7 @@ export const filesArray = (files: Array<FsFile<any> | AnyPath>): FsFileArray =>
     filesArrayMethods,
   );
 
-export const dirBasedFilesArray =
+export const filesFromDir =
   (dir: FsDir) =>
   (files: Array<FsFile<any> | AnyPath>): FsFileArray =>
     enhance(

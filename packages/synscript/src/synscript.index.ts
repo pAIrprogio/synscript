@@ -1,5 +1,5 @@
 export { enhance } from "@synstack/enhance";
-export { dir, file } from "@synstack/fs";
+export { dir, file, files } from "@synstack/fs";
 export { fsCache } from "@synstack/fs-cache";
 export { git } from "@synstack/git";
 export { glob } from "@synstack/glob";

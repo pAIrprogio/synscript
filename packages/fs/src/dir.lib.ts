@@ -5,7 +5,7 @@ import { Pipeable } from "@synstack/pipe";
 import * as fsSync from "fs";
 import * as fs from "fs/promises";
 import { FsFile } from "./file.lib";
-import { dirBasedFilesArray, filesArray } from "./files-array.lib";
+import { files, filesFromDir } from "./files-array.lib";
 
 export class FsDir<
   TPaths extends Array<string> = ["./<unknown>"],
@@ -91,15 +91,15 @@ Trying to access a dir file from an absolute paths:
     return glob
       .cwd(this._path)
       .find(...patterns)
-      .then(dirBasedFilesArray(this));
+      .then(filesFromDir(this));
   }
 
   public globSync(...patterns: Array<string> | [Array<string>]) {
-    return dirBasedFilesArray(this)(glob.cwd(this._path).findSync(...patterns));
+    return filesFromDir(this)(glob.cwd(this._path).findSync(...patterns));
   }
 
   public async gitLs(subPath?: AnyPath) {
-    return git.ls(this._path, subPath).then(filesArray);
+    return git.ls(this._path, subPath).then(files);
   }
 }
 

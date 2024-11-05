@@ -1,1 +1,1 @@
-export { FsDir, FsFile } from "@synstack/fs";
+export { FsDir, FsFile, filesFromDir, type FsFileArray } from "@synstack/fs";
