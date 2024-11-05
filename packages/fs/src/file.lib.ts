@@ -168,6 +168,10 @@ export class FsFile<
   public matchesGlobs(...globs: Array<string> | [Array<string>]) {
     return glob.matches(this._path, ...globs);
   }
+
+  public globCapture(globPattern: string) {
+    return glob.capture(globPattern, this._path);
+  }
 }
 
 class FsFileRead<
