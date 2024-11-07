@@ -55,6 +55,10 @@ Trying to access a dir file from an absolute paths:
     return FsFile.from(this._path, relativePath);
   }
 
+  public name(): string {
+    return path.filename(this._path);
+  }
+
   public async exists(): Promise<boolean> {
     return fs
       .access(this._path, fsSync.constants.F_OK)
