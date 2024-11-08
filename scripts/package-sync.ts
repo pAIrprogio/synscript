@@ -11,6 +11,7 @@ const orderKeys = (obj: { [key: string]: any }) =>
 
 await Promise.all(
   packages.map(async (packagePath) => {
+    console.log(packagePath);
     const content = await readFile(packagePath, "utf-8");
     const packageJson = (() => {
       try {
