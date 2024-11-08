@@ -11,17 +11,17 @@ interface GlobOptions {
  * Allows extracting values from a glob pattern
  * @example **\/path/to/(*)/(*).ts => [string, string]
  * @returns string[] or null if glob does not match
+ *
+ * _Note: glob capturing only works with single "*" widlcards_
  */
 export function capture(glob: string, filePath: string) {
   const baseRegex = minimatch.makeRe(glob);
   if (!baseRegex) throw new InvalidGlobException(glob);
-  const regex = new RegExp(
-    baseRegex.source
-      .replaceAll("\\(", "(")
-      .replaceAll("\\)", ")")
-      .replaceAll("\\\\", "\\"),
-    "g",
-  );
+  const capturingRegexString = baseRegex.source
+    .replaceAll("\\(", "(")
+    .replaceAll("\\)", ")")
+    .replaceAll("\\\\", "\\");
+  const regex = new RegExp(capturingRegexString, "g");
   const matches = regex.exec(filePath);
   if (!matches) return null;
   return matches.slice(1);
