@@ -20,17 +20,16 @@ export interface Base64Data {
 }
 
 export class FsFile<
-  TPaths extends Array<AnyPath> = AnyPath[],
   TEncoding extends TextEncoding = "utf-8",
   TSchema extends Zod.Schema | undefined = undefined,
-> extends Pipeable<FsFile<TPaths, TEncoding, TSchema>, AnyPath> {
+> extends Pipeable<FsFile<TEncoding, TSchema>, AnyPath> {
   private readonly _path: AnyPath;
   private readonly _encoding: TEncoding;
   private readonly _schema?: TSchema;
 
   // Todo: include cwd to manage globs?
-  public static from<U extends Array<AnyPath>>(this: void, ...paths: U) {
-    return new FsFile<U, "utf-8", undefined>(path.join(...paths), "utf-8");
+  public static from(this: void, ...paths: Array<AnyPath>) {
+    return new FsFile<"utf-8", undefined>(path.join(...paths), "utf-8");
   }
 
   private constructor(path: AnyPath, encoding?: TEncoding, schema?: TSchema) {
@@ -41,18 +40,14 @@ export class FsFile<
   }
 
   public schema(schema: TSchema) {
-    return new FsFile<TPaths, TEncoding, TSchema>(
-      this._path,
-      this._encoding,
-      schema,
-    );
+    return new FsFile<TEncoding, TSchema>(this._path, this._encoding, schema);
   }
 
   public valueOf(): AnyPath {
     return this._path;
   }
 
-  public instanceOf(): FsFile<TPaths, TEncoding, TSchema> {
+  public instanceOf(): FsFile<TEncoding, TSchema> {
     return this;
   }
 

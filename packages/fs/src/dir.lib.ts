@@ -7,9 +7,7 @@ import * as fs from "fs/promises";
 import { FsFile } from "./file.lib";
 import { files, filesFromDir } from "./files-array.lib";
 
-export class FsDir<
-  TPaths extends Array<string> = ["./<unknown>"],
-> extends Pipeable<FsDir<TPaths>, AnyPath> {
+export class FsDir extends Pipeable<FsDir> {
   private readonly _path: AnyPath;
 
   private constructor(path: AnyPath) {
@@ -25,7 +23,7 @@ export class FsDir<
     return this._path;
   }
 
-  public instanceOf(): FsDir<TPaths> {
+  public instanceOf(): FsDir {
     return this;
   }
 
@@ -33,19 +31,16 @@ export class FsDir<
     return this._path;
   }
 
-  public static cwd<TPaths extends Array<string>>(
-    this: void,
-    ...paths: TPaths
-  ) {
-    return new FsDir<TPaths>(path.resolve(...paths));
+  public static cwd(this: void, ...paths: Array<string>) {
+    return new FsDir(path.resolve(...paths));
   }
 
-  public to<TPathPart extends AnyPath>(relativePath: TPathPart) {
+  public to(relativePath: string) {
     const newPath = path.join(this._path, relativePath);
-    return new FsDir<[...TPaths, TPathPart]>(newPath);
+    return new FsDir(newPath);
   }
 
-  public file<TPathPart extends AnyPath>(relativePath: TPathPart) {
+  public file(relativePath: string) {
     if (path.isAbsolute(relativePath))
       throw new Error(`
 Trying to access a dir file from an absolute paths:
