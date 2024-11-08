@@ -1,4 +1,8 @@
 {
+  "reforge.defaultActionScript": "default.action-script.mts",
+  "reforge.nodeRuntime": "node",
+  "reforge.skipNodeModulesDebug": true,
+  "reforge.envFiles": ["reforge/.env"],
   "editor.formatOnSave": true,
   "editor.codeActionsOnSave": {
     "source.organizeImports": "always"
