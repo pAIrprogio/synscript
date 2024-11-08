@@ -111,6 +111,16 @@ export class FsFile<
     return path.mimeType(this._path);
   }
 
+  public toFile(relativePath: string) {
+    const newPath = path.join(this._path, relativePath);
+    return new FsFile(newPath);
+  }
+
+  public toDir(relativePath: string) {
+    const newPath = path.join(this._path, relativePath);
+    return FsDir.cwd(newPath);
+  }
+
   public relativePathFrom(dirOrFileOrPath: AnyPath | FsDir | FsFile) {
     return path.relative(dirOrFileOrPath.valueOf(), this._path);
   }
