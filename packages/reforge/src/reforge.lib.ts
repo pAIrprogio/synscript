@@ -245,7 +245,39 @@ export const executeCommandConfig = {
   name: "EXECUTE_COMMAND",
   requestSchema: z.object({
     command: z.string(),
-    args: z.array(z.any()).optional().default([]),
+    /**
+     * List of args to be passed to the command
+     */
+    args: z
+      .array(
+        z.discriminatedUnion("type", [
+          z.object({
+            /**
+             * Transforms the value provided in `path` into a valid Uri instance
+             */
+            type: z.literal("path"),
+            /**
+             * The absolute path to the file
+             */
+            value: z.string(),
+          }),
+          z.object({
+            /**
+             * Any other value that to pass to the command
+             */
+            type: z.literal("primitive"),
+            value: z.union([
+              z.string(),
+              z.number(),
+              z.boolean(),
+              z.record(z.any()),
+              z.array(z.any()),
+            ]),
+          }),
+        ]),
+      )
+      .optional()
+      .default([]),
   }),
   responseSchema: z.any().optional(),
 };
