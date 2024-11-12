@@ -240,3 +240,14 @@ export const getTargetSelectionsConfig = {
 };
 
 export const getTargetSelections = toolFactory(getTargetSelectionsConfig);
+
+export const executeCommandConfig = {
+  name: "EXECUTE_COMMAND",
+  requestSchema: z.object({
+    command: z.string(),
+    args: z.array(z.any()).optional().default([]),
+  }),
+  responseSchema: z.any().optional(),
+};
+
+export const executeCommand = toolFactory(executeCommandConfig);
