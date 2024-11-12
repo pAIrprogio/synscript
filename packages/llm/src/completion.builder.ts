@@ -216,7 +216,7 @@ export class CompletionBuilder<T extends Resolvable<Llm.Completion.Partial>> {
   public usage<U extends Resolvable<Llm.Completion.Usage | undefined>>(
     usage: U,
   ) {
-    this.merge(
+    return this.merge(
       pipe(usage)._((usage) => ({
         usage: usage as CompletionBuilder.ForceValue<U, Llm.Completion.Usage>,
       })).$,
