@@ -5,9 +5,9 @@ __metadata:
   version: 8
   cacheKey: 10c0
 
-"@anthropic-ai/sdk@npm:^0.32.0":
-  version: 0.32.0
-  resolution: "@anthropic-ai/sdk@npm:0.32.0"
+"@anthropic-ai/sdk@npm:^0.32.1":
+  version: 0.32.1
+  resolution: "@anthropic-ai/sdk@npm:0.32.1"
   dependencies:
     "@types/node": "npm:^18.11.18"
     "@types/node-fetch": "npm:^2.6.4"
@@ -16,7 +16,7 @@ __metadata:
     form-data-encoder: "npm:1.7.2"
     formdata-node: "npm:^4.3.2"
     node-fetch: "npm:^2.6.7"
-  checksum: 10c0/99cba1c9da125024160baf5fb86a620446e0495a100457d538fee4715565304d5a8c1aabc5d60060e3004f69234c0359fbb86a169bf600e304162fbfad0f07ec
+  checksum: 10c0/a8924ada337b676e473d4fe1a06a0099f9ae6e50ffeca62ed01a5a1bf6d465cd0ee10d64c0f45b85d849836e9221b399b33d697acae7fe1c5a7f18c9949959e1
   languageName: node
   linkType: hard
 
@@ -1474,14 +1474,14 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@synstack/llm@workspace:packages/llm"
   dependencies:
-    "@anthropic-ai/sdk": "npm:^0.32.0"
+    "@anthropic-ai/sdk": "npm:^0.32.1"
     "@synstack/enhance": "workspace:*"
     "@synstack/fs": "workspace:*"
     "@synstack/json": "workspace:*"
     "@synstack/resolved": "workspace:*"
     "@synstack/text": "workspace:*"
     "@types/node": "npm:^22.9.0"
-    openai: "npm:^4.71.0"
+    openai: "npm:^4.71.1"
     tsup: "npm:^8.3.5"
     tsx: "npm:^4.19.2"
     typescript: "npm:^5.6.3"
@@ -1537,6 +1537,17 @@ __metadata:
   languageName: unknown
   linkType: soft
 
+"@synstack/promptly@workspace:packages/promptly":
+  version: 0.0.0-use.local
+  resolution: "@synstack/promptly@workspace:packages/promptly"
+  dependencies:
+    "@types/node": "npm:^22.9.0"
+    tsup: "npm:^8.3.5"
+    tsx: "npm:^4.19.2"
+    typescript: "npm:^5.6.3"
+  languageName: unknown
+  linkType: soft
+
 "@synstack/reforge@workspace:*, @synstack/reforge@workspace:packages/reforge":
   version: 0.0.0-use.local
   resolution: "@synstack/reforge@workspace:packages/reforge"
@@ -1584,7 +1595,7 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@synstack/synscript@workspace:packages/synscript":
+"@synstack/synscript@npm:^1.4.10, @synstack/synscript@workspace:packages/synscript":
   version: 0.0.0-use.local
   resolution: "@synstack/synscript@workspace:packages/synscript"
   dependencies:
@@ -5651,9 +5662,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"openai@npm:^4.71.0":
-  version: 4.71.0
-  resolution: "openai@npm:4.71.0"
+"openai@npm:^4.71.1":
+  version: 4.71.1
+  resolution: "openai@npm:4.71.1"
   dependencies:
     "@types/node": "npm:^18.11.18"
     "@types/node-fetch": "npm:^2.6.4"
@@ -5669,7 +5680,7 @@ __metadata:
       optional: true
   bin:
     openai: bin/cli
-  checksum: 10c0/dc84be5a6e21cf08fb0ba34c1dd78dec56f177bc34cc268d177bded680a131eee1e4af382a0d3976a9555bc31e8d6c4a467f274645d6b9182e374ffaa0700d5f
+  checksum: 10c0/468721223a68ae775dd6d7d2e3f32f7aa1ffb6d3e7fcb91c3851e7aaff75d0bf40b322a418dbc24aef34b86267821891a71f839f4cfce1a3e5bbed2084326314
   languageName: node
   linkType: hard
 
@@ -6595,6 +6606,20 @@ __metadata:
   languageName: node
   linkType: hard
 
+"self-reforge@workspace:reforge":
+  version: 0.0.0-use.local
+  resolution: "self-reforge@workspace:reforge"
+  dependencies:
+    "@anthropic-ai/sdk": "npm:^0.32.1"
+    "@synstack/synscript": "npm:^1.4.10"
+    "@types/node": "npm:^22.9.0"
+    ts-pattern: "npm:^5.5.0"
+    tsup: "npm:^8.3.5"
+    tsx: "npm:^4.19.2"
+    typescript: "npm:^5.6.3"
+  languageName: unknown
+  linkType: soft
+
 "semver@npm:2 || 3 || 4 || 5, semver@npm:^5.6.0":
   version: 5.7.2
   resolution: "semver@npm:5.7.2"
@@ -7153,6 +7178,13 @@ __metadata:
   version: 0.1.13
   resolution: "ts-interface-checker@npm:0.1.13"
   checksum: 10c0/232509f1b84192d07b81d1e9b9677088e590ac1303436da1e92b296e9be8e31ea042e3e1fd3d29b1742ad2c959e95afe30f63117b8f1bc3a3850070a5142fea7
+  languageName: node
+  linkType: hard
+
+"ts-pattern@npm:^5.5.0":
+  version: 5.5.0
+  resolution: "ts-pattern@npm:5.5.0"
+  checksum: 10c0/4ae1fbeadcf193e72b27419d5fe71f559c100e45710eabf29e2ff3a8fa9ba29adfcd6d5d7d8169b95e2b264683a2eb8d94dbd3c893357b045b52b0c34c2b7c72
   languageName: node
   linkType: hard
 

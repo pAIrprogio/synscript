@@ -27,5 +27,8 @@
       "parameters": ["--import", "tsx"]
     }
   ],
-  "typescript.preferences.autoImportFileExcludePatterns": ["**/*.index.ts"]
+  "typescript.preferences.autoImportFileExcludePatterns": [
+    "**/*.index.ts",
+    "**/dist/**/*"
+  ]
 }

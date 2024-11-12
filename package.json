@@ -4,7 +4,8 @@
   "type": "module",
   "workspaces": {
     "packages": [
-      "packages/*"
+      "packages/*",
+      "reforge"
     ]
   },
   "packageManager": "yarn@4.5.1",
