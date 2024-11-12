@@ -1,4 +1,5 @@
 export {
+  executeCommand,
   getOpenedFiles,
   getTargetFile,
   getTargetSelections,
@@ -6,6 +7,7 @@ export {
   openFile,
   openFiles,
   promptInput,
+  promptMultiSelect,
   promptSelect,
   toolFactory,
 } from "./reforge.lib";
