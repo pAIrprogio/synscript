@@ -186,6 +186,7 @@ export const openFileConfig = {
     config: z
       .object({
         force: z.boolean().default(false),
+        preview: z.boolean().optional().default(false),
         column: z
           .union([z.enum(["active", "beside"]), z.number().min(1).max(9)])
           .optional(),
@@ -209,6 +210,7 @@ export const openFilesConfig = {
     config: z
       .object({
         force: z.boolean().optional().default(false),
+        preview: z.boolean().optional().default(false),
         column: z
           .union([z.enum(["active", "beside"]), z.number().min(1).max(9)])
           .optional(),
