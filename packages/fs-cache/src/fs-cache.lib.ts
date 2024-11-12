@@ -1,5 +1,5 @@
 import { OneToN } from "@shared/ts.utils";
-import { dir } from "@synstack/fs";
+import { dir, FsDir } from "@synstack/fs";
 import { deepEqual } from "./deepEqual.lib";
 
 type $Partial<T> = Partial<T>;
@@ -34,7 +34,8 @@ export class FsCache<TConfig extends FsCache.Options.Partial> {
     this._config = config;
   }
 
-  public static cwd(this: void, cwd: string) {
+  public static cwd(this: void, cwd: string | FsDir) {
+    if (cwd instanceof FsDir) return new FsCache({ cwd: cwd.path });
     return new FsCache({ cwd });
   }
 
