@@ -24,7 +24,8 @@ export const userMsg = <
             type: "image",
             image: v,
           } satisfies Llm.Message.Content.Image;
-        never(v.type);
+        if (v.type === "tool_response") return v;
+        never(v);
       }),
     )
     ._(
@@ -76,7 +77,7 @@ export declare namespace MessageTemplate {
   }
 
   export namespace User {
-    export type ExtraValues = Base64Data;
+    export type ExtraValues = Base64Data | Llm.Message.Content.ToolResponse;
 
     export type TemplateValue = Text.TemplateValue<ExtraValues>;
 

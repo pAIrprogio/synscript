@@ -99,7 +99,7 @@ export class CompletionBuilder<T extends Resolvable<Llm.Completion.Partial>> {
    * Set the llm temperature
    * @argument temperature The temperature value between 0 and 1
    */
-  public temperature<U extends Resolvable<number>>(temperature: U) {
+  public temperature(temperature: number) {
     return this.merge(
       pipe(temperature)._((temperature) => ({
         temperature,
