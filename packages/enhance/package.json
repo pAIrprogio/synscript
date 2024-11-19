@@ -4,7 +4,6 @@
   "publishConfig": {
     "access": "public"
   },
-  "packageManager": "yarn@4.4.0",
   "version": "1.0.6",
   "description": "Safely enhance a JS object with additional properties",
   "keywords": [

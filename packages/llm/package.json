@@ -4,7 +4,6 @@
   "publishConfig": {
     "access": "public"
   },
-  "packageManager": "yarn@4.4.0",
   "version": "1.2.13",
   "description": "Immutable & chainable LLM tools",
   "keywords": [

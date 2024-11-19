@@ -4,7 +4,6 @@
   "publishConfig": {
     "access": "public"
   },
-  "packageManager": "yarn@4.4.0",
   "version": "1.0.10",
   "description": "String templating as it was meant to be",
   "keywords": [
