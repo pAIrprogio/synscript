@@ -214,6 +214,21 @@ export const openFilesConfig = {
 
 export const openFiles = toolFactory(openFilesConfig);
 
+const selectionPositionSchema = z.object({
+  /**
+   * The position in the whole file
+   */
+  character: z.number(),
+  /**
+   * The line number of the position
+   */
+  line: z.number(),
+  /**
+   * The character position within the line
+   */
+  lineCharacter: z.number(),
+});
+
 export const getFocusedFileSelectionsConfig = {
   name: "GET_FOCUSED_FILE_SELECTION",
   requestSchema: null,
@@ -231,23 +246,19 @@ export const getFocusedFileSelectionsConfig = {
           /**
            * The starting character position of the selection in the file
            */
-          start: z.number(),
+          start: selectionPositionSchema,
           /**
            * The ending character position of the selection in the file
            */
-          end: z.number(),
+          end: selectionPositionSchema,
           /**
            * The string content of the selection
            */
           content: z.string(),
           /**
-           * The starting line number of the selection in the file
+           * The length of the selection
            */
-          lineStart: z.number(),
-          /**
-           * The ending line number of the selection in the file
-           */
-          lineEnd: z.number(),
+          length: selectionPositionSchema,
         }),
       ),
     })
