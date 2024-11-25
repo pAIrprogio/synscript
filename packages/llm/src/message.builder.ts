@@ -3,7 +3,7 @@ import { never } from "../../shared/src/ts.utils.ts";
 // We want to avoid importing the whole library for a single type
 import { type Base64Data } from "../../fs/src/file.lib.ts";
 
-import { t, Text, tParse } from "@synstack/text";
+import { t, type Text, tParse } from "@synstack/text";
 import { type Llm } from "./llm.types.ts";
 
 export const userMsg = <
