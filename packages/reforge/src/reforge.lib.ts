@@ -258,7 +258,7 @@ export const getFocusedFileSelectionsConfig = {
           /**
            * The length of the selection
            */
-          length: selectionPositionSchema,
+          length: z.number(),
         }),
       ),
     })
