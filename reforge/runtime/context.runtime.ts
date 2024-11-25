@@ -1,10 +1,10 @@
 import { file, FsFile } from "../../packages/fs/src/file.lib";
 import { files, FsFileArray } from "../../packages/fs/src/files-array.lib";
-import * as reforge from "../../packages/reforge/src/reforge.bundle";
+import * as reforge from "../../packages/reforge/src/reforge.index";
 
 export async function getRuntimeContext() {
   const [focusedFile, openedFiles] = await Promise.all([
-    reforge.getTargetFile(),
+    reforge.getFocusedFile(),
     reforge.getOpenedFiles(),
   ]);
 
