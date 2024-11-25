@@ -10,7 +10,8 @@
   "typescript.preferences.importModuleSpecifier": "project-relative",
   "typescript.preferences.importModuleSpecifierEnding": "minimal",
   "explorer.fileNesting.patterns": {
-    "*.index.ts": "${capture}.bundle.ts, ${capture}.default.ts"
+    "*.index.ts": "${capture}.bundle.ts, ${capture}.default.ts",
+    "*.ts": "${capture}.test.ts"
   },
   // "typescript.tsserver.experimental.enableProjectDiagnostics": true,
   "typescript.tsdk": "node_modules/typescript/lib",
