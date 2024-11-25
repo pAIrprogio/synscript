@@ -1,6 +1,7 @@
 export {
   getFocusedFile,
   getFocusedFileSelections,
+  getOpenedFiles,
   notify,
   openFile,
   openFiles,

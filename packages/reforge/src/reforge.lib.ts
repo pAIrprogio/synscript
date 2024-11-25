@@ -12,14 +12,18 @@ export const getFocusedFileConfig = {
  */
 export const getFocusedFile = toolFactory(getFocusedFileConfig);
 
-/**
- * @deprecated Use getFocusedFileConfig instead
- */
-export const getActiveFileConfig = {
-  name: "GET_ACTIVE_FILE",
+export const getOpenedFilesConfig = {
+  name: "GET_OPENED_FILES",
   requestSchema: null,
-  responseSchema: z.string().nullable(),
+  responseSchema: z.array(z.string()),
 } as const;
+
+/**
+ * Retrieve the absolute paths to all opened files in the editor
+ *
+ * @warning this list also includes the focused file
+ */
+export const getOpenedFiles = toolFactory(getOpenedFilesConfig);
 
 export const promptSelectConfig = {
   name: "PROMPT_SELECT",
