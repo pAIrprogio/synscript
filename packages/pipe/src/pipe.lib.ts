@@ -33,8 +33,11 @@ export abstract class Pipeable<TInstance = any, TValue = any> {
 }
 
 export class Pipe<V> extends Pipeable<V, V> {
-  public constructor(private readonly value: V) {
+  private readonly value: V;
+
+  public constructor(value: V) {
     super();
+    this.value = value;
   }
 
   public static from<V>(value: V) {

@@ -2,6 +2,50 @@ import assert from "node:assert/strict";
 import { describe, it } from "node:test";
 import { pipe, Pipeable } from "./pipe.lib.ts";
 
+class Test extends Pipeable<Test, number> {
+  private readonly _value: number;
+  public constructor(_value: number) {
+    super();
+    this._value = _value;
+  }
+
+  public valueOf(): number {
+    return this._value;
+  }
+
+  public instanceOf(): Test {
+    return this;
+  }
+
+  public add(value: number): Test {
+    return new Test(this._value + value);
+  }
+
+  public powerOf2(): Test2 {
+    return new Test2(this._value * this._value);
+  }
+}
+
+class Test2 extends Pipeable<Test2, number> {
+  private readonly _value: number;
+  public constructor(value: number) {
+    super();
+    this._value = value;
+  }
+
+  public valueOf(): number {
+    return this._value;
+  }
+
+  public instanceOf(): Test2 {
+    return this;
+  }
+
+  public minus(value: number): Test2 {
+    return new Test2(this._value - value);
+  }
+}
+
 describe("pipe", () => {
   describe("primitive", () => {
     it("works with strings", () => {
@@ -39,42 +83,6 @@ describe("pipe", () => {
     });
   });
   describe("pipeable", () => {
-    class Test extends Pipeable<Test, number> {
-      public constructor(private readonly _value: number) {
-        super();
-      }
-
-      public valueOf(): number {
-        return this._value;
-      }
-
-      public instanceOf(): Test {
-        return this;
-      }
-
-      public powerOf2(): Test2 {
-        return new Test2(this._value * this._value);
-      }
-    }
-
-    class Test2 extends Pipeable<Test2, number> {
-      public constructor(private readonly _value: number) {
-        super();
-      }
-
-      public valueOf(): number {
-        return this._value;
-      }
-
-      public instanceOf(): Test2 {
-        return this;
-      }
-
-      public minus(value: number): Test2 {
-        return new Test2(this._value - value);
-      }
-    }
-
     it("chains through class methods", () => {
       const value = pipe(new Test(2)).powerOf2().minus(1).$;
       assert.equal(value, 3);
@@ -86,24 +94,6 @@ describe("pipe", () => {
     });
   });
   describe("promises", () => {
-    class Test extends Pipeable<Test, number> {
-      public constructor(private readonly _value: number) {
-        super();
-      }
-
-      public valueOf(): number {
-        return this._value;
-      }
-
-      public instanceOf(): Test {
-        return this;
-      }
-
-      public add(value: number): Test {
-        return new Test(this._value + value);
-      }
-    }
-
     void it.skip("allows chaining promises", async () => {
       // @ts-expect-error For future implementation
       const value = pipe(Promise.resolve(1))._((v) => v + 1).$;
