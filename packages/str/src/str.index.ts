@@ -12,5 +12,5 @@ export {
   snakeCase,
   trainCase,
 } from "change-case";
-export { Str, str } from "./str.chainable";
-export * from "./str.lib";
+export { Str, str } from "./str.chainable.ts";
+export * from "./str.lib.ts";

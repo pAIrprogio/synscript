@@ -8,7 +8,7 @@
       "reforge"
     ]
   },
-  "packageManager": "yarn@4.5.1",
+  "packageManager": "yarn@4.5.2",
   "author": {
     "name": "pAIrprog",
     "url": "https://pairprog.io"
@@ -22,6 +22,7 @@
   "scripts": {
     "build": "yarn workspaces foreach --parallel --all --topological-dev --interlaced --verbose run build",
     "test": "yarn workspaces foreach --parallel --all --interlaced --verbose run test",
+    "test:types": "yarn workspaces foreach --parallel --all --interlaced --verbose run test:types --watch",
     "build:watch": "yarn workspaces foreach --parallel --all --interlaced --verbose run build:watch",
     "publish-all": "lerna publish from-package --no-private",
     "package:sync": "./scripts/package-sync.ts"
@@ -34,8 +35,7 @@
     "lerna": "^8.1.9",
     "prettier": "^3.3.3",
     "tsup": "^8.3.5",
-    "tsx": "^4.19.2",
-    "typescript": "^5.6.3",
+    "typescript": "^5.7.2",
     "typescript-eslint": "^8.15.0"
   },
   "dependencies": {

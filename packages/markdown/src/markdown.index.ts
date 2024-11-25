@@ -1,3 +1,3 @@
-export * from "./markdown.bundle";
-export * as md from "./markdown.bundle";
-export { MdDoc } from "./markdown.lib";
+export * from "./markdown.bundle.ts";
+export * as md from "./markdown.bundle.ts";
+export { MdDoc } from "./markdown.lib.ts";

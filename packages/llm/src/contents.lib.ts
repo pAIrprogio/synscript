@@ -1,5 +1,5 @@
-import { enhance, Enhanced } from "@synstack/enhance";
-import { Llm } from "./llm.types";
+import { enhance, type Enhanced } from "@synstack/enhance";
+import { type Llm } from "./llm.types.ts";
 
 // Todo: decide to delete or not
 

@@ -1,8 +1,8 @@
-import { assertExtends, assertType } from "@shared/ts.utils";
 import assert from "node:assert/strict";
 import { describe, it } from "node:test";
 import { z } from "zod";
-import * as md from "./markdown.lib";
+import { assertExtends, assertType } from "../../shared/src/ts.utils.ts";
+import * as md from "./markdown.lib.ts";
 
 describe("Markdown", () => {
   describe("fromHtml", () => {

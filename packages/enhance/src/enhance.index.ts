@@ -1,1 +1,1 @@
-export * from "./enhance.lib";
+export * from "./enhance.lib.ts";

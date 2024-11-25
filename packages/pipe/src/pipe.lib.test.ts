@@ -1,6 +1,6 @@
 import assert from "node:assert/strict";
 import { describe, it } from "node:test";
-import { pipe, Pipeable } from "./pipe.lib";
+import { pipe, Pipeable } from "./pipe.lib.ts";
 
 describe("pipe", () => {
   describe("primitive", () => {

@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { toolFactory } from "./tool.utils";
+import { toolFactory } from "./tool.utils.ts";
 
 export const executeCommandConfig = {
   name: "EXECUTE_COMMAND",

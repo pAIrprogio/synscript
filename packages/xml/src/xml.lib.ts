@@ -1,5 +1,5 @@
-import { Stringable } from "@shared/ts.utils";
 import { produce } from "immer";
+import { type Stringable } from "../../shared/src/ts.utils.ts";
 
 type XmlPart =
   | { type: "text"; text: string }

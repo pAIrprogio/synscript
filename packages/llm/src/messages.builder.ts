@@ -1,6 +1,6 @@
-import { enhance, Enhanced } from "@synstack/enhance";
-import { Resolvable } from "@synstack/resolved";
-import { Llm } from "./llm.types";
+import { enhance, type Enhanced } from "@synstack/enhance";
+import { type Resolvable } from "@synstack/resolved";
+import { type Llm } from "./llm.types.ts";
 
 export interface MessagesMethods {
   last(this: MessagesArray): Resolvable<Llm.Message | undefined>;

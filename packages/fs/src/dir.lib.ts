@@ -1,11 +1,11 @@
 import { git } from "@synstack/git";
 import { glob } from "@synstack/glob";
-import { AnyPath, path } from "@synstack/path";
+import { type AnyPath, path } from "@synstack/path";
 import { Pipeable } from "@synstack/pipe";
 import * as fsSync from "fs";
 import * as fs from "fs/promises";
-import { FsFile } from "./file.lib";
-import { files, filesFromDir } from "./files-array.lib";
+import { FsFile } from "./file.lib.ts";
+import { files, filesFromDir } from "./files-array.lib.ts";
 
 export class FsDir extends Pipeable<FsDir> {
   private readonly _path: AnyPath;

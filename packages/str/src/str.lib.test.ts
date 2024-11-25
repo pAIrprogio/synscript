@@ -1,7 +1,7 @@
-import { assertType } from "@shared/ts.utils";
 import assert from "node:assert/strict";
 import { describe, it } from "node:test";
-import { type Str, str } from "./str.chainable";
+import { assertType } from "../../shared/src/ts.utils.ts";
+import { type Str, str } from "./str.chainable.ts";
 
 describe("Str", () => {
   const _types = () => {

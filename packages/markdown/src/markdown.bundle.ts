@@ -4,4 +4,4 @@ export {
   getHeaderData,
   setBody,
   setHeaderData,
-} from "./markdown.lib";
+} from "./markdown.lib.ts";

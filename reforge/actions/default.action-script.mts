@@ -1,5 +1,5 @@
-import { getRuntimeContext } from "../runtime/context.runtime";
-import { packageWorkflow } from "../scopes/package/package.workflow";
+import { getRuntimeContext } from "../runtime/context.runtime.ts";
+import { packageWorkflow } from "../scopes/package/package.workflow.ts";
 
 async function main() {
   const runtimeContext = await getRuntimeContext();

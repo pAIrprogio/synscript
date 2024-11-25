@@ -1,6 +1,6 @@
 import assert from "node:assert/strict";
 import { describe, it } from "node:test";
-import { deepEqual } from "./equality.utils";
+import { deepEqual } from "./equality.utils.ts";
 
 describe("deepEqual", () => {
   it("returns true for identical primitive values", () => {

@@ -1,5 +1,5 @@
-import { Stringable } from "@shared/ts.utils";
 import { type ZodSchema } from "zod";
+import { type Stringable } from "../../shared/src/ts.utils.ts";
 
 // Todo: check if passing "zod" as peer dependency breaks the build
 

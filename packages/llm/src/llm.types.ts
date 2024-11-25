@@ -1,5 +1,5 @@
-import { OneToN } from "@shared/ts.utils";
-import { AnyZodObject, z, ZodSchema } from "zod";
+import { type AnyZodObject, z, ZodSchema } from "zod";
+import { type OneToN } from "../../shared/src/ts.utils.ts";
 
 type $Partial<T> = Partial<T>;
 

@@ -1,1 +1,1 @@
-export { OpenAIUtils, type CompleteOpenAICompletion } from "./openai.runner";
+export { OpenAIUtils, type CompleteOpenAICompletion } from "./openai.runner.ts";

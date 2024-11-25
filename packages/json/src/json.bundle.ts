@@ -1,1 +1,1 @@
-export { deserialize, serialize } from "./json.lib";
+export { deserialize, serialize } from "./json.lib.ts";

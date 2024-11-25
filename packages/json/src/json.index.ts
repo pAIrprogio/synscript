@@ -1,3 +1,3 @@
-export * from "./json.bundle";
-export * as json from "./json.bundle";
-export { JsonParseException } from "./json.lib";
+export * from "./json.bundle.ts";
+export * as json from "./json.bundle.ts";
+export { JsonParseException } from "./json.lib.ts";

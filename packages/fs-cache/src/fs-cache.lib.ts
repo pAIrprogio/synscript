@@ -1,6 +1,6 @@
-import { OneToN } from "@shared/ts.utils";
+import { type OneToN } from "../../shared/src/ts.utils.ts";
 import { dir, FsDir } from "@synstack/fs";
-import { deepEqual } from "./deepEqual.lib";
+import { deepEqual } from "./deepEqual.lib.ts";
 
 type $Partial<T> = Partial<T>;
 

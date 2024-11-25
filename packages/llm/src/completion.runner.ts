@@ -1,7 +1,7 @@
-import { Merge } from "@shared/ts.utils";
-import { Resolvable } from "@synstack/resolved";
-import { CompletionBuilder } from "./completion.builder";
-import { Llm } from "./llm.types";
+import { type Resolvable } from "@synstack/resolved";
+import { type Merge } from "../../shared/src/ts.utils.ts";
+import { CompletionBuilder } from "./completion.builder.ts";
+import { type Llm } from "./llm.types.ts";
 
 export interface CompletionRunner<TCompletion extends Llm.Completion.Partial> {
   chatCompletion(

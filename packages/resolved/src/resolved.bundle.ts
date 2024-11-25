@@ -1,1 +1,1 @@
-export { pipe, resolveAll } from "./resolvable.lib";
+export { pipe, resolveAll } from "./resolvable.lib.ts";

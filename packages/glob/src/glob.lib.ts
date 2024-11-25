@@ -1,4 +1,4 @@
-import { RelativePath } from "@synstack/path";
+import { type RelativePath } from "@synstack/path";
 import { glob as globAsync, globSync } from "glob";
 import { minimatch } from "minimatch";
 

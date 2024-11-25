@@ -1,2 +1,2 @@
-export * from "./yaml.bundle";
-export * as yaml from "./yaml.bundle";
+export * from "./yaml.bundle.ts";
+export * as yaml from "./yaml.bundle.ts";

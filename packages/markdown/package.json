@@ -25,8 +25,8 @@
     "build": "tsup",
     "build:watch": "tsup --watch",
     "test:types": "tsc --noEmit",
-    "test:unit": "node --import tsx --test src/**/*.test.ts",
-    "test:unit:watch": "node --import tsx --watch --test src/**/*.test.ts",
+    "test:unit": "node --experimental-strip-types --test src/**/*.test.ts",
+    "test:unit:watch": "node --experimental-strip-types --watch --test --watch src/**/*.test.ts",
     "test": "yarn test:types && yarn test:unit",
     "prepare": "yarn test && yarn build"
   },
@@ -47,11 +47,10 @@
     "turndown": "^7.2.0"
   },
   "devDependencies": {
-    "@types/node": "^22.9.0",
+    "@types/node": "^22.9.3",
     "@types/turndown": "^5.0.5",
     "tsup": "^8.3.5",
-    "tsx": "^4.19.2",
-    "typescript": "^5.6.3",
+    "typescript": "^5.7.2",
     "zod": "^3.23.8"
   },
   "peerDependencies": {

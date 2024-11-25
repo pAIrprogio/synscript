@@ -1,2 +1,2 @@
-export * from "./git.lib";
-export * as git from "./git.lib";
+export * from "./git.lib.ts";
+export * as git from "./git.lib.ts";

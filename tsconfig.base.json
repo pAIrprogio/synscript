@@ -1,10 +1,14 @@
 {
   "compilerOptions": {
-    "moduleResolution": "Bundler",
-    "target": "ES2022",
-    "module": "ES2022",
-    "lib": ["ES2022", "DOM"],
+    "moduleResolution": "nodenext",
+    "target": "ESNext",
+    "module": "NodeNext",
     "noEmit": true,
+
+    // Node Next
+    "allowImportingTsExtensions": true,
+    "rewriteRelativeImportExtensions": true,
+    "verbatimModuleSyntax": true,
 
     // Common JS interop
     "esModuleInterop": true,
@@ -31,12 +35,7 @@
     "strict": true,
     "noImplicitThis": true,
     "noImplicitAny": true,
-    "noFallthroughCasesInSwitch": true,
-
-    // Aliases
-    "paths": {
-      "@shared/*": ["./packages/shared/src/*", "../shared/src/*"]
-    }
+    "noFallthroughCasesInSwitch": true
   },
   "exclude": ["node_modules", "dist"]
 }

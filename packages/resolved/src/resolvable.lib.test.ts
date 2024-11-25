@@ -1,7 +1,7 @@
-import { assertExtends } from "@shared/ts.utils";
 import assert from "node:assert/strict";
 import { describe, it } from "node:test";
-import { type Resolvable, pipe } from "./resolvable.lib";
+import { assertExtends } from "../../shared/src/ts.utils.ts";
+import { type Resolvable, pipe } from "./resolvable.lib.ts";
 
 // As never extends true, check never assertions by puting them after
 

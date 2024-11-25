@@ -1,1 +1,1 @@
-export * from "./fs-cache.lib";
+export * from "./fs-cache.lib.ts";

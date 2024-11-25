@@ -1,8 +1,8 @@
-import { MaybeArray } from "@shared/ts.utils";
 import { json } from "@synstack/json";
 import { resolvable } from "@synstack/resolved";
 import { callable, type CallableResolvable } from "@synstack/resolved/callable";
 import { str } from "@synstack/str";
+import { type MaybeArray } from "../../shared/src/ts.utils.ts";
 
 export class Text {
   private static EXTRA_OBJECT_PREFIX = "%STR_EXTRA%";

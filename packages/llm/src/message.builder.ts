@@ -1,10 +1,10 @@
-import { never } from "@shared/ts.utils";
 import { pipe } from "@synstack/resolved";
+import { never } from "../../shared/src/ts.utils.ts";
 // We want to avoid importing the whole library for a single type
-import { type Base64Data } from "../../fs/src/file.lib";
+import { type Base64Data } from "../../fs/src/file.lib.ts";
 
 import { t, Text, tParse } from "@synstack/text";
-import { Llm } from "./llm.types";
+import { type Llm } from "./llm.types.ts";
 
 export const userMsg = <
   T extends

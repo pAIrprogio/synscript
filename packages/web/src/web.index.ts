@@ -1,3 +1,3 @@
-export * from "./web.bundle";
-export * as web from "./web.bundle";
-export { ArticleNotFoundException } from "./web.lib";
+export * from "./web.bundle.ts";
+export * as web from "./web.bundle.ts";
+export { ArticleNotFoundException } from "./web.lib.ts";

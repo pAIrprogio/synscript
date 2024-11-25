@@ -1,1 +1,1 @@
-export { deserialize, serialize } from "./yaml.lib";
+export { deserialize, serialize } from "./yaml.lib.ts";

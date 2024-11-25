@@ -1,1 +1,1 @@
-export { resolveNested } from "./callable.lib";
+export { resolveNested } from "./callable.lib.ts";

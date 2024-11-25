@@ -1,11 +1,11 @@
 import { type Anthropic } from "@anthropic-ai/sdk";
-import { Cache } from "@shared/cache.types";
-import { Merge, never } from "@shared/ts.utils";
-import { Resolvable } from "@synstack/resolved";
-import zodToJsonSchema from "zod-to-json-schema";
-import { CompletionBuilder } from "../completion.builder";
-import { CompletionRunner } from "../completion.runner";
-import { Llm } from "../llm.types";
+import { type Resolvable } from "@synstack/resolved";
+import { zodToJsonSchema } from "zod-to-json-schema";
+import { type Cache } from "../../../shared/src/cache.types.ts";
+import { type Merge, never } from "../../../shared/src/ts.utils.ts";
+import { CompletionBuilder } from "../completion.builder.ts";
+import { type CompletionRunner } from "../completion.runner.ts";
+import { type Llm } from "../llm.types.ts";
 
 type BasePartial<T> = Partial<T>;
 

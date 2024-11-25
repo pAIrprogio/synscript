@@ -1,7 +1,7 @@
-import { Stringable } from "@shared/ts.utils";
 import { Pipeable } from "@synstack/pipe";
 import * as changeCase from "change-case";
-import * as lib from "./str.lib";
+import { type Stringable } from "../../shared/src/ts.utils.ts";
+import * as lib from "./str.lib.ts";
 
 export class Str extends Pipeable<Str, string> {
   public constructor(private readonly text: string) {

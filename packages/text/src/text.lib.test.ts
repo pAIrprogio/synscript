@@ -1,7 +1,7 @@
-import { assertExtends } from "@shared/ts.utils";
 import assert from "node:assert/strict";
 import { describe, it } from "node:test";
-import { Text } from "./text.lib";
+import { assertExtends } from "../../shared/src/ts.utils.ts";
+import { Text } from "./text.lib.ts";
 
 const _types = () => {
   assertExtends<{ type: "1" }, Text.ExtraObject.Infer<[() => { type: "1" }]>>();

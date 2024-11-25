@@ -1,3 +1,3 @@
-export * from "./text.bundle";
-export { TextParseExtraItemException } from "./text.lib";
-export type { Text } from "./text.lib";
+export * from "./text.bundle.ts";
+export { TextParseExtraItemException } from "./text.lib.ts";
+export type { Text } from "./text.lib.ts";

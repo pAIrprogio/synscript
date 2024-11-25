@@ -8,11 +8,11 @@
     {
       "type": "node",
       "request": "launch",
-      "name": "Debug Current File with Node and tsx",
+      "name": "Debug Current File with Node",
       "skipFiles": ["<node_internals>/**"],
       "program": "${file}",
       "runtimeExecutable": "node",
-      "runtimeArgs": ["--import", "tsx"],
+      "runtimeArgs": ["--experimental-strip-types"],
       "outFiles": ["${workspaceFolder}/**/*.js", "${workspaceFolder}/**/*.ts"],
       "console": "integratedTerminal"
     }

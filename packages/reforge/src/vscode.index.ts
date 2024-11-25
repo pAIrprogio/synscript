@@ -1,1 +1,1 @@
-export * from "./vscode.lib";
+export * from "./vscode.lib.ts";

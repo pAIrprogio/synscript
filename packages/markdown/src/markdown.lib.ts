@@ -1,7 +1,7 @@
-import { Stringable } from "@shared/ts.utils";
 import { yaml } from "@synstack/yaml";
 import TurndownService from "turndown";
 import { ZodSchema } from "zod";
+import { type Stringable } from "../../shared/src/ts.utils.ts";
 
 export const fromHtml = (html: Stringable) => {
   const turndown = new TurndownService({

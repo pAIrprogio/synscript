@@ -1,9 +1,9 @@
 import Anthropic from "@anthropic-ai/sdk";
 import assert from "node:assert/strict";
 import { describe, it, mock } from "node:test";
-import { CompletionBuilder } from "../completion.builder";
-import { userMsg } from "../message.builder";
-import { AnthropicRunner } from "./anthropic.runner";
+import { CompletionBuilder } from "../completion.builder.ts";
+import { userMsg } from "../message.builder.ts";
+import { AnthropicRunner } from "./anthropic.runner.ts";
 
 const MODEL = "claude-3-5-sonnet-20240620";
 type AnthropicCreate = () => Promise<Anthropic.Message>;

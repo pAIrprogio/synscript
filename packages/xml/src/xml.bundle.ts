@@ -1,1 +1,1 @@
-export { nodesToText, parse } from "./xml.lib";
+export { nodesToText, parse } from "./xml.lib.ts";

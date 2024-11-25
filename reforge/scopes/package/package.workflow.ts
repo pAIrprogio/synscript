@@ -1,6 +1,6 @@
-import { BaseContext } from "../../runtime/context.runtime";
-import { rootDir } from "../../runtime/workspace.runtime";
-import { readmeAgent } from "./readme.agent";
+import { BaseContext } from "../../runtime/context.runtime.ts";
+import { rootDir } from "../../runtime/workspace.runtime.ts";
+import { readmeAgent } from "./readme.agent.ts";
 
 export interface PackageContext extends BaseContext {
   packageName: string;

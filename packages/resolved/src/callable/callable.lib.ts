@@ -1,4 +1,4 @@
-import { Resolvable } from "../resolvable.lib";
+import { type Resolvable } from "../resolvable.lib.ts";
 
 export type Callable<T> = T | (() => T);
 export declare namespace Callable {

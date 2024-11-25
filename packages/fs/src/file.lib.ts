@@ -1,15 +1,15 @@
-import { Stringable } from "@shared/ts.utils";
 import { glob } from "@synstack/glob";
 import { json } from "@synstack/json";
-import { AnyPath, path } from "@synstack/path";
+import { type AnyPath, path } from "@synstack/path";
 import { Pipeable } from "@synstack/pipe";
 import { str } from "@synstack/str";
-import { Xml, xml } from "@synstack/xml";
+import { type Xml, xml } from "@synstack/xml";
 import { yaml } from "@synstack/yaml";
 import * as fsSync from "fs";
 import * as fs from "fs/promises";
 import { ZodSchema } from "zod";
-import { FsDir } from "./dir.lib";
+import { type Stringable } from "../../shared/src/ts.utils.ts";
+import { FsDir } from "./dir.lib.ts";
 
 type TextEncoding = Exclude<BufferEncoding, "buffer">;
 type WriteMode = "preserve" | "overwrite";

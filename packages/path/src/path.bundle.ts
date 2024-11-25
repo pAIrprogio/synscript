@@ -13,4 +13,4 @@ export {
   relative,
   removeRelativeIndicator,
   resolve,
-} from "./path.lib";
+} from "./path.lib.ts";

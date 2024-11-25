@@ -8,6 +8,6 @@ export {
   promptInput,
   promptMultiSelect,
   promptSelect,
-} from "./reforge.lib";
+} from "./reforge.lib.ts";
 
-export * as vscode from "./vscode.lib";
+export * as vscode from "./vscode.lib.ts";

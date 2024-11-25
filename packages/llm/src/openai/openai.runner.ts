@@ -1,4 +1,3 @@
-import { never } from "@shared/ts.utils";
 import type {
   ChatCompletionAssistantMessageParam,
   ChatCompletionContentPartImage,
@@ -8,8 +7,9 @@ import type {
   ChatCompletionToolChoiceOption,
   ChatCompletionUserMessageParam,
 } from "openai/resources/index";
-import zodToJsonSchema from "zod-to-json-schema";
-import { Llm } from "../llm.types";
+import { zodToJsonSchema } from "zod-to-json-schema";
+import { never } from "../../../shared/src/ts.utils.ts";
+import { type Llm } from "../llm.types.ts";
 
 export type CompleteOpenAICompletion = Llm.Completion;
 

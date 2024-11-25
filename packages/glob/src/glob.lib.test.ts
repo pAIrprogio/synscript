@@ -1,6 +1,6 @@
 import assert from "node:assert/strict";
 import { describe, it } from "node:test";
-import { capture } from "./glob.lib";
+import { capture } from "./glob.lib.ts";
 
 describe("glob capture", () => {
   it("captures globs", () => {

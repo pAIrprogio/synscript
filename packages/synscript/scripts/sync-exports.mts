@@ -1,4 +1,4 @@
-#!/usr/bin/env node --import tsx
+#!/usr/bin/env node --experimental-strip-types
 import { dir, file } from "@synstack/fs";
 
 const subPackagesDir = dir(import.meta.dirname).to("../src/sub-packages");

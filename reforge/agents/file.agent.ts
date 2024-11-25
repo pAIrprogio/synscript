@@ -5,9 +5,9 @@ import {
   baseCache,
   baseCompletion,
   completionRunner,
-} from "../runtime/completion.runtime";
-import { BaseContext } from "../runtime/context.runtime";
-import { rootDir } from "../runtime/workspace.runtime";
+} from "../runtime/completion.runtime.ts";
+import { BaseContext } from "../runtime/context.runtime.ts";
+import { rootDir } from "../runtime/workspace.runtime.ts";
 
 export async function fileAgent<TContext extends BaseContext>(
   context: TContext,

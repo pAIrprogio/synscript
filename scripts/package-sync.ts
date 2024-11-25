@@ -1,4 +1,4 @@
-#!/usr/bin/env node --import tsx
+#!/usr/bin/env node --experimental-strip-types
 import { readFile, writeFile } from "fs/promises";
 import { glob } from "glob";
 
@@ -30,7 +30,7 @@ await Promise.all(
       publishConfig: {
         access: "public",
       },
-      packageManager: "yarn@4.4.0",
+      // packageManager: "yarn@4.5.1",
       version: packageJson.version ?? "1.0.0",
       description: packageJson.description,
       keywords: packageJson.keywords,
@@ -51,8 +51,9 @@ await Promise.all(
         build: "tsup",
         "build:watch": "tsup --watch",
         "test:types": "tsc --noEmit",
-        "test:unit": "node --import tsx --test src/**/*.test.ts",
-        "test:unit:watch": "node --import tsx --watch --test src/**/*.test.ts",
+        "test:unit": "node --experimental-strip-types --test src/**/*.test.ts",
+        "test:unit:watch":
+          "node --experimental-strip-types --watch --test --watch src/**/*.test.ts",
         test: "yarn test:types && yarn test:unit",
       },
       exports: orderKeys({
@@ -75,7 +76,6 @@ await Promise.all(
         ...packageJson.devDependencies,
         "@types/node": "^22.9.0",
         tsup: "^8.3.5",
-        tsx: "^4.19.2",
         typescript: "^5.6.3",
       } as {}),
       peerDependencies: orderKeys({

@@ -1,1 +1,1 @@
-export * as default from "./callable.bundle";
+export * as default from "./callable.bundle.ts";

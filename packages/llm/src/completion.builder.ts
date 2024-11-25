@@ -1,9 +1,9 @@
-import { OneToN } from "@shared/ts.utils";
 import { json } from "@synstack/json";
-import { pipe, Resolvable } from "@synstack/resolved";
+import { pipe, type Resolvable } from "@synstack/resolved";
 import { t } from "@synstack/text";
-import { CompletionRunner } from "./completion.runner";
-import { Llm } from "./llm.types";
+import { type OneToN } from "../../shared/src/ts.utils.ts";
+import { type CompletionRunner } from "./completion.runner.ts";
+import { type Llm } from "./llm.types.ts";
 export declare namespace CompletionBuilder {
   export type Merge<
     TCurrent extends Resolvable<Llm.Completion.Partial>,

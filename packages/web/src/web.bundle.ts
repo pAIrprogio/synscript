@@ -1,1 +1,1 @@
-export { fetchArticle, fetchJson, fetchText } from "./web.lib";
+export { fetchArticle, fetchJson, fetchText } from "./web.lib.ts";

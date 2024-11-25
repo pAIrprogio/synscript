@@ -1,2 +1,2 @@
-export * as path from "./path.bundle";
-export * from "./path.lib";
+export * as path from "./path.bundle.ts";
+export * from "./path.lib.ts";

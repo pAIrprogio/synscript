@@ -1,11 +1,11 @@
-import { assertExtends, assertType } from "@shared/ts.utils";
 import assert from "node:assert/strict";
 import { describe, it } from "node:test";
 import { z } from "zod";
-import { AnthropicRunner } from "./anthropic/anthropic.runner";
-import { CompletionBuilder } from "./completion.builder";
-import { CompletionRunner } from "./completion.runner";
-import { Llm } from "./llm.types";
+import { assertExtends, assertType } from "../../shared/src/ts.utils.ts";
+import { AnthropicRunner } from "./anthropic/anthropic.runner.ts";
+import { CompletionBuilder } from "./completion.builder.ts";
+import { type CompletionRunner } from "./completion.runner.ts";
+import { type Llm } from "./llm.types.ts";
 
 describe("CompletionBuilder", () => {
   const _types = () => {

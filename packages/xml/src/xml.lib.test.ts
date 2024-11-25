@@ -7,7 +7,7 @@ import {
   xmlAttributeRegex,
   xmlClosingTagRegex,
   xmlOpeningTagRegex,
-} from "./xml.lib";
+} from "./xml.lib.ts";
 
 describe("XML Opening Tag Regex", () => {
   it("should match a simple tag", () => {

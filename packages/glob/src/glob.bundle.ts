@@ -6,4 +6,4 @@ export {
   filterIncludedFactory,
   matches,
   sort,
-} from "./glob.lib";
+} from "./glob.lib.ts";

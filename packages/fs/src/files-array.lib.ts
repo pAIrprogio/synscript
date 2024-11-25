@@ -1,7 +1,7 @@
-import { enhance, Enhanced } from "@synstack/enhance";
-import { AnyPath } from "@synstack/path";
-import { FsDir } from "./dir.lib";
-import { file, FsFile } from "./file.lib";
+import { enhance, type Enhanced } from "@synstack/enhance";
+import { type AnyPath } from "@synstack/path";
+import { FsDir } from "./dir.lib.ts";
+import { file, FsFile } from "./file.lib.ts";
 
 interface FsFileArrayMethods {
   filter(this: FsFileArray, fn: (file: FsFile<any>) => boolean): FsFileArray;

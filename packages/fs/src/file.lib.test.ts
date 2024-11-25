@@ -1,6 +1,6 @@
 import assert from "node:assert/strict";
 import { describe, it } from "node:test";
-import { file } from "./file.lib";
+import { file } from "./file.lib.ts";
 
 describe("File", () => {
   describe("file", () => {
