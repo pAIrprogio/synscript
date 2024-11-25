@@ -1,285 +1,258 @@
-import { json } from "@synstack/json";
-import * as net from "net";
 import { z } from "zod";
+import { toolFactory } from "./tool.utils";
 
-// Todo: externalize memoization
-
-const memoize = <TArgs extends Array<any>, TValue>(
-  fn: (...args: TArgs) => TValue,
-) => {
-  let cache: { data: TValue } | undefined = undefined;
-  return (...args: TArgs) => {
-    if (cache === undefined) cache = { data: fn(...args) };
-    return cache.data;
-  };
-};
-
-const getIpcClient = memoize(() => {
-  return new Promise<net.Socket>((resolve, reject) => {
-    const port = process.env.REFORGE_IPC_PORT;
-
-    if (!port)
-      throw new Error("No IPC port provided, cannot connect to parent process");
-
-    const parsedPort = typeof port === "string" ? parseInt(port) : port;
-
-    const client = net.connect(parsedPort, "localhost", () => {
-      client.removeListener("error", reject);
-      resolve(client);
-    });
-
-    client.once("error", reject);
-  });
-});
-
-export const RESPONSE_SUFFIX = "_RESPONSE";
-
-export interface ToolConfig<
-  TName extends string,
-  TRequestSchema extends z.ZodSchema | null,
-  TResponseSchema extends z.ZodSchema = any,
-> {
-  name: TName;
-  requestSchema: TRequestSchema;
-  responseSchema: TResponseSchema;
-}
-
-export type ToolFn<
-  TRequestSchema extends z.ZodSchema | null,
-  TResponseSchema extends z.ZodSchema,
-> = TRequestSchema extends z.ZodSchema
-  ? (data: z.input<TRequestSchema>) => Promise<z.output<TResponseSchema>>
-  : () => Promise<z.output<TResponseSchema>>;
-
-export const toolFactory = <
-  TName extends string,
-  TRequestSchema extends z.ZodSchema | null,
-  TResponseSchema extends z.ZodSchema,
->(
-  toolConfig: ToolConfig<TName, TRequestSchema, TResponseSchema>,
-): ToolFn<TRequestSchema, TResponseSchema> => {
-  const responseName = `${toolConfig.name}${RESPONSE_SUFFIX}` as const;
-  const responseSchema = z.discriminatedUnion("status", [
-    z.object({
-      type: z.literal(responseName),
-      id: z.string(),
-      status: z.literal("ok"),
-      data: toolConfig.responseSchema,
-    }),
-    z.object({
-      type: z.literal(responseName),
-      id: z.string(),
-      status: z.literal("error"),
-      data: z.string(),
-    }),
-  ]);
-  const exec = async (data: unknown) => {
-    const validatedData = toolConfig.requestSchema
-      ? toolConfig.requestSchema.parse(data)
-      : undefined;
-    const client = await getIpcClient();
-    const id = crypto.randomUUID();
-    return new Promise<z.output<TResponseSchema>>((resolve, reject) => {
-      const errorHandler = (error: Error) => {
-        client.removeListener("error", errorHandler);
-        client.removeListener("data", responseHandler);
-        reject(error);
-      };
-
-      const responseHandler = (response: string) => {
-        const resData = json.deserialize(response);
-        const parsedResponse = responseSchema.parse(resData);
-        if (parsedResponse.type === responseName && parsedResponse.id === id) {
-          client.removeListener("error", errorHandler);
-          client.removeListener("data", responseHandler);
-          if (parsedResponse.status === "ok") resolve(parsedResponse.data);
-          else reject(new Error(parsedResponse.status));
-        }
-      };
-
-      client.once("error", errorHandler);
-      client.on("data", responseHandler);
-      client.write(
-        json.serialize({
-          type: toolConfig.name,
-          id,
-          data: validatedData,
-        }),
-      );
-    });
-  };
-
-  return exec as ToolFn<TRequestSchema, TResponseSchema>;
-};
-
-export const getTargetFileConfig = {
-  name: "GET_TARGET_FILE",
+export const getFocusedFileConfig = {
+  name: "GET_FOCUSED_FILE",
   requestSchema: null,
   responseSchema: z.string().nullable(),
 } as const;
 
-export const getTargetFile = toolFactory(getTargetFileConfig);
+/**
+ * Retrieve the absolute path to the actively focused file in the editor
+ */
+export const getFocusedFile = toolFactory(getFocusedFileConfig);
 
-export const getOpenedFilesConfig = {
-  name: "GET_OPENED_FILES",
+/**
+ * @deprecated Use getFocusedFileConfig instead
+ */
+export const getActiveFileConfig = {
+  name: "GET_ACTIVE_FILE",
   requestSchema: null,
-  responseSchema: z.array(z.string()),
+  responseSchema: z.string().nullable(),
 } as const;
-
-export const getOpenedFiles = toolFactory(getOpenedFilesConfig);
 
 export const promptSelectConfig = {
   name: "PROMPT_SELECT",
   requestSchema: z.object({
+    /**
+     * The title of the prompt
+     */
     title: z.string().optional(),
+    /**
+     * The options to display in the prompt
+     */
     options: z.array(z.string()),
+    /**
+     * The placeholder text to display in the prompt
+     */
     placeHolder: z.string().optional(),
   }),
   responseSchema: z.string().nullable(),
 } as const;
 
+/**
+ * Prompts the user to select an option from a list of options
+ * @returns The selected option or null if the user cancels the prompt
+ */
 export const promptSelect = toolFactory(promptSelectConfig);
 
 export const promptInputConfig = {
   name: "PROMPT_INPUT",
   requestSchema: z.object({
+    /**
+     * The title of the prompt
+     */
     title: z.string().optional(),
+    /**
+     * The prompt to display in the prompt
+     */
     prompt: z.string().optional(),
+    /**
+     * The placeholder text to display in the prompt
+     */
     placeHolder: z.string().optional(),
+    /**
+     * The default input value
+     */
     defaultValue: z.string().optional(),
+    /**
+     * Whether the input should be a password and masked
+     */
     isPassword: z.boolean().optional().default(false),
   }),
   responseSchema: z.string().nullable(),
 } as const;
 
+/**
+ * Prompts the user to input a value
+ * @returns The input value or null if the user cancels the prompt
+ */
 export const promptInput = toolFactory(promptInputConfig);
 
 export const promptMultiSelectConfig = {
   name: "PROMPT_MULTI_SELECT",
   requestSchema: z.object({
+    /**
+     * The title of the prompt
+     */
     title: z.string().optional(),
+    /**
+     * The options to display in the prompt
+     */
     options: z.array(z.string()),
+    /**
+     * The placeholder text to display in the prompt
+     */
     placeHolder: z.string().optional(),
   }),
   responseSchema: z.array(z.string()),
 } as const;
 
+/**
+ * Prompts the user to select multiple options from a list of options
+ * @returns The selected options as an array
+ */
 export const promptMultiSelect = toolFactory(promptMultiSelectConfig);
 
 export const notifyConfig = {
   name: "NOTIFY",
   requestSchema: z.object({
+    /**
+     * The title of the notification
+     */
     title: z.string().optional(),
+    /**
+     * The message to display in the notification
+     */
     message: z.string(),
+    /**
+     * The type of notification
+     * @default info
+     * @argument info - Informational notification
+     * @argument warning - Warning notification
+     * @argument error - Error notification
+     */
     type: z.enum(["info", "warning", "error"]).optional().default("info"),
+    /**
+     * Buttons values to display in the notification
+     */
     buttons: z.array(z.string()).optional(),
   }),
   responseSchema: z.string().nullable(),
 } as const;
 
+/**
+ * Displays a notification to the user
+ * @returns the button clicked by the user or null if the user dismissed the notification
+ */
 export const notify = toolFactory(notifyConfig);
+
+const fileOpenConfig = z
+  .object({
+    /**
+     * @default false
+     * Whether to force the file to open even if it is already open
+     */
+    force: z.boolean().default(false),
+    /**
+     * Whether to preview the file in the editor
+     * @default false
+     * @warning Check if the file type is supported by the editor
+     */
+    preview: z.boolean().optional().default(false),
+    /**
+     * The column to open the file in
+     * @default active
+     * @argument active - Open the file in the active column
+     * @argument beside - Open the file beside the active column
+     * @argument N - Open the file in the Nth column
+     */
+    column: z
+      .union([z.enum(["active", "beside"]), z.number().min(1).max(9)])
+      .optional(),
+  })
+  .default({
+    column: "active",
+  });
+
+const fileOpenResponse = z.object({
+  /**
+   * Absolute path to the file
+   */
+  path: z.string(),
+  /**
+   * Whether the file is already open in the editor
+   */
+  isAlreadyOpened: z.boolean(),
+});
 
 export const openFileConfig = {
   name: "OPEN_FILE",
   requestSchema: z.object({
+    /**
+     * Absolute path to the file
+     */
     path: z.string(),
-    config: z
-      .object({
-        force: z.boolean().default(false),
-        preview: z.boolean().optional().default(false),
-        column: z
-          .union([z.enum(["active", "beside"]), z.number().min(1).max(9)])
-          .optional(),
-      })
-      .default({
-        column: "active",
-      }),
+    config: fileOpenConfig,
   }),
-  responseSchema: z.object({
-    path: z.string(),
-    isAlreadyOpened: z.boolean(),
-  }),
+  responseSchema: fileOpenResponse,
 };
 
+/**
+ * Opens a file in the editor
+ */
 export const openFile = toolFactory(openFileConfig);
 
 export const openFilesConfig = {
   name: "OPEN_FILES",
   requestSchema: z.object({
+    /**
+     * Array of absolute paths to the files to open
+     */
     paths: z.array(z.string()),
-    config: z
-      .object({
-        force: z.boolean().optional().default(false),
-        preview: z.boolean().optional().default(false),
-        column: z
-          .union([z.enum(["active", "beside"]), z.number().min(1).max(9)])
-          .optional(),
-      })
-      .default({
-        column: "active",
-      }),
+    config: fileOpenConfig,
   }),
-  responseSchema: z.array(
-    z.object({ path: z.string(), isAlreadyOpened: z.boolean() }),
-  ),
+  /**
+   * Array of absolute paths to the files & whether they were already open in the editor
+   */
+  responseSchema: z.array(fileOpenResponse),
 };
 
 export const openFiles = toolFactory(openFilesConfig);
 
-export const getTargetSelectionsConfig = {
-  name: "GET_SELECTION",
+export const getFocusedFileSelectionsConfig = {
+  name: "GET_FOCUSED_FILE_SELECTION",
   requestSchema: null,
   responseSchema: z
     .object({
+      /**
+       * Absolute path to the file
+       */
       path: z.string(),
+      /**
+       * Array of active selections in the file
+       */
       selections: z.array(
-        z.object({ start: z.number(), end: z.number(), content: z.string() }),
+        z.object({
+          /**
+           * The starting character position of the selection in the file
+           */
+          start: z.number(),
+          /**
+           * The ending character position of the selection in the file
+           */
+          end: z.number(),
+          /**
+           * The string content of the selection
+           */
+          content: z.string(),
+          /**
+           * The starting line number of the selection in the file
+           */
+          lineStart: z.number(),
+          /**
+           * The ending line number of the selection in the file
+           */
+          lineEnd: z.number(),
+        }),
       ),
     })
     .nullable(),
 };
 
-export const getTargetSelections = toolFactory(getTargetSelectionsConfig);
-
-export const executeCommandConfig = {
-  name: "EXECUTE_COMMAND",
-  requestSchema: z.object({
-    command: z.string(),
-    /**
-     * List of args to be passed to the command
-     */
-    args: z
-      .array(
-        z.discriminatedUnion("type", [
-          z.object({
-            /**
-             * Transforms the value provided in `path` into a valid Uri instance
-             */
-            type: z.literal("path"),
-            /**
-             * The absolute path to the file
-             */
-            value: z.string(),
-          }),
-          z.object({
-            /**
-             * Any other value that to pass to the command
-             */
-            type: z.literal("primitive"),
-            value: z.union([
-              z.string(),
-              z.number(),
-              z.boolean(),
-              z.record(z.any()),
-              z.array(z.any()),
-            ]),
-          }),
-        ]),
-      )
-      .optional()
-      .default([]),
-  }),
-  responseSchema: z.any().optional(),
-};
-
-export const executeCommand = toolFactory(executeCommandConfig);
+/**
+ * Retrieve the active selections in the actively focused file in the editor
+ */
+export const getFocusedFileSelections = toolFactory(
+  getFocusedFileSelectionsConfig,
+);

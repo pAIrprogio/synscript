@@ -44,6 +44,16 @@
         "types": "./dist/reforge.index.d.cts",
         "default": "./dist/reforge.index.cjs"
       }
+    },
+    "./vscode": {
+      "import": {
+        "types": "./dist/vscode.index.d.ts",
+        "default": "./dist/vscode.index.js"
+      },
+      "require": {
+        "types": "./dist/vscode.index.d.cts",
+        "default": "./dist/vscode.index.cjs"
+      }
     }
   },
   "dependencies": {

@@ -1,13 +1,12 @@
 export {
-  executeCommand,
-  getOpenedFiles,
-  getTargetFile,
-  getTargetSelections,
+  getFocusedFile,
+  getFocusedFileSelections,
   notify,
   openFile,
   openFiles,
   promptInput,
   promptMultiSelect,
   promptSelect,
-  toolFactory,
 } from "./reforge.lib";
+
+export * as vscode from "./vscode.lib";
