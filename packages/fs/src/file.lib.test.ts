@@ -1,5 +1,6 @@
 import assert from "node:assert/strict";
 import { describe, it } from "node:test";
+import { dir } from "./dir.lib.ts";
 import { file } from "./file.lib.ts";
 
 describe("File", () => {
@@ -29,12 +30,25 @@ describe("File", () => {
         "../other/other.txt",
       );
     });
+    it("returns the relative path to another folder", () => {
+      assert.equal(
+        file("/super/path/test.txt").relativePathTo(dir("/super/other")),
+        "../other",
+      );
+    });
   });
   describe("relativePathFrom", () => {
     it("returns the relative path from another file", () => {
       const testFile = file("/super/path/test.txt");
       assert.equal(
         testFile.relativePathFrom(file("/super/other/other.txt")),
+        "../path/test.txt",
+      );
+    });
+    it("returns the relative path from another folder", () => {
+      const testFile = file("/super/path/test.txt");
+      assert.equal(
+        testFile.relativePathFrom(dir("/super/other")),
         "../path/test.txt",
       );
     });
