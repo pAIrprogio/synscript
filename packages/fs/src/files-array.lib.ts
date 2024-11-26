@@ -13,10 +13,7 @@ interface FsFileArrayMethods {
   filterDir(this: FsFileArray, dir: FsDir): FsFileArray;
   filterDir(this: FsFileArray, path: string): FsFileArray;
   toPaths(this: FsFileArray): Array<string>;
-  relativePathsTo(
-    this: FsFileArray,
-    dir: string | FsDir | FsFile,
-  ): Array<string>;
+  relativePathsTo(this: FsFileArray, dir: FsDir | FsFile): Array<string>;
 }
 
 const filesArrayMethods: FsFileArrayMethods = {
