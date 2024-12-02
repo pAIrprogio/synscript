@@ -17,14 +17,14 @@ declare namespace FsCache {
 
   export type Key<TFnArgs extends any[] = any[]> = OneToN<KeyFn<TFnArgs>>;
 
-  export type InputSerializer<TFnArgs extends any[] = any[]> = (
+  export type SignatureFn<TFnArgs extends any[] = any[]> = (
     ...args: TFnArgs
   ) => any;
 
   interface Options<TFnArgs extends any[] = any[]> {
     cwd: string;
     key: Key<TFnArgs>;
-    inputSerializer?: InputSerializer<TFnArgs>;
+    signatureFn?: SignatureFn<TFnArgs>;
     pretty?: boolean;
   }
 
@@ -39,13 +39,12 @@ export class FsCache<TConfig extends FsCache.Options.Partial> {
   private constructor(config: TConfig) {
     this._config = {
       ...config,
-    } as TConfig & { inputSerializer: FsCache.InputSerializer };
+    } as TConfig & { signatureFn: FsCache.SignatureFn };
   }
 
   // eslint-disable-next-line @typescript-eslint/require-await
   private async serializeInput<TFnArgs extends any[]>(...args: TFnArgs) {
-    if (this._config.inputSerializer)
-      return this._config.inputSerializer(...args);
+    if (this._config.signatureFn) return this._config.signatureFn(...args);
     return args;
   }
 
@@ -60,10 +59,10 @@ export class FsCache<TConfig extends FsCache.Options.Partial> {
     return new FsCache({ ...this._config, key });
   }
 
-  public inputSerializer<TFnArgs extends any[]>(
-    inputSerializer: FsCache.InputSerializer<TFnArgs>,
+  public signatureFn<TFnArgs extends any[]>(
+    signatureFn: FsCache.SignatureFn<TFnArgs>,
   ) {
-    return new FsCache({ ...this._config, inputSerializer });
+    return new FsCache({ ...this._config, signatureFn });
   }
 
   public pretty(pretty: boolean) {

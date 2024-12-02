@@ -131,11 +131,11 @@ describe("FsCache", () => {
     });
   });
 
-  describe("inputSerializer", () => {
-    it("uses custom inputSerializer", async () => {
+  describe("signatureFn", () => {
+    it("uses custom signature function", async () => {
       const cache = fsCache(TMP_DIR.path)
         .key(["test"])
-        .inputSerializer((num1: number, num2: number) => num1 + num2);
+        .signatureFn((num1: number, num2: number) => num1 + num2);
 
       let callCount = 0;
       const fn = cache.fn(async (num1: number, num2: number) => {
@@ -181,7 +181,7 @@ describe("FsCache", () => {
     it("supports async inputSerializer", async () => {
       const cache = fsCache(TMP_DIR.path)
         .key(["test"])
-        .inputSerializer(async (num1: number, num2: number) => {
+        .signatureFn(async (num1: number, num2: number) => {
           return Promise.resolve(num1 + num2);
         });
 
