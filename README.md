@@ -29,3 +29,78 @@
 #### Web scraping
 
 - [@synstack/web](./packages/web/README.md) - Web scraping utilities
+
+# Dependency Graph
+
+```mermaid
+graph TD
+  %% Packages
+  synscript["@synstack/synscript"]
+  enhance["@synstack/enhance"]
+  fs["@synstack/fs"]
+  fs_cache["@synstack/fs-cache"]
+  git["@synstack/git"]
+  glob["@synstack/glob"]
+  json["@synstack/json"]
+  llm["@synstack/llm"]
+  markdown["@synstack/markdown"]
+  path["@synstack/path"]
+  pipe["@synstack/pipe"]
+  reforge["@synstack/reforge"]
+  resolved["@synstack/resolved"]
+  str["@synstack/str"]
+  text["@synstack/text"]
+  web["@synstack/web"]
+  xml["@synstack/xml"]
+  yaml["@synstack/yaml"]
+  %% Internal Dependencies
+  synscript --> enhance
+  synscript --> fs
+  synscript --> fs_cache
+  synscript --> git
+  synscript --> glob
+  synscript --> json
+  synscript --> llm
+  synscript --> markdown
+  synscript --> path
+  synscript --> pipe
+  synscript --> reforge
+  synscript --> resolved
+  synscript --> str
+  synscript --> text
+  synscript --> web
+  synscript --> xml
+  synscript --> yaml
+  fs --> enhance
+  fs --> git
+  fs --> glob
+  fs --> json
+  fs --> path
+  fs --> pipe
+  fs --> str
+  fs --> xml
+  fs --> yaml
+  fs_cache --> fs
+  glob --> path
+  llm --> enhance
+  llm --> json
+  llm --> resolved
+  llm --> text
+  markdown --> yaml
+  path --> pipe
+  pipe --> enhance
+  str --> pipe
+  text --> json
+  text --> resolved
+  text --> str
+  %% External Dependencies
+  web --> readability["@mozilla/readability"]
+  web --> linkedom
+  xml --> immer
+  yaml --> yaml_pkg["yaml"]
+  llm --> zod_json["zod-to-json-schema"]
+  %% Styling
+  classDef default fill:#f9f,stroke:#333,stroke-width:2px,color:#000;
+  classDef external fill:#bbf,stroke:#333,stroke-width:1px,color:#000;
+  class readability,linkedom,immer,yaml_pkg,zod_json external
+```
