@@ -1,5 +1,5 @@
-import { type OneToN } from "../../shared/src/ts.utils.ts";
 import { dir, FsDir } from "@synstack/fs";
+import { type OneToN } from "../../shared/src/ts.utils.ts";
 import { deepEqual } from "./deepEqual.lib.ts";
 
 type $Partial<T> = Partial<T>;
@@ -14,11 +14,17 @@ declare namespace FsCache {
   export type KeyFn<TFnArgs extends any[] = any[]> =
     | string
     | ((...args: TFnArgs) => string);
+
   export type Key<TFnArgs extends any[] = any[]> = OneToN<KeyFn<TFnArgs>>;
+
+  export type InputSerializer<TFnArgs extends any[] = any[]> = (
+    ...args: TFnArgs
+  ) => any;
 
   interface Options<TFnArgs extends any[] = any[]> {
     cwd: string;
     key: Key<TFnArgs>;
+    inputSerializer?: InputSerializer<TFnArgs>;
     pretty?: boolean;
   }
 
@@ -31,7 +37,16 @@ export class FsCache<TConfig extends FsCache.Options.Partial> {
   private readonly _config: TConfig;
 
   private constructor(config: TConfig) {
-    this._config = config;
+    this._config = {
+      ...config,
+    } as TConfig & { inputSerializer: FsCache.InputSerializer };
+  }
+
+  // eslint-disable-next-line @typescript-eslint/require-await
+  private async serializeInput<TFnArgs extends any[]>(...args: TFnArgs) {
+    if (this._config.inputSerializer)
+      return this._config.inputSerializer(...args);
+    return args;
   }
 
   public static cwd(this: void, cwd: string | FsDir) {
@@ -43,6 +58,12 @@ export class FsCache<TConfig extends FsCache.Options.Partial> {
     key: TKey,
   ) {
     return new FsCache({ ...this._config, key });
+  }
+
+  public inputSerializer<TFnArgs extends any[]>(
+    inputSerializer: FsCache.InputSerializer<TFnArgs>,
+  ) {
+    return new FsCache({ ...this._config, inputSerializer });
   }
 
   public pretty(pretty: boolean) {
@@ -73,8 +94,8 @@ export class FsCache<TConfig extends FsCache.Options.Partial> {
 
     const value = await file.read.json<CacheValue>();
     await file.write.json({
-      isLocked,
       ...value,
+      isLocked,
     });
   }
 
@@ -93,7 +114,10 @@ export class FsCache<TConfig extends FsCache.Options.Partial> {
 
     if (value === null) return ["miss", null];
 
-    if (value.isLocked || deepEqual(value.input, args))
+    if (
+      value.isLocked ||
+      deepEqual(value.input, await this.serializeInput(...args))
+    )
       return ["hit", value.output];
 
     return ["miss", null];
@@ -118,7 +142,10 @@ export class FsCache<TConfig extends FsCache.Options.Partial> {
     const file = dir(this._config.cwd).file(relativePath);
     return file.write.text(
       JSON.stringify(
-        { input: args, output: value } satisfies CacheValue,
+        {
+          input: await this.serializeInput(...args),
+          output: value,
+        } satisfies CacheValue,
         null,
         this._config.pretty ? 2 : undefined,
       ),
@@ -127,11 +154,11 @@ export class FsCache<TConfig extends FsCache.Options.Partial> {
 
   public fn<TFnArgs extends any[], TFnOutput>(
     this: FsCache<FsCache.Options<TFnArgs>>,
-    fn: (...args: TFnArgs) => Promise<TFnOutput> | TFnOutput,
-  ): (...args: TFnArgs) => Promise<TFnOutput> {
-    return async (...args: TFnArgs): Promise<TFnOutput> => {
+    fn: (...args: TFnArgs) => TFnOutput,
+  ): (...args: TFnArgs) => Promise<Awaited<TFnOutput>> {
+    return async (...args: TFnArgs): Promise<Awaited<TFnOutput>> => {
       const [status, value] = await this.get<TFnArgs, TFnOutput>(args);
-      if (status === "hit") return value;
+      if (status === "hit") return value as Awaited<TFnOutput>;
 
       const output = await Promise.resolve(fn(...args));
       await this.set(args, output);
