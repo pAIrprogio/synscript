@@ -4,7 +4,7 @@
   "publishConfig": {
     "access": "public"
   },
-  "version": "1.1.1",
+  "version": "1.1.2",
   "description": "Safely enhance a JS object with additional properties",
   "keywords": [
     "proxy",
