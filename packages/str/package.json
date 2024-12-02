@@ -50,7 +50,7 @@
     "change-case": "^5.4.4"
   },
   "devDependencies": {
-    "@types/node": "^22.9.3",
+    "@types/node": "^22.10.1",
     "tsup": "^8.3.5",
     "typescript": "^5.7.2"
   },
