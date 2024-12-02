@@ -126,7 +126,10 @@ Trying to access a dir file from an absolute paths:
    * Removes the directory and all its contents recursively
    */
   public async rm(): Promise<void> {
-    await fs.rm(this._path, { recursive: true });
+    await fs.rm(this._path, { recursive: true }).catch((e) => {
+      if (e.code === "ENOENT") return;
+      throw e;
+    });
   }
 
   /**
@@ -134,7 +137,12 @@ Trying to access a dir file from an absolute paths:
    * @synchronous
    */
   public rmSync(): void {
-    return fsSync.rmSync(this._path, { recursive: true });
+    try {
+      fsSync.rmSync(this._path, { recursive: true });
+    } catch (error: any) {
+      if (error.code === "ENOENT") return;
+      throw error;
+    }
   }
 
   /**

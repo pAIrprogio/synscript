@@ -208,7 +208,10 @@ export class FsFile<
    * Delete the file from the file system
    */
   public async rm(): Promise<void> {
-    await fs.rm(this._path, { recursive: true });
+    await fs.rm(this._path, { recursive: true }).catch((e) => {
+      if (e.code === "ENOENT") return;
+      throw e;
+    });
   }
 
   /**
@@ -216,19 +219,22 @@ export class FsFile<
    * @synchronous
    */
   public rmSync(): void {
-    fsSync.rmSync(this._path, { recursive: false });
+    try {
+      fsSync.rmSync(this._path, { recursive: false });
+    } catch (error: any) {
+      if (error.code === "ENOENT") return;
+      throw error;
+    }
   }
 
   /**
    * Check if the file exists
    */
   public async exists(): Promise<boolean> {
-    try {
-      await fs.access(this._path);
-      return true;
-    } catch {
-      return false;
-    }
+    return fs
+      .access(this._path, fs.constants.F_OK)
+      .then(() => true)
+      .catch(() => false);
   }
 
   /**
