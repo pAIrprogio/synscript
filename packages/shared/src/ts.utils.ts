@@ -72,3 +72,9 @@ export function never(neverCheck: never, value?: unknown): never {
     `Unexpected value, received: ${JSON.stringify(value ?? neverCheck, null, 2)}`,
   );
 }
+
+export type ValueOf<T> = T extends null | undefined
+  ? T
+  : T extends { valueOf: () => any }
+    ? ReturnType<T["valueOf"]>
+    : T;

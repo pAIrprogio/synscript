@@ -46,6 +46,34 @@ class Test2 extends Pipeable<Test2, number> {
   }
 }
 
+class PromiseTest<TValue extends number | Promise<number>> extends Pipeable<
+  PromiseTest<TValue>,
+  TValue
+> {
+  private readonly _value: TValue;
+
+  public constructor(value: TValue) {
+    super();
+    this._value = value;
+  }
+
+  public add(value: number) {
+    return new PromiseTest(this._$((v) => v + value).$);
+  }
+
+  public addAsync(value: number) {
+    return new PromiseTest(this._$((v) => Promise.resolve(v + value)).$);
+  }
+
+  public valueOf(): TValue {
+    return this._value;
+  }
+
+  public instanceOf() {
+    return this;
+  }
+}
+
 describe("pipe", () => {
   describe("primitive", () => {
     it("works with strings", () => {
@@ -93,19 +121,38 @@ describe("pipe", () => {
       assert.equal(value, 2);
     });
   });
+  describe("tap", () => {
+    it("can tap into the value", (t) => {
+      const fn = t.mock.fn();
+      const value = pipe(new Test(1)).tap((v) => fn(v.$)).$;
+      assert.equal(value, 1);
+      assert.equal(fn.mock.callCount(), 1);
+    });
+  });
   describe("promises", () => {
-    void it.skip("allows chaining promises", async () => {
+    it("chains promises", async () => {
       // @ts-expect-error For future implementation
       const value = pipe(Promise.resolve(1))._((v) => v + 1).$;
       assert.equal(value instanceof Promise, true);
       assert.equal(await value, 2);
     });
 
-    void it.skip("allows chaining promisifed pipeables", async () => {
-      // @ts-expect-error For future implementation
-      const value = pipe(Promise.resolve(new Test(1))).add(1).$;
+    it("skips failed promises", async () => {
+      const value = pipe(Promise.reject(new Error("test")))._(() => {
+        throw new Error("Should not throw");
+        return 1;
+      }).$;
       assert.equal(value instanceof Promise, true);
-      assert.equal(await value, 2);
+      await assert.rejects(value, Error, "test");
+    });
+
+    it("works with valueOf chaining", async () => {
+      const value = new PromiseTest(1)
+        .addAsync(1)
+        .add(1)
+        ._((v) => v.add(1)).$;
+      assert.equal(value instanceof Promise, true);
+      assert.equal(await value, 3);
     });
   });
 });
