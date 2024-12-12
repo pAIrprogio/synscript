@@ -11,8 +11,6 @@ import { ZodSchema } from "zod";
 import { type Stringable } from "../../shared/src/ts.utils.ts";
 import { FsDir } from "./dir.lib.ts";
 
-// PLACEHOLDER: Type definitions and imports
-
 type TextEncoding = Exclude<BufferEncoding, "buffer">;
 type WriteMode = "preserve" | "overwrite";
 

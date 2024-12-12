@@ -10,7 +10,7 @@ import { files, filesFromDir, type FsFileArrayMethods } from "./files-array.lib.
 export class FsDir extends Pipeable<FsDir> {
   private readonly _path: AnyPath;
 
-  public constructor(path: AnyPath) {
+  private constructor(path: AnyPath) {
     super();
     this._path = path;
   }
@@ -354,4 +354,4 @@ Trying to access a dir file from an absolute paths:
  * const srcDir = dir("/absolute/path/to/src");
  * ```
  */
-export const dir = (...paths: Array<AnyPath>) => new FsDir(path.join(...paths));
+export const dir = FsDir.cwd;

@@ -27,15 +27,12 @@ const filesArrayMethods: FsFileArrayMethods = {
   },
 
   filterGlobs(...patterns) {
-    return this.filter((file: FsFile<any>) => {
-      const filePath = file.path;
-      return glob.matches(filePath, ...patterns);
-    });
+    return this.filter((file) => file.matchesGlobs(...patterns));
   },
 
   filterMimeTypes(...mimeTypes) {
     const types = new Set(mimeTypes);
-    return this.filter((file: FsFile<any>) => {
+    return this.filter((file) => {
       const mimeType = file.mimeType();
       if (mimeType === null) return false;
       return types.has(mimeType);
@@ -43,15 +40,15 @@ const filesArrayMethods: FsFileArrayMethods = {
   },
 
   filterDir(dirOrPath) {
-    return this.filter((file: FsFile<any>) => file.isInDir(dirOrPath));
+    return this.filter((file) => file.isInDir(dirOrPath));
   },
 
   toPaths() {
-    return this.map((file: FsFile<any>) => file.path);
+    return this.map((file) => file.path);
   },
 
   relativePathsTo(dirOrFileOrPath) {
-    return this.map((file: FsFile<any>) => file.relativePathTo(dirOrFileOrPath));
+    return this.map((file) => file.relativePathTo(dirOrFileOrPath));
   },
 };
 
