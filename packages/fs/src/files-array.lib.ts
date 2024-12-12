@@ -1,9 +1,14 @@
 import { enhance, type Enhanced } from "@synstack/enhance";
+import { glob } from "@synstack/glob";
 import { type AnyPath } from "@synstack/path";
 import { FsDir } from "./dir.lib.ts";
-import { file, FsFile } from "./file.lib.ts";
+import { FsFile, file } from "./file.lib.ts";
 
-interface FsFileArrayMethods {
+/**
+ * Interface defining chainable methods for arrays of FsFile instances.
+ * @internal
+ */
+export interface FsFileArrayMethods {
   filter(this: FsFileArray, fn: (file: FsFile<any>) => boolean): FsFileArray;
   filterGlobs(
     this: FsFileArray,
@@ -20,9 +25,11 @@ const filesArrayMethods: FsFileArrayMethods = {
   filter(fn) {
     return files(this.$.filter(fn));
   },
+
   filterGlobs(...patterns) {
     return this.filter((file) => file.matchesGlobs(...patterns));
   },
+
   filterMimeTypes(...mimeTypes) {
     const types = new Set(mimeTypes);
     return this.filter((file) => {
@@ -31,12 +38,15 @@ const filesArrayMethods: FsFileArrayMethods = {
       return types.has(mimeType);
     });
   },
+
   filterDir(dirOrPath) {
     return this.filter((file) => file.isInDir(dirOrPath));
   },
+
   toPaths() {
     return this.map((file) => file.path);
   },
+
   relativePathsTo(dirOrFileOrPath) {
     return this.map((file) => file.relativePathTo(dirOrFileOrPath));
   },
