@@ -5,7 +5,7 @@ import { Pipeable } from "@synstack/pipe";
 import * as fsSync from "fs";
 import * as fs from "fs/promises";
 import { FsFile } from "./file.lib.ts";
-import { files, filesFromDir, type FsFileArrayMethods } from "./files-array.lib.ts";
+import { files, filesFromDir } from "./files-array.lib.ts";
 
 export class FsDir extends Pipeable<FsDir> {
   private readonly _path: AnyPath;

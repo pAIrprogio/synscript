@@ -1,5 +1,4 @@
 import { enhance, type Enhanced } from "@synstack/enhance";
-import { glob } from "@synstack/glob";
 import { type AnyPath } from "@synstack/path";
 import { FsDir } from "./dir.lib.ts";
 import { FsFile, file } from "./file.lib.ts";
