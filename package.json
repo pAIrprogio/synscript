@@ -23,7 +23,7 @@
     "build": "yarn workspaces foreach --parallel --all --topological-dev --verbose run build",
     "test:unit": "yarn workspaces foreach --parallel --all --verbose run test",
     "test:lint": "yarn eslint . --cache",
-    "test:types": "yarn workspaces foreach --parallel --all --interlaced --verbose run test:types --watch",
+    "test:types": "yarn workspaces foreach --parallel --all --interlaced --verbose run test:types",
     "build:watch": "yarn workspaces foreach --parallel --all --interlaced --verbose run build:watch",
     "publish-all": "lerna publish from-package --no-private",
     "package:sync": "./scripts/package-sync.ts"
