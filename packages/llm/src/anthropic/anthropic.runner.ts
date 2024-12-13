@@ -127,7 +127,6 @@ export class AnthropicRunner<TConfig extends AnthropicRunner.Config.Partial>
 
     const query = this._config.cache
       ? this._config.cache.fn(
-          // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
           this._config.client.messages.create.bind(
             this._config.client.messages,
           ),
@@ -215,7 +214,6 @@ export class AnthropicRunner<TConfig extends AnthropicRunner.Config.Partial>
     if (reason === "stop_sequence") return "stop_sequence";
     if (reason === null) return "end";
 
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
     never(reason);
   }
 
@@ -246,7 +244,6 @@ export class AnthropicRunner<TConfig extends AnthropicRunner.Config.Partial>
       } as Llm.Message.Content.ToolCall;
     }
 
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
     never(content);
   }
 
