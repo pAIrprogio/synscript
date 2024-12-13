@@ -1402,7 +1402,7 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@synstack/synscript@npm:^1.4.10, @synstack/synscript@workspace:packages/synscript":
+"@synstack/synscript@workspace:*, @synstack/synscript@workspace:packages/synscript":
   version: 0.0.0-use.local
   resolution: "@synstack/synscript@workspace:packages/synscript"
   dependencies:
@@ -6329,7 +6329,7 @@ __metadata:
   resolution: "self-reforge@workspace:reforge"
   dependencies:
     "@anthropic-ai/sdk": "npm:^0.32.1"
-    "@synstack/synscript": "npm:^1.4.10"
+    "@synstack/synscript": "workspace:*"
     "@types/node": "npm:^22.10.1"
     ts-pattern: "npm:^5.5.0"
     tsup: "npm:^8.3.5"
