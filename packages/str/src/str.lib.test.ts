@@ -225,4 +225,33 @@ World`,
       assert.equal(value, "Hello\nWorld");
     });
   });
+
+  describe("replace", () => {
+    it("replaces first occurrence with string pattern", () => {
+      const value = str("Hello World").replace("o", "0").str;
+      assert.equal(value, "Hell0 World");
+    });
+
+    it("replaces first occurrence with regex pattern", () => {
+      const value = str("abc abc").replace(/[a-z]/, "X").str;
+      assert.equal(value, "Xbc abc");
+    });
+  });
+
+  describe("replaceAll", () => {
+    it("replaces all occurrences with string pattern", () => {
+      const value = str("Hello World").replaceAll("o", "0").str;
+      assert.equal(value, "Hell0 W0rld");
+    });
+
+    it("replaces all occurrences with regex pattern", () => {
+      const value = str("abc abc").replaceAll(/[a-z]/g, "X").str;
+      assert.equal(value, "XXX XXX");
+    });
+
+    it("adds global flag to regex if missing", () => {
+      const value = str("abc abc").replaceAll(/[a-z]/, "X").str;
+      assert.equal(value, "XXX XXX");
+    });
+  });
 });

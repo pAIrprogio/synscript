@@ -68,7 +68,6 @@ export class Str extends Pipeable<Str, string> {
     return this;
   }
 
-
   /**
    * Remove empty lines at the start of the text
    * @returns A new Str instance with empty lines removed from the start
@@ -368,6 +367,36 @@ export class Str extends Pipeable<Str, string> {
    */
   public isEmpty() {
     return lib.isEmpty(this.text);
+  }
+
+  /**
+   * Replace the first occurrence of a substring or pattern
+   * @param searchValue - The string or pattern to search for
+   * @param replaceValue - The string to replace the match with
+   * @returns A new Str instance with the first match replaced
+   * @example
+   * ```typescript
+   * str('Hello World').replace('o', '0').$     // 'Hell0 World'
+   * str('abc abc').replace(/[a-z]/, 'X').$     // 'Xbc abc'
+   * ```
+   */
+  public replace(searchValue: string | RegExp, replaceValue: string) {
+    return new Str(lib.replace(this.text, searchValue, replaceValue));
+  }
+
+  /**
+   * Replace all occurrences of a substring or pattern
+   * @param searchValue - The string or pattern to search for
+   * @param replaceValue - The string to replace the matches with
+   * @returns A new Str instance with all matches replaced
+   * @example
+   * ```typescript
+   * str('Hello World').replaceAll('o', '0').$     // 'Hell0 W0rld'
+   * str('abc abc').replaceAll(/[a-z]/g, 'X').$    // 'XXX XXX'
+   * ```
+   */
+  public replaceAll(searchValue: string | RegExp, replaceValue: string) {
+    return new Str(lib.replaceAll(this.text, searchValue, replaceValue));
   }
 
   /**

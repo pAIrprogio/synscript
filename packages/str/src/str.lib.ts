@@ -339,3 +339,51 @@ export const leadingSpacesCount = (text: string) => {
 export const isEmpty = (text: string) => {
   return text.trim() === "";
 };
+
+/**
+ * Replace the first occurrence of a substring or pattern in the string
+ * @param text - The input string to process
+ * @param searchValue - The string or pattern to search for
+ * @param replaceValue - The string to replace the match with
+ * @returns The string with the first match replaced
+ * @example
+ * ```typescript
+ * replace("Hello World", "o", "0")     // "Hell0 World"
+ * replace("abc abc", /[a-z]/, "X")     // "Xbc abc"
+ * ```
+ */
+export const replace = (
+  text: string,
+  searchValue: string | RegExp,
+  replaceValue: string,
+) => {
+  return text.replace(searchValue, replaceValue);
+};
+
+/**
+ * Replace all occurrences of a substring or pattern in the string
+ * @param text - The input string to process
+ * @param searchValue - The string or pattern to search for
+ * @param replaceValue - The string to replace the matches with
+ * @returns The string with all matches replaced
+ * @example
+ * ```typescript
+ * replaceAll("Hello World", "o", "0")     // "Hell0 W0rld"
+ * replaceAll("abc abc", /[a-z]/g, "X")    // "XXX XXX"
+ * ```
+ */
+export const replaceAll = (
+  text: string,
+  searchValue: string | RegExp,
+  replaceValue: string,
+) => {
+  if (typeof searchValue === "string") {
+    return text.replaceAll(searchValue, replaceValue);
+  }
+  // Ensure the RegExp has the global flag
+  const flags = searchValue.flags.includes("g")
+    ? searchValue.flags
+    : searchValue.flags + "g";
+  const globalRegex = new RegExp(searchValue.source, flags);
+  return text.replace(globalRegex, replaceValue);
+};
