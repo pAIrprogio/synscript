@@ -45,7 +45,7 @@ jobs:
       run: yarn test:lint
 
     - name: Run type checking
-      run: yarn test:types --no-watch
+      run: yarn test:types
 
     - name: Run unit tests
       run: yarn test:unit
