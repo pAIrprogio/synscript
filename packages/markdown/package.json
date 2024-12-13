@@ -5,10 +5,16 @@
     "access": "public"
   },
   "version": "1.1.2",
-  "description": "Opiniated Mardown utils",
+  "description": "Type-safe markdown processing with YAML frontmatter support and HTML conversion capabilities",
   "keywords": [
     "markdown",
-    "html"
+    "html",
+    "frontmatter",
+    "yaml",
+    "type-safe",
+    "documentation",
+    "turndown",
+    "typescript"
   ],
   "author": {
     "name": "pAIrprog",
