@@ -42,7 +42,6 @@ export class FsCache<TConfig extends FsCache.Options.Partial> {
     } as TConfig & { signatureFn: FsCache.SignatureFn };
   }
 
-  // eslint-disable-next-line @typescript-eslint/require-await
   private async serializeInput<TFnArgs extends any[]>(...args: TFnArgs) {
     if (this._config.signatureFn) return this._config.signatureFn(...args);
     return args;
@@ -70,7 +69,6 @@ export class FsCache<TConfig extends FsCache.Options.Partial> {
   }
 
   private static keyToRelativePath(key: FsCache.Key, args: any[]) {
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
     return `./${key.map((k) => (k instanceof Function ? k(...args) : k)).join("/")}.json`;
   }
 
