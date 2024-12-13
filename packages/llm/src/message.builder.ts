@@ -6,6 +6,17 @@ import { type Base64Data } from "../../fs/src/file.lib.ts";
 import { t, type Text, tParse } from "@synstack/text";
 import { type Llm } from "./llm.types.ts";
 
+/**
+ * Creates a user message with support for text, images, and tool responses
+ * @param template - Template string containing the message content
+ * @param values - Values to interpolate into the template (text, base64 images, tool responses)
+ * @returns A strongly-typed user message object conforming to Llm.User.Message
+ * @example
+ * ```typescript
+ * const msg = userMsg`Hello, here's an image: ${base64Image}`;
+ * const msg2 = userMsg`Tool response: ${toolResponse}`;
+ * ```
+ */
 export const userMsg = <
   T extends
     Array<MessageTemplate.User.TemplateValue> = Array<MessageTemplate.User.TemplateValue>,
@@ -36,6 +47,16 @@ export const userMsg = <
         }) as Llm.User.Message,
     ).$;
 
+/**
+ * Creates an assistant message with support for text and tool calls
+ * @param template - Template string containing the message content
+ * @param values - Values to interpolate into the template (text, tool calls)
+ * @returns A strongly-typed assistant message object conforming to Llm.Assistant.Message
+ * @example
+ * ```typescript
+ * const msg = assistantMsg`Let me help you with that ${toolCall}`;
+ * ```
+ */
 export const assistantMsg = <
   T extends
     Array<MessageTemplate.Assistant.TemplateValue> = Array<MessageTemplate.Assistant.TemplateValue>,
