@@ -5,11 +5,14 @@
     "access": "public"
   },
   "version": "1.1.2",
-  "description": "Safely enhance a JS object with additional properties",
+  "description": "Safely enhance a JS object with additional properties while maintaining type safety",
   "keywords": [
     "proxy",
     "object",
-    "enhance"
+    "enhance",
+    "extend",
+    "type-safe",
+    "typescript"
   ],
   "author": {
     "name": "pAIrprog",
