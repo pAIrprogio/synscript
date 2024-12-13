@@ -5,14 +5,15 @@
     "access": "public"
   },
   "version": "1.1.2",
-  "description": "Safely enhance a JS object with additional properties while maintaining type safety",
+  "description": "Type-safe object enhancement with proxy-based method extension - for objects only, not primitives",
   "keywords": [
     "proxy",
-    "object",
-    "enhance",
-    "extend",
+    "object-enhancement",
     "type-safe",
-    "typescript"
+    "method-extension",
+    "object-only",
+    "typescript",
+    "javascript-proxy"
   ],
   "author": {
     "name": "pAIrprog",

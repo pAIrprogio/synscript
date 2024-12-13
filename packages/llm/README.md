@@ -1,29 +1,42 @@
 # @synstack/llm
 
-> Type-safe LLM message handling and content management
+> Immutable & chainable LLM tools with type-safe message handling
 
-This package provides a strongly-typed API for working with LLM messages, including support for text, images, tool calls, and tool responses.
+This package provides a strongly-typed, immutable API for interacting with Large Language Models, featuring chainable message building, type-safe tool handling, and flexible completion configuration.
 
 > [!WARNING]
 > This package is included in the [@synstack/synscript](https://github.com/pAIrprogio/synscript) package. It is not recommended to install both packages at the same time.
 
+## Documentation
+
+Detailed documentation is available in separate files:
+- [Tool Calls](docs/tool-calls.md) - Type-safe tool definitions and execution
+- [Message Templating](docs/message-templating.md) - Immutable message building
+- [Completions](docs/completion.md) - Completion configuration and execution
+- [Runners](docs/runners.md) - Model-specific completion runners
+
 ## What is it for?
 
-Working with LLM messages should be type-safe and intuitive. This package provides a structured way to create and handle different types of message content:
+Working with Large Language Models should be type-safe and predictable. This package turns complex LLM interactions into chainable, immutable operations:
 
 ```typescript
-import { userMsg, assistantMsg, TextContent, ToolCallContent } from "@synstack/llm";
+import { CompletionBuilder, MessageTemplate } from "@synstack/llm";
 
-// Create strongly-typed user messages with text and images
-const message = userMsg`Here's my question: ${TextContent.from("How does this work?")}`;
+// Create an immutable completion chain
+const baseCompletion = CompletionBuilder.new
+  .model("gpt-4")
+  .temperature(0.7)
+  .system("You are a helpful assistant");
 
-// Handle tool calls and responses in assistant messages
-const toolCall = ToolCallContent.from({
-  toolCallId: "123",
-  toolName: "calculator",
-  toolArgs: { x: 1, y: 2 }
-});
-const response = assistantMsg`Let me calculate that for you ${toolCall}`;
+// Each operation returns a new instance
+const userCompletion = baseCompletion
+  .user("What is TypeScript?");
+
+// Messages are also immutable and chainable
+const template = MessageTemplate.new
+  .system("You are a helpful assistant")
+  .user("Hello!")
+  .assistant("How can I help?");
 ```
 
 ## Installation
@@ -41,9 +54,9 @@ pnpm add @synstack/llm
 
 ## Features
 
-### Message Building
+### Immutable Message Building
 
-Create type-safe messages using template literals:
+Build messages with a chainable, immutable API:
 
 ```typescript
 import { userMsg, assistantMsg } from "@synstack/llm";
@@ -55,49 +68,58 @@ const userMessage = userMsg`Here's an image: ${imageContent}`;
 const assistantMessage = assistantMsg`Let me help you with that ${toolCall}`;
 ```
 
-### Content Types
+### Type-Safe Content Types
 
 Work with different types of message content:
 
 ```typescript
-import { TextContent, ImageContent, ToolCallContent, ToolResponseContent } from "@synstack/llm";
+import { TextContent, ImageContent, ToolCallContent } from "@synstack/llm";
 
-// Text content
+// Each content type has its own factory
 const text = TextContent.from("Hello, world!");
-
-// Image content (base64)
 const image = ImageContent.from({
   type: "base64",
   data: "...",
   mimeType: "image/png"
 });
 
-// Tool calls
+// Tool calls are strongly typed
 const toolCall = ToolCallContent.from({
   toolCallId: "123",
   toolName: "calculator",
   toolArgs: { x: 1, y: 2 }
 });
-
-// Tool responses
-const toolResponse = ToolResponseContent.from({
-  toolCallId: "123",
-  toolOutput: { result: 3 }
-});
 ```
 
-### Message Content Arrays
+### Completion Configuration
 
-Handle collections of message contents:
+Configure completions with immutable builders:
 
 ```typescript
-import { MessageContents } from "@synstack/llm";
+import { CompletionBuilder } from "@synstack/llm";
 
-// Create enhanced array of contents
-const contents = MessageContents([textContent, toolCallContent]);
+const base = CompletionBuilder.new
+  .model("gpt-4")
+  .temperature(0.7);
 
-// Filter tool calls
-const toolCalls = contents.toolCalls();
+// Create variations without modifying the base
+const withTools = base.tools([calculator, translator]);
+const withSystem = base.system("You are an expert");
+```
+
+### Provider-Agnostic Runners
+
+Support for multiple LLM providers with a unified interface:
+
+```typescript
+import { AnthropicRunner, OpenAIRunner } from "@synstack/llm";
+
+// Use any supported provider
+const anthropic = new AnthropicRunner({ apiKey: "key" });
+const openai = new OpenAIRunner({ apiKey: "key" });
+
+// Same interface for all runners
+const response = await runner.complete(completion);
 ```
 
 ## API Reference
@@ -141,12 +163,12 @@ Enhanced array type with additional methods:
 
 ## TypeScript Support
 
-This package is written in TypeScript and provides comprehensive type definitions:
-
-- Generic type parameters for message content
-- Type-safe message builders using template literals
+This package is written in TypeScript and provides:
+- Full type inference for messages and tools
+- Immutable builder patterns
+- Type-safe parameter validation
+- Provider-specific type definitions
 - Strongly typed content classes
-- Type inference for tool calls and responses
 
 ## License
 
