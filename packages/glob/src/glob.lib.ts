@@ -32,9 +32,18 @@ function flatten(array: Array<string> | [Array<string>]): Array<string> {
 }
 
 /**
- * @param filePath
- * @param globs list of globs to match against globs prefixed with ! are excluded
- * @returns boolean
+ * Checks if a file path matches any of the provided glob patterns
+ * @param filePath - Path to check against glob patterns
+ * @param globs - List of glob patterns to match against. Patterns prefixed with "!" are treated as exclusions
+ * @returns true if the path matches any include pattern and doesn't match any exclude pattern
+ *
+ * @example
+ * // Match TypeScript files
+ * matches("src/file.ts", "src/*.ts");
+ * // Exclude specific directory
+ * matches("src/file.ts", "!test/*");
+ * // Combine include and exclude patterns
+ * matches("src/file.ts", ["src/*.ts", "!test/*"]);
  */
 export function matches(
   filePath: string,
@@ -134,6 +143,10 @@ export class Glob {
   }
 }
 
+/**
+ * Error thrown when an invalid glob pattern is provided
+ * @throws When a glob pattern cannot be converted to a regular expression
+ */
 export class InvalidGlobException extends Error {
   constructor(glob: string) {
     super(`Invalid glob: ${glob}`);

@@ -5,6 +5,18 @@
     "access": "public"
   },
   "version": "1.1.3",
+  "description": "Type-safe glob pattern matching and file filtering utilities for Node.js",
+  "keywords": [
+    "glob",
+    "pattern-matching",
+    "file-filtering",
+    "typescript",
+    "type-safe",
+    "filesystem",
+    "minimatch",
+    "file-search",
+    "path-matching"
+  ],
   "author": {
     "name": "pAIrprog",
     "url": "https://pairprog.io"

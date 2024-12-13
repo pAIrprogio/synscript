@@ -1,3 +1,15 @@
+/**
+ * Performs a deep equality comparison between two values
+ * @param obj1 - First value to compare
+ * @param obj2 - Second value to compare
+ * @returns True if the values are deeply equal, false otherwise
+ *
+ * This function handles:
+ * - Primitive values (strings, numbers, booleans)
+ * - Objects and arrays (recursive comparison)
+ * - null and undefined values
+ * - Properties with undefined values are ignored
+ */
 export function deepEqual(obj1: any, obj2: any) {
   if (obj1 === obj2) {
     return true;

@@ -1,12 +1,31 @@
+/**
+ * Symbol used to identify enhanced objects and their original enhancer name
+ */
 export const ENHANCER_NAME = Symbol("EnhancerName");
 
 // The order of the types is important as it affects overriding
+/**
+ * Type representing an enhanced object that combines base object properties with extensions
+ * @template TName - The name identifier for the enhancer
+ * @template TBaseObject - The type of the original object being enhanced
+ * @template TExtension - The type of the extension object adding new functionality
+ */
 export type Enhanced<
   TName extends string,
   TBaseObject extends object,
   TExtension extends object,
 > = { $: TBaseObject; [ENHANCER_NAME]: TName } & TExtension & TBaseObject;
 
+/**
+ * Enhances an object by combining it with extension methods while maintaining access to the original object
+ * @template TName - The name identifier for the enhancer
+ * @template TBaseObject - The type of the object to enhance
+ * @template TExtension - The type of the extension object containing new methods
+ * @param name - Unique name for this enhancement
+ * @param obj - The base object to enhance
+ * @param extendObj - Object containing extension methods
+ * @returns A proxy that combines the base object with extension methods
+ */
 export const enhance = <
   TName extends string,
   TBaseObject extends object | (object & { [ENHANCER_NAME]: TName; $: object }),
@@ -36,6 +55,14 @@ export const enhance = <
   }) as unknown as Enhanced<TName, TBaseObject, TExtension>;
 };
 
+/**
+ * Creates a reusable enhancer function that applies the same extensions to multiple objects
+ * @template TName - The name identifier for the enhancer
+ * @template TExtension - The type of the extension object containing new methods
+ * @param name - Unique name for this enhancement factory
+ * @param extendObj - Object containing extension methods
+ * @returns A function that can enhance objects with the provided extensions
+ */
 export const enhanceFactory =
   <TName extends string, TExtension extends object>(
     name: TName,
