@@ -1,5 +1,5 @@
-import { PackageContext } from "./package.workflow.ts";
+import { type PackageContext } from "./package.workflow.ts";
 
-export async function readmeAgent(context: PackageContext) {
+export function readmeAgent(_context: PackageContext) {
   console.log("Launching readme agent");
 }

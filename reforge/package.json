@@ -1,6 +1,7 @@
 {
   "name": "self-reforge",
   "private": true,
+  "type": "module",
   "dependencies": {
     "@anthropic-ai/sdk": "^0.32.1",
     "@synstack/synscript": "^1.4.10",

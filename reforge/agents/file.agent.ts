@@ -1,12 +1,13 @@
 import { reforge, str, xml } from "@synstack/synscript";
-import { Llm } from "@synstack/synscript/llm";
-import { Xml } from "@synstack/synscript/xml";
+import { type Llm } from "@synstack/synscript/llm";
+import { type Xml } from "@synstack/synscript/xml";
+import type { FsFile } from "../../packages/fs/src/file.lib.ts";
 import {
   baseCache,
   baseCompletion,
   completionRunner,
 } from "../runtime/completion.runtime.ts";
-import { BaseContext } from "../runtime/context.runtime.ts";
+import { type BaseContext } from "../runtime/context.runtime.ts";
 import { rootDir } from "../runtime/workspace.runtime.ts";
 
 export async function fileAgent<TContext extends BaseContext>(
@@ -14,19 +15,11 @@ export async function fileAgent<TContext extends BaseContext>(
   prompt: (context: TContext) => Array<Llm.Message>,
 ) {
   const completion = baseCompletion.messages(prompt(context));
-  const response = await completion.run(
+  const _response = await completion.run(
     completionRunner.cache(
       baseCache.key([context.focusedFile.relativePathFrom(rootDir)]),
     ),
   );
-  response
-    .lastMessageText()
-    .then((text) => {
-      console.log(text);
-      return text;
-    })
-    .then(writeResponseToFiles)
-    .then(formatFiles);
 }
 
 /**
@@ -77,14 +70,14 @@ export const writeResponseToFiles = async (response: string) => {
   const filesData = extractFiles(response);
   const writtenFiles = await writeFiles(filesData);
   await reforge.openFiles({
-    paths: writtenFiles.map((f) => f.path),
+    paths: writtenFiles.map((f: any) => f.path),
   });
   return writtenFiles;
 };
 
-async function formatFiles(files: Array<FsFile>) {
+function _formatFiles(files: Array<FsFile>) {
   return files.map((f) => {
-    const formattedFile = f.toFile(f.name() + ".formatted");
-    return formattedFile.write.text(f.text());
+    const formattedFile = f.toFile(f.fileName() + ".formatted");
+    return formattedFile.write.text("");
   });
 }

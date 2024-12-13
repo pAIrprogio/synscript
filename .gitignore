@@ -12,3 +12,4 @@
 #!.yarn/cache
 node_modules
 dist
+.eslintcache
