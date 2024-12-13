@@ -1,0 +1,51 @@
+name: CI
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: Enable Corepack
+      run: |
+        corepack enable
+        corepack prepare yarn@4.5.2 --activate
+
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '22.9.0'
+
+    - name: Get yarn cache directory path
+      id: yarn-cache-dir-path
+      run: echo "dir=$(yarn config get cacheFolder)" >> $GITHUB_OUTPUT
+
+    - name: Cache yarn dependencies
+      uses: actions/cache@v3
+      with:
+        path: ${{ steps.yarn-cache-dir-path.outputs.dir }}
+        key: yarn-cache-${{ hashFiles('**/yarn.lock') }}
+        restore-keys: |
+          yarn-cache-
+
+    - name: Install dependencies
+      run: yarn install
+
+    - name: Build
+      run: yarn build
+
+    - name: Run linting
+      run: yarn test:lint
+
+    - name: Run type checking
+      run: yarn test:types
+
+    - name: Run unit tests
+      run: yarn test:unit
