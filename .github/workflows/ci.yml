@@ -19,8 +19,11 @@ jobs:
         node-version: '22.9.0'
         cache: 'yarn'
 
+    - name: Enable Corepack
+      run: corepack enable
+
     - name: Install dependencies
-      run: yarn install --frozen-lockfile
+      run: yarn install
 
     - name: Build
       run: yarn build
