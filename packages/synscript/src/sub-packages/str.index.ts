@@ -14,6 +14,8 @@ export {
   pascalCase,
   pascalSnakeCase,
   pathCase,
+  replace,
+  replaceAll,
   sentenceCase,
   snakeCase,
   trainCase,
