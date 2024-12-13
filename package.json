@@ -21,7 +21,7 @@
   "license": "Apache-2.0",
   "scripts": {
     "build": "yarn workspaces foreach --parallel --all --topological-dev --verbose run build",
-    "test:unit": "yarn workspaces foreach --parallel --all --verbose run test",
+    "test:unit": "yarn workspaces foreach --parallel --all --verbose run test:unit",
     "test:lint": "yarn eslint . --cache",
     "test:types": "yarn workspaces foreach --parallel --all --interlaced --verbose run test:types",
     "build:watch": "yarn workspaces foreach --parallel --all --interlaced --verbose run build:watch",
