@@ -1,6 +1,8 @@
 import { type ValueOf } from "../../shared/src/ts.utils.ts";
 
 export type PipeFn<V, R> = (value: V) => R;
+
+// Enhanced type to handle arrays of promises and PromiseTest instances
 export type PreserveAsync<V, R> =
   R extends Promise<any>
     ? R
@@ -11,11 +13,25 @@ export type PreserveAsync<V, R> =
       ? Promise<R>
       : R
     : R;
-export type PreservePipeable<R> = R extends Pipeable ? R : Pipe<R>;
-export type Result<V, R> = PreservePipeable<PreserveAsync<V, R>>;
-type $Result<I, V> = I extends Promise<any> ? Promise<ValueOf<Awaited<I>>> : V;
 
-export abstract class Pipeable<TInstance = any, TValue = any> {
+// Enhanced type to handle PromiseTest instances
+export type PreservePipeable<R> = R extends Pipeable ? R : Pipe<R>;
+
+// Enhanced type to preserve promise chain and handle PromiseTest instances
+export type Result<V, R> = PreservePipeable<PreserveAsync<V, R>>;
+
+// Enhanced type to handle promise resolution and value extraction
+type $Result<I, V> = I extends Promise<any>
+  ? Promise<ValueOf<Awaited<I>>>
+  : I extends Pipeable
+    ? Promise<ValueOf<Awaited<I['valueOf']>>>
+    : V;
+
+// Abstract base class with flexible type constraints
+export abstract class Pipeable<
+  TInstance = any,
+  TValue = TInstance extends Promise<any> ? TInstance : TInstance | Promise<TInstance>
+> {
   public _<R extends Promise<any>>(
     this: Pipeable<Promise<any>>,
     fn: PipeFn<TInstance, R>,
