@@ -30,7 +30,13 @@ type $Result<I, V> = I extends Promise<any>
 // Abstract base class with flexible type constraints
 export abstract class Pipeable<
   TInstance = any,
-  TValue = TInstance extends Promise<any> ? TInstance : TInstance | Promise<TInstance>
+  TValue = TInstance extends Promise<any>
+    ? TInstance
+    : TInstance extends { valueOf(): infer R }
+      ? R
+      : TInstance extends Pipeable<any, infer P>
+        ? P
+        : TInstance
 > {
   public _<R extends Promise<any>>(
     this: Pipeable<Promise<any>>,
