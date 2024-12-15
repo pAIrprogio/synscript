@@ -57,15 +57,38 @@ class PromiseTest<TValue extends number | Promise<number>> extends Pipeable<
     this._value = value;
   }
 
-  public add(value: number) {
-    return new PromiseTest(this._$((v) => v + value).$);
+  public add(value: number): PromiseTest<Promise<number>> {
+    console.log('PromiseTest.add called with value:', value);
+    const currentValue = this.valueOf();
+    console.log('PromiseTest.add current value:', currentValue);
+    return new PromiseTest(
+      (currentValue instanceof Promise ? currentValue : Promise.resolve(currentValue))
+        .then(v => {
+          console.log('PromiseTest.add resolving promise with v:', v);
+          const result = Number(v) + value;
+          console.log('PromiseTest.add returning result:', result);
+          return result;
+        })
+    );
   }
 
-  public addAsync(value: number) {
-    return new PromiseTest(this._$((v) => Promise.resolve(v + value)).$);
+  public addAsync(value: number): PromiseTest<Promise<number>> {
+    console.log('PromiseTest.addAsync called with value:', value);
+    const currentValue = this.valueOf();
+    console.log('PromiseTest.addAsync current value:', currentValue);
+    return new PromiseTest(
+      (currentValue instanceof Promise ? currentValue : Promise.resolve(currentValue))
+        .then(v => {
+          console.log('PromiseTest.addAsync resolving promise with v:', v);
+          const result = Number(v) + value;
+          console.log('PromiseTest.addAsync returning result:', result);
+          return result;
+        })
+    );
   }
 
   public valueOf(): TValue {
+    console.log('PromiseTest.valueOf called, returning:', this._value);
     return this._value;
   }
 
@@ -147,10 +170,16 @@ describe("pipe", () => {
     });
 
     it("works with valueOf chaining", async () => {
-      const value = new PromiseTest(1)
-        .addAsync(1)
-        .add(1)
-        ._((v) => v.add(1)).$;
+      const test = new PromiseTest(1);
+      console.log('Initial value:', await Promise.resolve(test.valueOf()));
+      const step1 = test.addAsync(1);
+      console.log('After addAsync(1):', await Promise.resolve(step1.valueOf()));
+      const step2 = step1.add(1);
+      console.log('After add(1):', await Promise.resolve(step2.valueOf()));
+      const value = step2._((v) => {
+        console.log('Inside _() function, v:', v);
+        return v;
+      }).$;
       assert.equal(value instanceof Promise, true);
       assert.equal(await value, 3);
     });
