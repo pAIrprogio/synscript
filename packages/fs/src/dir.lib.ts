@@ -7,7 +7,7 @@ import * as fs from "fs/promises";
 import { FsFile } from "./file.lib.ts";
 import { files, filesFromDir } from "./files-array.lib.ts";
 
-export class FsDir extends Pipeable<FsDir> {
+export class FsDir extends Pipeable<FsDir, AnyPath> {
   private readonly _path: AnyPath;
 
   private constructor(path: AnyPath) {
