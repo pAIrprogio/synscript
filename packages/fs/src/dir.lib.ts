@@ -63,6 +63,28 @@ export class FsDir extends Pipeable<FsDir> {
   }
 
   /**
+   * Get the relative path from this directory to another file/directory
+   *
+   * @param dirOrfile - The other directory
+   * @returns The relative path as a string
+   */
+  public relativePathTo(dirOrfile: FsDir | FsFile) {
+    return path.relative(this.path, dirOrfile.path);
+  }
+
+  /**
+   * Get the relative path from another file/directory to this directory
+   *
+   * @param dirOrFile - The other directory
+   * @returns The relative path as a string
+   */
+  public relativePathFrom(dirOrFile: FsDir | FsFile): string {
+    if (dirOrFile instanceof FsFile)
+      return this.relativePathFrom(dirOrFile.dir());
+    return path.relative(dirOrFile.path, this.path);
+  }
+
+  /**
    * Create a new directory instance with the provided path.
    * Resolves relative paths to absolute paths.
    *

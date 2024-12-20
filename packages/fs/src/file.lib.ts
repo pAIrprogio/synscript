@@ -312,10 +312,10 @@ export class FsFile<
    * console.log(file1.relativePathFrom(file2)); // ../to/file1.txt
    * ```
    */
-  public relativePathFrom(dirOrFileOrPath: FsDir | FsFile): string {
-    if (dirOrFileOrPath instanceof FsFile)
-      return this.relativePathFrom(dirOrFileOrPath.dir());
-    return path.relative(dirOrFileOrPath.path, this.path);
+  public relativePathFrom(dirOrFile: FsDir | FsFile): string {
+    if (dirOrFile instanceof FsFile)
+      return this.relativePathFrom(dirOrFile.dir());
+    return path.relative(dirOrFile.path, this.path);
   }
 
   /**
@@ -841,7 +841,9 @@ class FsFileRead<
    * // }
    * ```
    */
-  public base64DataSync(defaultMimeType: string = "application/octet-stream"): Base64Data {
+  public base64DataSync(
+    defaultMimeType: string = "application/octet-stream",
+  ): Base64Data {
     return {
       type: "base64",
       data: this.base64Sync(),
