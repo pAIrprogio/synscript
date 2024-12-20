@@ -46,6 +46,57 @@ class Test2 extends Pipeable<Test2, number> {
   }
 }
 
+class PromiseTest<TValue extends number | Promise<number>> extends Pipeable<
+  PromiseTest<TValue>,
+  TValue
+> {
+  private readonly _value: TValue;
+
+  public constructor(value: TValue) {
+    super();
+    this._value = value;
+  }
+
+  public add(value: number): PromiseTest<Promise<number>> {
+    console.log('PromiseTest.add called with value:', value);
+    const currentValue = this.valueOf();
+    console.log('PromiseTest.add current value:', currentValue);
+    return new PromiseTest(
+      (currentValue instanceof Promise ? currentValue : Promise.resolve(currentValue))
+        .then(v => {
+          console.log('PromiseTest.add resolving promise with v:', v);
+          const result = Number(v) + value;
+          console.log('PromiseTest.add returning result:', result);
+          return result;
+        })
+    );
+  }
+
+  public addAsync(value: number): PromiseTest<Promise<number>> {
+    console.log('PromiseTest.addAsync called with value:', value);
+    const currentValue = this.valueOf();
+    console.log('PromiseTest.addAsync current value:', currentValue);
+    return new PromiseTest(
+      (currentValue instanceof Promise ? currentValue : Promise.resolve(currentValue))
+        .then(v => {
+          console.log('PromiseTest.addAsync resolving promise with v:', v);
+          const result = Number(v) + value;
+          console.log('PromiseTest.addAsync returning result:', result);
+          return result;
+        })
+    );
+  }
+
+  public valueOf(): TValue {
+    console.log('PromiseTest.valueOf called, returning:', this._value);
+    return this._value;
+  }
+
+  public instanceOf() {
+    return this;
+  }
+}
+
 describe("pipe", () => {
   describe("primitive", () => {
     it("works with strings", () => {
@@ -93,19 +144,44 @@ describe("pipe", () => {
       assert.equal(value, 2);
     });
   });
+  describe("tap", () => {
+    it("can tap into the value", (t) => {
+      const fn = t.mock.fn();
+      const value = pipe(new Test(1)).tap((v) => fn(v.$)).$;
+      assert.equal(value, 1);
+      assert.equal(fn.mock.callCount(), 1);
+    });
+  });
   describe("promises", () => {
-    void it.skip("allows chaining promises", async () => {
+    it("chains promises", async () => {
       // @ts-expect-error For future implementation
       const value = pipe(Promise.resolve(1))._((v) => v + 1).$;
       assert.equal(value instanceof Promise, true);
       assert.equal(await value, 2);
     });
 
-    void it.skip("allows chaining promisifed pipeables", async () => {
-      // @ts-expect-error For future implementation
-      const value = pipe(Promise.resolve(new Test(1))).add(1).$;
+    it("skips failed promises", async () => {
+      const value = pipe(Promise.reject(new Error("test")))._(() => {
+        throw new Error("Should not throw");
+        return 1;
+      }).$;
       assert.equal(value instanceof Promise, true);
-      assert.equal(await value, 2);
+      await assert.rejects(value, Error, "test");
+    });
+
+    it("works with valueOf chaining", async () => {
+      const test = new PromiseTest(1);
+      console.log('Initial value:', await Promise.resolve(test.valueOf()));
+      const step1 = test.addAsync(1);
+      console.log('After addAsync(1):', await Promise.resolve(step1.valueOf()));
+      const step2 = step1.add(1);
+      console.log('After add(1):', await Promise.resolve(step2.valueOf()));
+      const value = step2._((v) => {
+        console.log('Inside _() function, v:', v);
+        return v;
+      }).$;
+      assert.equal(value instanceof Promise, true);
+      assert.equal(await value, 3);
     });
   });
 });
