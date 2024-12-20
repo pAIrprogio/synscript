@@ -1,42 +1,29 @@
 # @synstack/llm
 
-> Immutable & chainable LLM tools with type-safe message handling
+> Type-safe LLM message handling and content management
 
-This package provides a strongly-typed, immutable API for interacting with Large Language Models, featuring chainable message building, type-safe tool handling, and flexible completion configuration.
+This package provides a strongly-typed API for working with LLM messages, including support for text, images, tool calls, and tool responses.
 
 > [!WARNING]
 > This package is included in the [@synstack/synscript](https://github.com/pAIrprogio/synscript) package. It is not recommended to install both packages at the same time.
 
-## Documentation
-
-Detailed documentation is available in separate files:
-- [Tool Calls](docs/tool-calls.md) - Type-safe tool definitions and execution
-- [Message Templating](docs/message-templating.md) - Immutable message building
-- [Completions](docs/completion.md) - Completion configuration and execution
-- [Runners](docs/runners.md) - Model-specific completion runners
-
 ## What is it for?
 
-Working with Large Language Models should be type-safe and predictable. This package turns complex LLM interactions into chainable, immutable operations:
+Working with LLM messages should be type-safe and intuitive. This package provides a structured way to create and handle different types of message content:
 
 ```typescript
-import { CompletionBuilder, MessageTemplate } from "@synstack/llm";
+import { userMsg, assistantMsg } from "@synstack/llm";
 
-// Create an immutable completion chain
-const baseCompletion = CompletionBuilder.new
-  .model("gpt-4")
-  .temperature(0.7)
-  .system("You are a helpful assistant");
+// Create strongly-typed user messages with text and images
+const message = userMsg`Here's my question: ${TextContent.from("How does this work?")}`;
 
-// Each operation returns a new instance
-const userCompletion = baseCompletion
-  .user("What is TypeScript?");
-
-// Messages are also immutable and chainable
-const template = MessageTemplate.new
-  .system("You are a helpful assistant")
-  .user("Hello!")
-  .assistant("How can I help?");
+// Handle tool calls and responses in assistant messages
+const toolCall = ToolCallContent.from({
+  toolCallId: "123",
+  toolName: "calculator",
+  toolArgs: { x: 1, y: 2 }
+});
+const response = assistantMsg`Let me calculate that for you ${toolCall}`;
 ```
 
 ## Installation
@@ -54,9 +41,9 @@ pnpm add @synstack/llm
 
 ## Features
 
-### Immutable Message Building
+### Message Building
 
-Build messages with a chainable, immutable API:
+Create type-safe messages using template literals:
 
 ```typescript
 import { userMsg, assistantMsg } from "@synstack/llm";
@@ -68,107 +55,129 @@ const userMessage = userMsg`Here's an image: ${imageContent}`;
 const assistantMessage = assistantMsg`Let me help you with that ${toolCall}`;
 ```
 
-### Type-Safe Content Types
+### Content Types
 
 Work with different types of message content:
 
 ```typescript
-import { TextContent, ImageContent, ToolCallContent } from "@synstack/llm";
+import { type Llm } from "@synstack/llm";
 
-// Each content type has its own factory
-const text = TextContent.from("Hello, world!");
-const image = ImageContent.from({
-  type: "base64",
-  data: "...",
-  mimeType: "image/png"
-});
+// Text content
+const text: Llm.Message.Content.Text = {
+  type: "text",
+  text: "Hello, world!"
+};
+
+// Image content
+const image: Llm.Message.Content.Image = {
+  type: "image",
+  image: {
+    type: "base64",
+    data: "...",
+    mimeType: "image/png"
+  }
+};
 
 // Tool calls are strongly typed
-const toolCall = ToolCallContent.from({
+const toolCall: Llm.Message.Content.ToolCall = {
+  type: "tool_call",
   toolCallId: "123",
   toolName: "calculator",
   toolArgs: { x: 1, y: 2 }
-});
+};
 ```
 
-### Completion Configuration
+### Tool Configuration
 
-Configure completions with immutable builders:
-
-```typescript
-import { CompletionBuilder } from "@synstack/llm";
-
-const base = CompletionBuilder.new
-  .model("gpt-4")
-  .temperature(0.7);
-
-// Create variations without modifying the base
-const withTools = base.tools([calculator, translator]);
-const withSystem = base.system("You are an expert");
-```
-
-### Provider-Agnostic Runners
-
-Support for multiple LLM providers with a unified interface:
+Configure tool usage with type-safe definitions:
 
 ```typescript
-import { AnthropicRunner, OpenAIRunner } from "@synstack/llm";
+import { type Llm } from "@synstack/llm";
+import { z } from "zod";
 
-// Use any supported provider
-const anthropic = new AnthropicRunner({ apiKey: "key" });
-const openai = new OpenAIRunner({ apiKey: "key" });
+// Define a tool with Zod schema
+const calculator: Llm.Tool = {
+  name: "calculator",
+  schema: z.object({
+    x: z.number(),
+    y: z.number()
+  })
+};
 
-// Same interface for all runners
-const response = await runner.complete(completion);
+// Use in completion configuration
+const config: Llm.Completion = {
+  temperature: 0.7,
+  maxTokens: 1000,
+  messages: [],
+  toolsConfig: {
+    type: "single",
+    tool: calculator
+  }
+};
 ```
 
 ## API Reference
 
-### Message Builders
+### Message Functions
 
 #### userMsg
 - Template literal function for creating user messages
 - Supports text, images, and tool responses
+- Returns `Llm.User.Message`
 
 #### assistantMsg
 - Template literal function for creating assistant messages
 - Supports text and tool calls
+- Returns `Llm.Assistant.Message`
 
-### Content Classes
+### Message Types
 
-#### TextContent
-- `from(text: string)` - Create text content
-- `valueOf()` - Convert to message content format
-- `toString()` - Get raw text content
+#### Llm.Message.Content.Text
+```typescript
+{
+  type: "text";
+  text: string;
+}
+```
 
-#### ImageContent
-- `from(image: Base64Image)` - Create image content
-- `valueOf()` - Convert to message content format
-- `image` - Access raw image data
+#### Llm.Message.Content.Image
+```typescript
+{
+  type: "image";
+  image: {
+    type: "base64";
+    data: string;
+    mimeType: string;
+  };
+}
+```
 
-#### ToolCallContent
-- `from(toolCall: ToolCall)` - Create tool call content
-- `valueOf()` - Convert to message content format
-- `toolCall` - Access tool call details
+#### Llm.Message.Content.ToolCall
+```typescript
+{
+  type: "tool_call";
+  toolCallId: string;
+  toolName: string;
+  toolArgs: Record<string, unknown>;
+}
+```
 
-#### ToolResponseContent
-- `from(toolResponse: ToolResponse)` - Create tool response content
-- `valueOf()` - Convert to message content format
-- `toolResponse` - Access tool response details
-
-### MessageContents
-
-Enhanced array type with additional methods:
-- `toolCalls()` - Filter and return tool call contents
+#### Llm.Message.Content.ToolResponse
+```typescript
+{
+  type: "tool_response";
+  toolCallId: string;
+  toolOutput: unknown;
+}
+```
 
 ## TypeScript Support
 
 This package is written in TypeScript and provides:
 - Full type inference for messages and tools
-- Immutable builder patterns
 - Type-safe parameter validation
-- Provider-specific type definitions
-- Strongly typed content classes
+- Strongly typed content interfaces
+- Zod schema validation for tool arguments
 
 ## License
 
