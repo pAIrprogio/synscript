@@ -5,6 +5,16 @@
     "access": "public"
   },
   "version": "1.1.2",
+  "description": "Type-safe Git operations interface for programmatic repository management",
+  "keywords": [
+    "git",
+    "typescript",
+    "type-safe",
+    "repository",
+    "file-listing",
+    "git-files",
+    "version-control"
+  ],
   "author": {
     "name": "pAIrprog",
     "url": "https://pairprog.io"

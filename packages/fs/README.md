@@ -9,30 +9,33 @@ This package provides a strongly-typed, chainable API for file system operations
 
 ## What is it for?
 
-Working with files and directories should be simple and type-safe. This package turns verbose file operations into chainable, strongly-typed commands:
+Working with files and directories should be simple, type-safe, and predictable. This package provides an immutable API where each operation returns a new instance, making it safe to chain operations while preserving original file references:
 
 ```typescript
 import { file, dir } from "@synstack/fs";
 
-// Read and validate JSON with schema
-const configFile = file("./config.json")
-  .schema(ConfigSchema)
-  .read.json();
+// Each operation returns a new instance, preserving the original
+const configFile = file("./config.json");
+const validatedConfig = configFile.schema(ConfigSchema);  // New instance with schema
+const configData = await validatedConfig.read.json();     // Read validated JSON
 
-// Write text files with different encodings
-const templateFile = file("./template.txt")
-  .write.text("Hello ${name}!");
+// Chain operations while maintaining immutability
+const templateFile = file("./template.txt");
+const updatedTemplate = templateFile
+  .write.text("Hello ${name}!");  // Returns new instance
 
-// Find and filter files by glob patterns and MIME types
-const images = dir("./assets")
-  .glob("**/*.{png,jpg}")
-  .filterMimeTypes("image/png", "image/jpeg");
+// Directory operations are also immutable
+const rootDir = dir("./assets");
+const imagesDir = rootDir.to("images");  // New instance for subdirectory
+const imageFiles = await imagesDir
+  .glob("**/*.{png,jpg}")  // Returns new array
+  .filterMimeTypes("image/png", "image/jpeg");  // Returns filtered array
 
-// Work with relative paths safely
+// Each path operation returns a new instance
 const sourceFile = file("/path/to/source.ts");
 const targetFile = sourceFile
-  .toFile("../dist/output.js")
-  .write.text(compiledContent);
+  .toFile("../dist/output.js");  // New instance with different path
+await targetFile.write.text(compiledContent);
 
 // Handle JSON with pretty formatting
 const packageJson = file("package.json")
@@ -146,7 +149,8 @@ The `FsFile` class provides methods for working with individual files:
 
 #### Creation
 - `file(...paths)` - Create a new file instance from path segments
-- `schema(zodSchema)` - Add schema validation for JSON/YAML operations
+- `schema(zodSchema)` - Create new instance with schema validation
+- All operations return new instances, preserving original file references
 
 #### Read Operations
 - `read.text()` - Read file as text
@@ -190,6 +194,7 @@ The `FsDir` class provides methods for working with directories:
 - `dir(...paths)` - Create new directory instance
 - `to(relativePath)` - Create new subdirectory instance
 - `file(relativePath)` - Create new file instance in directory
+- All operations return new instances, preserving original directory references
 
 #### Directory Operations
 - `exists()` - Check if directory exists

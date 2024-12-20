@@ -5,14 +5,19 @@
     "access": "public"
   },
   "version": "1.4.4",
-  "description": "Immutable & chainable LLM tools",
+  "description": "Immutable & chainable LLM tools with type-safe message handling and support for text, images, tool calls, and responses",
   "keywords": [
     "llm",
     "prompt",
     "ai",
     "immutable",
+    "chainable",
     "anthropic",
-    "openai"
+    "openai",
+    "type-safe",
+    "typescript",
+    "message",
+    "tool-calls"
   ],
   "author": {
     "name": "pAIrprog",
