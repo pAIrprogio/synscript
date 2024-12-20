@@ -18,6 +18,7 @@ export const getOpenedFilesConfig = {
   responseSchema: z.array(z.string()),
 } as const;
 
+// TODO: Return a list of FsFile instances
 /**
  * Retrieve the absolute paths to all opened files in the editor
  *
@@ -44,6 +45,7 @@ export const promptSelectConfig = {
   responseSchema: z.string().nullable(),
 } as const;
 
+// TODO: Provide a complete API for choices
 /**
  * Prompts the user to select an option from a list of options
  * @returns The selected option or null if the user cancels the prompt
@@ -102,6 +104,7 @@ export const promptMultiSelectConfig = {
   responseSchema: z.array(z.string()),
 } as const;
 
+// TODO: Provide a complete API for choices
 /**
  * Prompts the user to select multiple options from a list of options
  * @returns The selected options as an array
@@ -141,7 +144,7 @@ export const notifyConfig = {
  */
 export const notify = toolFactory(notifyConfig);
 
-const fileOpenConfig = z
+const openFileRequest = z
   .object({
     /**
      * @default false
@@ -169,7 +172,7 @@ const fileOpenConfig = z
     column: "active",
   });
 
-const fileOpenResponse = z.object({
+const openFileResponse = z.object({
   /**
    * Absolute path to the file
    */
@@ -187,9 +190,9 @@ export const openFileConfig = {
      * Absolute path to the file
      */
     path: z.string(),
-    config: fileOpenConfig,
+    config: openFileRequest,
   }),
-  responseSchema: fileOpenResponse,
+  responseSchema: openFileResponse,
 };
 
 /**
@@ -204,12 +207,12 @@ export const openFilesConfig = {
      * Array of absolute paths to the files to open
      */
     paths: z.array(z.string()),
-    config: fileOpenConfig,
+    config: openFileRequest,
   }),
   /**
    * Array of absolute paths to the files & whether they were already open in the editor
    */
-  responseSchema: z.array(fileOpenResponse),
+  responseSchema: z.array(openFileResponse),
 };
 
 export const openFiles = toolFactory(openFilesConfig);
