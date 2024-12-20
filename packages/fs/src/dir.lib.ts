@@ -5,7 +5,7 @@ import { Pipeable } from "@synstack/pipe";
 import * as fsSync from "fs";
 import * as fs from "fs/promises";
 import { FsFile } from "./file.lib.ts";
-import { files, filesFromDir } from "./files-array.lib.ts";
+import { filesFromDir } from "./files-array.lib.ts";
 
 export class FsDir extends Pipeable<FsDir> {
   private readonly _path: AnyPath;
@@ -346,21 +346,17 @@ Trying to access a dir file from an absolute paths:
   /**
    * Find files tracked by git in the directory.
    *
-   * @param subPath - Optional sub-path to limit the search
    * @returns A promise that resolves to an FsFileArray containing the git-tracked files
    *
    * ```typescript
    * const projectDir = dir("./project");
    *
-   * // Get all git-tracked files
+   * // Get all git-tracked files in the directory
    * const trackedFiles = await projectDir.gitLs();
-   *
-   * // Get tracked files in a subdirectory
-   * const srcFiles = await projectDir.gitLs("src");
    * ```
    */
-  public async gitLs(subPath?: AnyPath) {
-    return git.ls(this._path, subPath).then(files);
+  public async gitLs() {
+    return git.ls(this._path).then(filesFromDir(this));
   }
 }
 
