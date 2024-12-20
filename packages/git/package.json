@@ -39,7 +39,8 @@
   },
   "dependencies": {
     "@synstack/enhance": "workspace:*",
-    "execa": "^9.5.1"
+    "execa": "^9.5.1",
+    "iter-tools-es": "^7.5.3"
   },
   "devDependencies": {
     "@types/node": "^22.10.1",

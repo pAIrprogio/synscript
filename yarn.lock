@@ -1265,6 +1265,7 @@ __metadata:
     "@synstack/enhance": "workspace:*"
     "@types/node": "npm:^22.10.1"
     execa: "npm:^9.5.1"
+    iter-tools-es: "npm:^7.5.3"
     tsup: "npm:^8.3.5"
     typescript: "npm:^5.7.2"
   languageName: unknown
@@ -4162,6 +4163,13 @@ __metadata:
   version: 3.0.1
   resolution: "isobject@npm:3.0.1"
   checksum: 10c0/03344f5064a82f099a0cd1a8a407f4c0d20b7b8485e8e816c39f249e9416b06c322e8dec5b842b6bb8a06de0af9cb48e7bc1b5352f0fadc2f0abac033db3d4db
+  languageName: node
+  linkType: hard
+
+"iter-tools-es@npm:^7.5.3":
+  version: 7.5.3
+  resolution: "iter-tools-es@npm:7.5.3"
+  checksum: 10c0/d8a5be133135ac42163704145756ae971a01037737708be5bd9731373ffb709c4f0a45b73754584dcce95569beb5637e26cb980c79e32e71d428a2f7a8a92683
   languageName: node
   linkType: hard
 
