@@ -25,8 +25,8 @@
     "build": "tsup",
     "build:watch": "tsup --watch",
     "test:types": "tsc --noEmit",
-    "test:unit": "node --experimental-strip-types --test src/**/*.test.ts",
-    "test:unit:watch": "node --experimental-strip-types --watch --test --watch src/**/*.test.ts",
+    "test:unit": "node --experimental-strip-types --experimental-test-snapshots --no-warnings --test src/**/*.test.ts",
+    "test:unit:watch": "node --experimental-strip-types --experimental-test-snapshots --no-warnings --watch --test --watch src/**/*.test.ts",
     "test": "yarn test:types && yarn test:unit",
     "prepare": "yarn test && yarn build"
   },

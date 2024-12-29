@@ -51,9 +51,10 @@ await Promise.all(
         build: "tsup",
         "build:watch": "tsup --watch",
         "test:types": "tsc --noEmit",
-        "test:unit": "node --experimental-strip-types --test src/**/*.test.ts",
+        "test:unit":
+          "node --experimental-strip-types --experimental-test-snapshots --no-warnings --test src/**/*.test.ts",
         "test:unit:watch":
-          "node --experimental-strip-types --watch --test --watch src/**/*.test.ts",
+          "node --experimental-strip-types --experimental-test-snapshots --no-warnings --watch --test --watch src/**/*.test.ts",
         test: "yarn test:types && yarn test:unit",
       },
       exports: orderKeys({
@@ -74,9 +75,9 @@ await Promise.all(
       } as {}),
       devDependencies: orderKeys({
         ...packageJson.devDependencies,
-        "@types/node": "^22.9.0",
+        "@types/node": "^22.10.1",
         tsup: "^8.3.5",
-        typescript: "^5.6.3",
+        typescript: "^5.7.2",
       } as {}),
       peerDependencies: orderKeys({
         ...packageJson.peerDependencies,
