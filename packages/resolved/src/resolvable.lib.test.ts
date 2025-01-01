@@ -12,10 +12,10 @@ describe("typings", () => {
     assertExtends<Resolvable.IsPromise<"hello">, never>();
     assertExtends<true, Resolvable.IsPromise<Promise<"hello">>>();
     assertExtends<string, Resolvable.Infer<string>>();
-    assertExtends<Array<1 | 2>, Resolvable.ArrayOf.Infer<[1, 2]>>();
-    assertExtends<Array<1 | 2>, Resolvable.ArrayOf.Infer<[1, Promise<2>]>>();
-    assertExtends<Resolvable.ArrayOf.HasPromise<[1, 2]>, never>();
-    assertExtends<true, Resolvable.ArrayOf.HasPromise<[1, Promise<2>]>>();
+    assertExtends<Array<1 | 2>, Resolvable.Array.Infer<[1, 2]>>();
+    assertExtends<Array<1 | 2>, Resolvable.Array.Infer<[1, Promise<2>]>>();
+    assertExtends<Resolvable.Array.HasPromise<[1, 2]>, never>();
+    assertExtends<true, Resolvable.Array.HasPromise<[1, Promise<2>]>>();
   });
 });
 

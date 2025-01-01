@@ -4,7 +4,9 @@ export declare namespace Resolvable {
   export type Infer<T> = Awaited<T>;
   export type IsPromise<T> = T extends Promise<any> ? true : never;
 
-  namespace ArrayOf {
+  export type ArrayOf<T> = Array<Resolvable<T>>;
+
+  export namespace ArrayOf {
     export type Infer<T> = T extends readonly any[]
       ? {
           [K in keyof T]: Resolvable.Infer<T[K]>;
@@ -18,7 +20,9 @@ export declare namespace Resolvable {
       : never;
   }
 
-  namespace MaybeArray {
+  export type MaybeArray<T> = Resolvable.ArrayOf<T> | Resolvable<T>;
+
+  export namespace MaybeArray {
     export type Infer<T> = T extends readonly any[]
       ? { [K in keyof T]: Resolvable.Infer<T[K]> }
       : Resolvable.Infer<T>;
