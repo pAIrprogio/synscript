@@ -74,17 +74,15 @@
     "zod-to-json-schema": "^3.23.5"
   },
   "devDependencies": {
-    "@anthropic-ai/sdk": "^0.32.1",
     "@synstack/fs": "workspace:*",
     "@types/node": "^22.10.1",
-    "openai": "^4.73.1",
+    "ai": "^4.0.22",
     "tsup": "^8.3.5",
     "typescript": "^5.7.2",
     "zod": "^3.23.8"
   },
   "peerDependencies": {
-    "@anthropic-ai/sdk": "*",
-    "openai": "*",
+    "ai": "*",
     "zod": "*"
   },
   "files": [
