@@ -1,175 +1,88 @@
-import { type AnyZodObject, z, ZodSchema } from "zod";
-import { type OneToN } from "../../shared/src/ts.utils.ts";
+import type {
+  CoreAssistantMessage,
+  CoreMessage,
+  CoreSystemMessage,
+  CoreTool,
+  CoreToolChoice,
+  CoreToolMessage,
+  CoreUserMessage,
+  FilePart,
+  ImagePart,
+  LanguageModel,
+  StepResult,
+  TextPart,
+  ToolCallPart,
+  ToolCallRepairFunction,
+} from "ai";
+import { z } from "zod";
 
 type $Partial<T> = Partial<T>;
 
 export declare namespace Llm {
-  export type Tool<
-    TName extends string = string,
-    TSchema extends ZodSchema = AnyZodObject,
-  > = {
-    name: TName;
-    schema: TSchema; // Todo: force object schema
-  };
+  export type Model = LanguageModel;
+
+  export type Message = CoreMessage;
+
+  export namespace Message {
+    export type System = CoreSystemMessage;
+    export type User = CoreUserMessage;
+    export type Assistant = CoreAssistantMessage;
+    export type ToolResult = CoreToolMessage;
+
+    export namespace Part {
+      export type Text = TextPart;
+      export type Image = ImagePart;
+      export type File = FilePart;
+      export type ToolCall = ToolCallPart;
+      export type User = TextPart | ImagePart | FilePart;
+      export type Assistant = TextPart | ToolCall;
+    }
+  }
 
   export type Completion = {
-    temperature: number;
-    maxTokens: number;
-    messages: Array<Llm.Message>;
-    system?: string;
-    topK?: number;
+    model: Llm.Model;
+    messages: Llm.Message[];
+    // LLM
+    maxTokens?: number;
+    temperature?: number;
     topP?: number;
+    topK?: number;
+    frequencyPenalty?: number;
+    presencePenalty?: number;
+    seed?: number;
+    // Tools
+    tools?: Llm.Tools;
+    toolChoice?: Llm.ToolChoice<Record<string, Llm.Tool>>;
+    // Flow
     stopSequences?: string[];
-    toolsConfig?: Llm.Completion.ToolConfig;
-    usage?: Completion.Usage;
-    stopReason?: Completion.StopReason;
+    maxRetries?: number;
+    abortSignal?: AbortSignal;
+    maxSteps?: number;
+    // Experimental
+    experimental_continueSteps?: boolean;
+    experimental_telemetry?: any; // TODO: type
+    experimental_providerMetadata?: any; // TODO: type
+    experimental_activeTools?: Array<string>; // TODO: type
+    experimental_repairToolCalls?: ToolCallRepairFunction<Llm.Tools>;
+    // experimental_output?: Output.Output<any>; // TODO
+    // Callbacks
+    onStepFinish?: (event: StepResult<Llm.Tools>) => Promise<void> | void;
   };
 
   export namespace Completion {
-    export type StopReason =
-      | "end"
-      | "max_tokens"
-      | "tool_call"
-      | "stop_sequence";
-
-    export type Usage = {
-      inputTokens: number;
-      outputTokens: number;
-    };
-
-    export type ToolConfig = ToolConfig.Single | ToolConfig.Multi;
-
-    export namespace ToolConfig {
-      export type Type = "single" | "multi";
-
-      export type Single<TTool extends Llm.Tool = Llm.Tool> = {
-        type: "single";
-        tool: TTool;
-      };
-
-      export type Multi<
-        TTools extends Array<Llm.Tool> = Array<Llm.Tool>,
-        TRequire extends boolean = boolean,
-      > = {
-        type: "multi";
-        tools: TTools;
-        requireToolUse: TRequire;
-      };
-    }
-
-    type WithResponse = Completion & {
-      stopReason: StopReason;
-      usage: Usage;
-    };
-
-    export namespace Response {
-      export type Part = {
-        stopReason: StopReason;
-        usage: Usage;
-      };
-    }
-
     export type Partial = $Partial<Completion>;
   }
 
-  export type Message = User.Message | Assistant.Message;
+  export type Tool<
+    PARAMETERS extends z.ZodTypeAny = any,
+    RESULT = any,
+  > = CoreTool<PARAMETERS, RESULT>;
 
-  export namespace Message {
-    export type Role = User.Role | Assistant.Role;
+  export type Tools<
+    Key extends string = string,
+    Tool extends Llm.Tool = Llm.Tool,
+  > = Record<Key, Tool>;
 
-    export type Content =
-      | Content.Text
-      | Content.Image
-      | Content.ToolCall
-      | Content.ToolResponse;
-
-    export namespace Content {
-      export type Text = {
-        type: "text";
-        text: string;
-      };
-
-      export type Image = {
-        type: "image";
-        image: Image.Base64;
-      };
-
-      export namespace Image {
-        export type Base64 = {
-          type: "base64";
-          data: string;
-          mimeType: string;
-        };
-      }
-
-      export type ToolCall<TTool extends Llm.Tool = Llm.Tool> = {
-        type: "tool_call";
-        toolCallId: string;
-        toolName: TTool["name"];
-        toolArgs: z.output<TTool["schema"]>;
-      };
-
-      export namespace ToolCall {
-        export type ResponseFromToolConfig<
-          TConfig extends Completion.ToolConfig,
-        > = TConfig extends Completion.ToolConfig.Single
-          ? [ToolCall<TConfig["tool"]>]
-          : // Remap each Tool to a ToolCall and transform to union
-            TConfig extends Completion.ToolConfig.Multi
-            ? TConfig["requireToolUse"] extends true
-              ? OneToN<
-                  {
-                    // infer is used to extract each type specifically instead of a union of types
-                    [K in keyof TConfig["tools"]]: TConfig["tools"][K] extends infer U
-                      ? U extends Tool
-                        ? ToolCall<U>
-                        : never
-                      : never;
-                  }[number]
-                >
-              : Array<
-                  {
-                    // infer is used to extract each type specifically instead of a union of types
-                    [K in keyof TConfig["tools"]]: TConfig["tools"][K] extends infer U
-                      ? U extends Tool
-                        ? ToolCall<U>
-                        : never
-                      : never;
-                  }[number]
-                >
-            : Array<ToolCall>;
-      }
-
-      export type ToolResponse = {
-        type: "tool_response";
-        toolCallId: string;
-        toolOutput: any;
-      };
-    }
-  }
-
-  export namespace User {
-    export type Role = "user";
-
-    export type Content =
-      | Message.Content.Text
-      | Message.Content.Image
-      | Message.Content.ToolResponse;
-
-    export type Message = {
-      role: Role;
-      content: Array<Content>;
-    };
-  }
-
-  export namespace Assistant {
-    export type Role = "assistant";
-
-    export type Content = Message.Content.Text | Message.Content.ToolCall;
-
-    export type Message = {
-      role: Role;
-      content: Array<Content>;
-    };
-  }
+  export type ToolChoice<Tools extends Record<string, CoreTool>> =
+    CoreToolChoice<Tools>;
 }

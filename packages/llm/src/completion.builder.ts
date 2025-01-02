@@ -1,367 +1,240 @@
-import { json } from "@synstack/json";
-import { pipe, type Resolvable } from "@synstack/resolved";
-import { t } from "@synstack/text";
-import { type OneToN } from "../../shared/src/ts.utils.ts";
-import { type CompletionRunner } from "./completion.runner.ts";
-import { type Llm } from "./llm.types.ts";
-export declare namespace CompletionBuilder {
-  export type Merge<
-    TCurrent extends Resolvable<Llm.Completion.Partial>,
-    TNew extends Resolvable<Llm.Completion.Partial>,
-    TCurrentValue extends Llm.Completion.Partial = Resolvable.Infer<TCurrent>,
-    TNewValue extends Llm.Completion.Partial = Resolvable.Infer<TNew>,
-  > =
-    TNew | TCurrent extends Promise<any>
-      ? CompletionBuilder<
-          Promise<{
-            [K in
-              | keyof TCurrentValue
-              | keyof TNewValue]: K extends keyof TNewValue
-              ? TNewValue[K]
-              : K extends keyof TCurrentValue
-                ? TCurrentValue[K]
-                : never;
-          }>
-        >
-      : CompletionBuilder<{
-          [K in
-            | keyof TCurrentValue
-            | keyof TNewValue]: K extends keyof TNewValue
-            ? TNewValue[K]
-            : K extends keyof TCurrentValue
-              ? TCurrentValue[K]
-              : never;
-        }>;
+import {
+  generateObject,
+  generateText,
+  streamObject,
+  streamText,
+  type GenerateTextResult,
+  type StreamTextResult,
+  type ToolCallRepairFunction,
+} from "ai";
+import type { z } from "zod";
+import type { Llm } from "./llm.types.ts";
 
-  export type ForceValue<TValue, TForced> =
-    Resolvable.Infer<TValue> extends undefined ? undefined : TForced;
-}
-
-// Todo: type tool response based on tools config
-// Todo: switch to base pipeable
-export class CompletionBuilder<T extends Resolvable<Llm.Completion.Partial>> {
-  private readonly _completion: T;
-
-  private constructor(completion: T) {
-    this._completion = completion;
-  }
-
+export class CompletionBuilder<OPTIONS extends Llm.Completion.Partial> {
   public static get new() {
     return new CompletionBuilder<{}>({});
   }
 
-  public static from<U extends Resolvable<Llm.Completion.Partial>>(
-    completion: U,
-  ) {
-    return CompletionBuilder.new.merge(completion);
-  }
-
-  public get $(): T {
-    return this._completion;
-  }
-
-  public $_<R>(fn: (value: Resolvable.Infer<T>) => R) {
-    // @ts-expect-error - To fix
-    return pipe(this.$)._(fn);
-  }
-
-  public async toSync(): Promise<CompletionBuilder<Resolvable.Infer<T>>> {
-    return new CompletionBuilder(await this.$);
-  }
-
-  /**
-   * Override the values of the current builder with the provided values as object
-   */
-  public merge<U extends Resolvable<Llm.Completion.Partial>>(
-    completion: U,
-  ): CompletionBuilder.Merge<T, U> {
+  public static from<T extends Llm.Completion.Partial>(
+    options?: T,
+  ): CompletionBuilder<T extends undefined ? {} : T> {
     return new CompletionBuilder(
-      pipe([this._completion, completion] as const)._(([old, added]) => ({
-        ...old,
-        ...added,
-      })).$,
-    ) as CompletionBuilder.Merge<T, U>;
-  }
-
-  // Todo: allow calling as a template directly
-  /**
-   * Set the system prompt
-   */
-  public system<U extends Resolvable<string | undefined>>(system: U) {
-    return this.merge(
-      pipe(system)._((system) => ({
-        system: system as CompletionBuilder.ForceValue<U, string>,
-      })).$,
+      (options ?? {}) as T extends undefined ? {} : T,
     );
   }
 
-  /**
-   * Set the llm temperature
-   * @argument temperature The temperature value between 0 and 1
-   */
-  public temperature(temperature: number) {
-    return this.merge(
-      pipe(temperature)._((temperature) => ({
-        temperature,
-      })).$,
-    );
+  private readonly options: OPTIONS;
+
+  constructor(options: OPTIONS) {
+    this.options = options;
   }
 
-  /**
-   * Set the maximum number of tokens to generate
-   */
-  public maxTokens<U extends Resolvable<number>>(maxTokens: U) {
-    return this.merge(
-      pipe(maxTokens)._((maxTokens: number) => ({ maxTokens })).$,
-    );
-  }
-
-  /**
-   * Set the stop sequences.
-   *
-   * If the LLM generates a stop sequence, the completion will stop.
-   */
-  public stopSequences<U extends Resolvable<OneToN<string> | undefined>>(
-    sequences: U,
+  private merge<NEW_OPTIONS extends Llm.Completion.Partial>(
+    options: NEW_OPTIONS,
   ) {
-    return this.merge(
-      pipe(sequences)._((sequences) => ({
-        stopSequences: sequences,
-      })).$,
-    );
+    return new CompletionBuilder({
+      ...this.options,
+      ...options,
+    }) as CompletionBuilder<{
+      [K in keyof OPTIONS | keyof NEW_OPTIONS]: K extends keyof NEW_OPTIONS
+        ? NEW_OPTIONS[K]
+        : K extends keyof OPTIONS
+          ? OPTIONS[K]
+          : never;
+    }>;
+  }
+
+  public get $(): OPTIONS {
+    return this.options;
+  }
+
+  public model<VALUE extends Llm.Model>(model: VALUE) {
+    return this.merge({ model });
+  }
+
+  // #region Messages
+
+  public messages(messages: Array<Llm.Message>) {
+    return this.merge({ messages });
   }
 
   /**
-   * Set the top k tokens to consider for the completion
+   * @deprecated To be implemented
    */
-  public topK<U extends Resolvable<number | undefined>>(topK: U) {
-    return this.merge(
-      pipe(topK)._((topK) => ({
-        topK,
-      })).$,
-    );
+  public appendMessages() {
+    throw new Error("Not implemented");
+  }
+
+  // #endregion
+
+  // #region Tools
+
+  public tools<NEW_TOOLS extends Llm.Tools>(tools: NEW_TOOLS) {
+    return this.merge({ tools });
+  }
+
+  public toolChoice<
+    VALID_OPTIONS extends Llm.Completion.Partial & { tools: Llm.Tools },
+    TOOL_CHOICE extends Llm.ToolChoice<VALID_OPTIONS["tools"]>,
+  >(this: CompletionBuilder<VALID_OPTIONS>, toolChoice: TOOL_CHOICE) {
+    return this.merge({ toolChoice: toolChoice as Llm.ToolChoice<Llm.Tools> });
   }
 
   /**
-   * Set the top p tokens to consider for the completion
+   * @experimental
    */
-  public topP<U extends Resolvable<number | undefined>>(topP: U) {
-    return this.merge(
-      pipe(topP)._((topP) => ({
-        topP,
-      })).$,
-    );
+  public repairToolCalls(repairToolCalls: ToolCallRepairFunction<Llm.Tools>) {
+    return this.merge({ experimental_repairToolCalls: repairToolCalls });
   }
 
   /**
-   * Reset the tools
+   * @experimental
    */
-  public clearTools() {
-    return this.merge({
-      toolsConfig: undefined,
+  public activeTools<
+    VALID_OPTIONS extends Llm.Completion.Partial & { tools: Llm.Tools },
+    ACTIVE_TOOLS extends Array<keyof VALID_OPTIONS["tools"]>,
+  >(this: CompletionBuilder<VALID_OPTIONS>, activeTools: ACTIVE_TOOLS) {
+    return this.merge({ experimental_activeTools: activeTools as string[] });
+  }
+
+  // #endregion
+
+  // #region LLM
+
+  public maxTokens(maxTokens: number) {
+    return this.merge({ maxTokens });
+  }
+
+  public temperature(temperature: number) {
+    return this.merge({ temperature });
+  }
+
+  public topP(topP: number) {
+    return this.merge({ topP });
+  }
+
+  public topK(topK: number) {
+    return this.merge({ topK });
+  }
+
+  public frequencyPenalty(frequencyPenalty: number) {
+    return this.merge({ frequencyPenalty });
+  }
+
+  public presencePenalty(presencePenalty: number) {
+    return this.merge({ presencePenalty });
+  }
+
+  public seed(seed: number) {
+    return this.merge({ seed });
+  }
+
+  // #endregion
+
+  // # region Flow
+
+  public stopSequences(stopSequences: string[]) {
+    return this.merge({ stopSequences });
+  }
+
+  public maxRetries(maxRetries: number) {
+    return this.merge({ maxRetries });
+  }
+
+  public abortSignal(abortSignal: AbortSignal) {
+    return this.merge({ abortSignal });
+  }
+
+  public maxSteps(maxSteps: number) {
+    return this.merge({ maxSteps });
+  }
+
+  /**
+   * @experimental
+   */
+  public continueSteps(continueSteps: boolean) {
+    return this.merge({ experimental_continueSteps: continueSteps });
+  }
+
+  // #endregion
+
+  // #region Experimental
+
+  /**
+   * @experimental
+   */
+  public telemetry(telemetry: any) {
+    return this.merge({ experimental_telemetry: telemetry });
+  }
+
+  /**
+   * @experimental
+   */
+  public providerMetadata(providerMetadata: any) {
+    return this.merge({ experimental_providerMetadata: providerMetadata });
+  }
+
+  // public output(output: "object" | "array" | "no-schema") {
+  //   return this.merge({ output });
+  // }
+
+  // #endregion
+
+  // #region Generate
+
+  public generateText<
+    VALID_OPTIONS extends Llm.Completion & { tools?: Llm.Tools },
+    TOOLS extends VALID_OPTIONS["tools"],
+  >(
+    this: CompletionBuilder<VALID_OPTIONS>,
+  ): TOOLS extends Llm.Tools
+    ? Promise<GenerateTextResult<TOOLS, never>>
+    : Promise<GenerateTextResult<never, never>> {
+    return generateText(this.options) as any;
+  }
+
+  public streamText<
+    VALID_OPTIONS extends Llm.Completion & { tools?: Llm.Tools },
+    TOOLS extends VALID_OPTIONS["tools"],
+  >(
+    this: CompletionBuilder<VALID_OPTIONS>,
+  ): TOOLS extends Llm.Tools
+    ? Promise<StreamTextResult<TOOLS>>
+    : Promise<StreamTextResult<never>> {
+    return streamText(this.options) as any;
+  }
+
+  public generateObject<OBJECT, VALID_OPTIONS extends Llm.Completion>(
+    this: CompletionBuilder<VALID_OPTIONS>,
+    options: ObjectOptions<OBJECT>,
+  ) {
+    return generateObject({
+      ...this.options,
+      schema: options.schema,
+      schemaName: options.name,
+      schemaDescription: options.description,
     });
   }
 
-  /**
-   * Set the tools available to the LLM
-   *
-   * @argument tools The tools to use
-   * @argument requireToolUse Whether to require the LLM to use the tools
-   */
-  public tools<
-    TTools extends Resolvable<OneToN<Llm.Tool>>,
-    TRequire extends boolean = false,
-  >(tools: TTools, requireToolUse: TRequire = false as TRequire) {
-    return this.merge(
-      pipe(tools)._((tools) => ({
-        toolsConfig: {
-          type: "multi" as const,
-          tools,
-          requireToolUse: requireToolUse,
-        } as Llm.Completion.ToolConfig.Multi<Awaited<TTools>, TRequire>,
-      })).$,
-    );
-  }
-
-  /**
-   * Set a single tool for the LLM to use. The LLM will always respond with this tool
-   */
-  public tool<TTool extends Resolvable<Llm.Tool>>(tool: TTool) {
-    return this.merge(
-      pipe(tool)._((tool) => ({
-        toolsConfig: {
-          type: "single",
-          tool,
-        } as Llm.Completion.ToolConfig.Single<Awaited<TTool>>,
-      })).$,
-    );
-  }
-
-  /**
-   * Set the stop reason for the completion
-   */
-  public stopReason<U extends Llm.Completion.StopReason | undefined>(
-    stopReason: U,
+  public streamObject<OBJECT, VALID_OPTIONS extends Llm.Completion>(
+    this: CompletionBuilder<VALID_OPTIONS>,
+    options: ObjectOptions<OBJECT>,
   ) {
-    return this.merge(
-      pipe(stopReason)._((stopReason) => ({
-        stopReason,
-      })).$,
-    );
+    return streamObject({
+      ...this.options,
+      schema: options.schema,
+      schemaName: options.name,
+      schemaDescription: options.description,
+    });
   }
 
-  /**
-   * Set the tokens usage
-   */
-  public usage<U extends Resolvable<Llm.Completion.Usage | undefined>>(
-    usage: U,
-  ) {
-    return this.merge(
-      pipe(usage)._((usage) => ({
-        usage: usage as CompletionBuilder.ForceValue<U, Llm.Completion.Usage>,
-      })).$,
-    );
-  }
-
-  /**
-   * Add usage to existing usage
-   */
-  public addUsage<U extends Resolvable<Llm.Completion.Usage>>(usage: U) {
-    return this.merge(
-      pipe([this.$, usage] as const)._(([$, usage]) => ({
-        usage: {
-          inputTokens: $.usage?.inputTokens ?? 0 + usage.inputTokens,
-          outputTokens: $.usage?.outputTokens ?? 0 + usage.outputTokens,
-        },
-      })).$,
-    );
-  }
-
-  /**
-   * Set messages
-   */
-  public messages(
-    messages: Resolvable<Array<Llm.Message>> | Array<Resolvable<Llm.Message>>,
-  ) {
-    return this.merge(
-      pipe(messages)._((messages) => ({
-        messages: messages,
-      })).$,
-    );
-  }
-
-  /**
-   * Add messages
-   */
-  public addMessages(
-    messages: Resolvable<Array<Llm.Message>> | Array<Resolvable<Llm.Message>>,
-  ) {
-    return this.merge(
-      pipe([this.$, messages] as const)._(([$, messages]) => ({
-        messages: [...($.messages ?? []), ...messages] as Array<Llm.Message>,
-      })).$,
-    );
-  }
-
-  /**
-   * Add assistant message
-   */
-  public addAssistantMessage<
-    U extends Resolvable<Llm.Assistant.Message>,
-    V extends { messages: Array<Llm.Message> },
-  >(this: CompletionBuilder<Resolvable<V>>, message: U) {
-    return this.merge(
-      pipe([this.$, message] as const)._(([$, message]) => {
-        const $messages = $.messages ?? [];
-        const lastMessage = $.messages.at(-1);
-        if (!lastMessage)
-          return {
-            messages: [message],
-          };
-        if (lastMessage.role !== "assistant")
-          return {
-            messages: [...$messages, message],
-          };
-        return {
-          messages: [
-            ...$messages.slice(0, -1),
-            {
-              ...lastMessage,
-              content: [...lastMessage.content, ...message.content],
-            },
-          ],
-        };
-      }).$,
-    );
-  }
-
-  /**
-   * Execute completion on Llm runner
-   */
-  public run<
-    TRunnerCompletion extends Llm.Completion.Partial,
-    TCompletion extends TRunnerCompletion,
-  >(
-    this: CompletionBuilder<TCompletion>,
-    runner: CompletionRunner<TRunnerCompletion>,
-  ) {
-    return runner.runChatCompletion(this);
-  }
-
-  public lastMessage() {
-    return pipe(this.$)._((completion) => {
-      const lastMessage = completion.messages?.at(-1);
-      if (!lastMessage) throw new EmptyMessagesException(completion);
-      return lastMessage;
-    }).$;
-  }
-
-  /**
-   * Get last message as text
-   */
-  public lastMessageText() {
-    return pipe(this.lastMessage())._((message) =>
-      message.content
-        .filter((c) => c.type === "text")
-        .map((c) => c.text)
-        .join(""),
-    ).$;
-  }
-
-  /**
-   * Get last message tool calls
-   */
-  public lastMessageToolCalls<
-    C extends {
-      stopReason: Llm.Completion.StopReason;
-      toolsConfig: Llm.Completion.ToolConfig;
-    },
-  >(
-    this: CompletionBuilder<C>,
-  ): Llm.Message.Content.ToolCall.ResponseFromToolConfig<C["toolsConfig"]> {
-    // @ts-expect-error - To fix
-    return pipe(this.lastMessage())._((message) => {
-      /* Todo:
-        We need to decide if we want to allow non-tool_call responses to call this function
-        or if we let it go
-
-        - Forcing stopReason to be "tool_call" will force the user to check if the result
-          is a tool call and handle the error otherwise
-        - But it also implies a lot of boilerplate code on each run where we need the tool response
-      */
-      if (message.role !== "assistant") return [];
-      return message.content.filter((c) => c.type === "tool_call");
-    }).$;
-  }
+  // #endregion
 }
 
-export class EmptyMessagesException extends Error {
-  constructor(completion: Llm.Completion.Partial) {
-    super(t`
-      No messages in current completion state:
-        ${json.serialize(completion, { pretty: true })} 
-    `);
-  }
+interface ObjectOptions<T> {
+  schema: z.Schema<T>;
+  name?: string;
+  description?: string;
 }
 
-export const completion = CompletionBuilder.new;
+export const completion: CompletionBuilder<{}> = CompletionBuilder.new;

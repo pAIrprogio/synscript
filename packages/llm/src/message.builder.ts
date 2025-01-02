@@ -1,10 +1,8 @@
 import { pipe } from "@synstack/resolved";
 import { never } from "../../shared/src/ts.utils.ts";
-// We want to avoid importing the whole library for a single type
-import { type Base64Data } from "../../fs/src/file.lib.ts";
 
 import { t, type Text, tParse } from "@synstack/text";
-import { type Llm } from "./llm.types.ts";
+import type { Llm } from "./llm.types.ts";
 
 export const userMsg = <
   T extends
@@ -18,13 +16,9 @@ export const userMsg = <
     ._((parts) =>
       parts.map((v) => {
         if (typeof v === "string")
-          return { type: "text", text: v } satisfies Llm.Message.Content.Text;
-        if (v.type === "base64")
-          return {
-            type: "image",
-            image: v,
-          } satisfies Llm.Message.Content.Image;
-        if (v.type === "tool_response") return v;
+          return { type: "text", text: v } satisfies Llm.Message.Part.Text;
+        if (v.type === "image") return v;
+        if (v.type === "file") return v;
         never(v);
       }),
     )
@@ -33,7 +27,7 @@ export const userMsg = <
         ({
           role: "user" as const,
           content,
-        }) as Llm.User.Message,
+        }) satisfies Llm.Message.User,
     ).$;
 
 export const assistantMsg = <
@@ -48,8 +42,8 @@ export const assistantMsg = <
     ._((parts) =>
       parts.map((v) => {
         if (typeof v === "string")
-          return { type: "text", text: v } satisfies Llm.Message.Content.Text;
-        if (v.type === "tool_call") return v;
+          return { type: "text", text: v } satisfies Llm.Message.Part.Text;
+        if (v.type === "tool-call") return v;
         never(v.type);
       }),
     )
@@ -58,8 +52,21 @@ export const assistantMsg = <
         ({
           role: "assistant" as const,
           content,
-        }) as Llm.Assistant.Message,
+        }) satisfies Llm.Message.Assistant,
     ).$;
+};
+
+export const systemMsg = <
+  T extends
+    Array<MessageTemplate.System.TemplateValue> = Array<MessageTemplate.System.TemplateValue>,
+>(
+  template: TemplateStringsArray,
+  ...values: T
+) => {
+  return pipe(t(template, ...values))._(
+    (content) =>
+      ({ role: "system" as const, content }) satisfies Llm.Message.System,
+  ).$;
 };
 
 export declare namespace MessageTemplate {
@@ -68,8 +75,16 @@ export declare namespace MessageTemplate {
     ...values: Array<Text.TemplateValue<TExtraValue>>
   ) => void;
 
+  export namespace System {
+    export type ExtraValues = never;
+
+    export type TemplateValue = Text.TemplateValue<ExtraValues>;
+
+    export type Fn = MessageTemplate.Fn<ExtraValues>;
+  }
+
   export namespace Assistant {
-    export type ExtraValues = Llm.Message.Content.ToolCall;
+    export type ExtraValues = Llm.Message.Part.ToolCall;
 
     export type TemplateValue = Text.TemplateValue<ExtraValues>;
 
@@ -77,7 +92,7 @@ export declare namespace MessageTemplate {
   }
 
   export namespace User {
-    export type ExtraValues = Base64Data | Llm.Message.Content.ToolResponse;
+    export type ExtraValues = Llm.Message.Part.Image | Llm.Message.Part.File;
 
     export type TemplateValue = Text.TemplateValue<ExtraValues>;
 
