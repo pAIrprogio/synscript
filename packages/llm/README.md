@@ -18,7 +18,7 @@ const imageToLanguagePrompt = (imagePath: string) => [
     You are a helpful assistant that can identify the language of the text in the image.
   `,
   userMsg`
-    Here is the image: ${messagePart.fromFile(imagePath)}
+    Here is the image: ${filePart.fromFile(imagePath)}
   `,
   assistantMsg`
     The language of the text in the image is
@@ -87,7 +87,7 @@ const agent = completion.messages([
   userMsg`
     You are a helpful assistant.
     ${[Promise.resolve("- Read the image"), Promise.resolve("- Describe the image")]}
-    ${messagePart.fromFile("./image.png")}
+    ${filePart.fromFile("./image.png")}
   `,
 ]);
 ```
@@ -122,7 +122,7 @@ Template-based message builders for different roles:
 
   ```ts
   userMsg`
-    Here is the image: ${messagePart.fromFile("./image.png")}
+    Here is the image: ${filePart.fromFile("./image.png")}
   `;
   ```
 
@@ -135,17 +135,17 @@ Template-based message builders for different roles:
 
 ### File handling
 
-The `messagePart` utility provides methods to handle files and images:
+The `filePart` utility provides methods to handle files and images:
 
-- `messagePart.fromFile(path, mimeType?)`: Load file or image from path
-- `messagePart.fromBase64(base64, mimeType?)`: Load from base64 string
-- `messagePart.fromUrl(url, mimeType?)`: Load from URL
+- `filePart.fromFile(path, mimeType?)`: Load file or image from path
+- `filePart.fromBase64(base64, mimeType?)`: Load from base64 string
+- `filePart.fromUrl(url, mimeType?)`: Load from URL
 
 Supports automatic mime-type detection and handles both images and files appropriately.
 
 ### Tool usage
 
-Tools can be configured in completions for function calling:
+Tools can be configured in completions for function calling and every tool function will remain type-safe:
 
 ```ts
 const completion = baseCompletion
@@ -157,5 +157,6 @@ const completion = baseCompletion
       }),
     },
   })
+  .activeTools(["search"])
   .toolChoice("auto"); // or 'none', 'required', or { type: 'tool', toolName: 'search' }
 ```

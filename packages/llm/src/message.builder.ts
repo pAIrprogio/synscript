@@ -82,9 +82,6 @@ export const systemMsg = <
   ).$;
 };
 
-export const imagePart = () => {};
-export const filePart = () => {};
-
 export declare namespace MessageTemplate {
   export type Fn<TExtraValue extends Text.ExtraObject.Base = never> = (
     template: TemplateStringsArray,

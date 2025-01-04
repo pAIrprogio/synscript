@@ -6,4 +6,4 @@ export {
   userMsg,
   type MessageTemplate,
 } from "./message.builder.ts";
-export { messagePart } from "./part.builder.ts";
+export { filePart } from "./part.builder.ts";

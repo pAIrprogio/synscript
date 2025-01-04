@@ -1,8 +1,8 @@
 import mime from "mime-types";
 import type { Llm } from "./llm.types.ts";
 
-export const messagePart = {
-  fromFile(path: string, mimeType?: string) {
+export const filePart = {
+  fromPath(path: string, mimeType?: string) {
     const extractedMimeType = mimeType ?? mime.lookup(path);
 
     if (!extractedMimeType)

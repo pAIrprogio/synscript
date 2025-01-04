@@ -1,7 +1,7 @@
 import assert from "node:assert/strict";
 import { describe, it } from "node:test";
 import { userMsg } from "./message.builder.ts";
-import { messagePart } from "./part.builder.ts";
+import { filePart } from "./part.builder.ts";
 
 describe("MessageBuilder", () => {
   /**
@@ -29,7 +29,7 @@ describe("MessageBuilder", () => {
   describe("user", () => {
     it("allows interleaving images and text", async () => {
       const message = await userMsg`
-          Hello ${messagePart.fromFile("./src/test_files/dino.png")} World`;
+          Hello ${filePart.fromPath("./src/test_files/dino.png")} World`;
       assert.equal(message.role, "user");
       assert.equal(message.content.length, 3);
       assert.deepEqual(message.content[0], {
