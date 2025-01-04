@@ -1,3 +1,4 @@
+import { pipe, type Resolvable } from "@synstack/resolved";
 import {
   generateObject,
   generateText,
@@ -82,8 +83,8 @@ export class CompletionBuilder<OPTIONS extends Llm.Completion.Partial> {
   /**
    * Set the messages to use in the prompt.
    */
-  public messages(messages: Array<Llm.Message>) {
-    return this.merge({ messages });
+  public messages(messages: Resolvable.ArrayOf<Llm.Message>) {
+    return this.merge({ messages: pipe(messages).$ });
   }
 
   /**
@@ -91,7 +92,10 @@ export class CompletionBuilder<OPTIONS extends Llm.Completion.Partial> {
    */
   public appendMessages(messages: Array<Llm.Message>) {
     return this.merge({
-      messages: [...(this._options.messages ?? []), ...messages],
+      messages: pipe([
+        this._options.messages ?? [],
+        pipe(messages).$,
+      ] as const)._(([oldMsgs, newMsgs]) => [...oldMsgs, ...newMsgs]).$,
     });
   }
 
@@ -298,7 +302,12 @@ export class CompletionBuilder<OPTIONS extends Llm.Completion.Partial> {
   ): TOOLS extends Llm.Tools
     ? Promise<GenerateTextResult<TOOLS, never>>
     : Promise<GenerateTextResult<never, never>> {
-    return generateText(this._options) as any;
+    return pipe(this._options.messages)._((msgs) =>
+      generateText({
+        ...this._options,
+        messages: msgs,
+      }),
+    ).$ as any;
   }
 
   /**
@@ -316,7 +325,12 @@ export class CompletionBuilder<OPTIONS extends Llm.Completion.Partial> {
   ): TOOLS extends Llm.Tools
     ? Promise<StreamTextResult<TOOLS>>
     : Promise<StreamTextResult<never>> {
-    return streamText(this._options) as any;
+    return pipe(this._options.messages)._((msgs) =>
+      streamText({
+        ...this._options,
+        messages: msgs,
+      }),
+    ).$ as any;
   }
 
   /**
@@ -330,12 +344,15 @@ export class CompletionBuilder<OPTIONS extends Llm.Completion.Partial> {
     this: CompletionBuilder<VALID_OPTIONS>,
     options: ObjectOptions<OBJECT>,
   ) {
-    return generateObject({
-      ...this._options,
-      schema: options.schema,
-      schemaName: options.name,
-      schemaDescription: options.description,
-    });
+    return pipe(this._options.messages)._((msgs) =>
+      generateObject({
+        ...this._options,
+        messages: msgs,
+        schema: options.schema,
+        schemaName: options.name,
+        schemaDescription: options.description,
+      }),
+    ).$;
   }
 
   /**
@@ -349,12 +366,15 @@ export class CompletionBuilder<OPTIONS extends Llm.Completion.Partial> {
     this: CompletionBuilder<VALID_OPTIONS>,
     options: ObjectOptions<OBJECT>,
   ) {
-    return streamObject({
-      ...this._options,
-      schema: options.schema,
-      schemaName: options.name,
-      schemaDescription: options.description,
-    });
+    return pipe(this._options.messages)._((msgs) =>
+      streamObject({
+        ...this._options,
+        messages: msgs,
+        schema: options.schema,
+        schemaName: options.name,
+        schemaDescription: options.description,
+      }),
+    ).$;
   }
 
   // #endregion

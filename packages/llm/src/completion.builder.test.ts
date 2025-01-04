@@ -67,7 +67,7 @@ describe("CompletionBuilder", () => {
     });
     assertType<{ a: string; b: number }>(object.object);
 
-    const stream = withMessages.streamObject({
+    const stream = await withMessages.streamObject({
       schema: z.object({
         a: z.string(),
         b: z.number(),
@@ -136,7 +136,7 @@ describe("CompletionBuilder", () => {
               }),
           }),
         )
-        .messages(await Promise.all([userMsg`Hello, world!`]));
+        .messages([userMsg`Hello, world!`]);
       const res = await builder.generateText();
       assert.equal(res.text, "Hello, world!");
     });

@@ -48,7 +48,7 @@ To get a better understanding of every option available, please read Vercel's AI
 
 ### Completion building
 
-The completion builder provides a fluent API to configure LLM completions:
+The completion builder provides a type-safe API to configure LLM completions:
 
 - **Model Configuration**
 
@@ -74,6 +74,40 @@ The completion builder provides a fluent API to configure LLM completions:
 
 ### Message building
 
+As these template strings use [@synstack/text](https://github.com/pAIrprogio/synscript/tree/main/packages/text), there are several features emebed in message templates:
+
+- You can add promises or array of promises in your template string as if they were synchronous. Resolution is handled for you.
+- Format your prompt for readability. Trimming and removing extra padding is done on string resolution.
+- Template values are type-safe, you cannot add a value that is not usable in the prompt.
+
+To sum it up, this is valid:
+
+```ts
+const agent = completion.messages([
+  userMsg`
+    You are a helpful assistant.
+    ${[Promise.resolve("- Read the image"), Promise.resolve("- Describe the image")]}
+    ${messagePart.fromFile("./image.png")}
+  `,
+]);
+```
+
+And will resolve to:
+
+```yaml
+messages:
+  - role: user
+    content:
+      - type: text
+      - text: |--
+        You are a helpful assistant.
+          - Read the image
+          - Describe the image
+      - type: image
+        mimeType: image/png
+        image:
+```
+
 Template-based message builders for different roles:
 
 - `systemMsg`: Create system messages
@@ -98,8 +132,6 @@ Template-based message builders for different roles:
     The language of the text in the image is
   `;
   ```
-
-As these template strings use [@synstack/text](https://github.com/pAIrprogio/synscript/tree/main/packages/text)
 
 ### File handling
 

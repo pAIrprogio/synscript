@@ -1,3 +1,4 @@
+import { type Resolvable } from "@synstack/resolved";
 import type {
   CoreAssistantMessage,
   CoreMessage,
@@ -149,7 +150,7 @@ export declare namespace Llm {
     /**
      * The messages to use in the prompt.
      */
-    messages: Llm.Message[];
+    messages: Resolvable<Array<Llm.Message>>;
 
     // #region LLM
     /**
