@@ -1,10 +1,12 @@
 import { tool } from "ai";
 import { MockLanguageModelV1 } from "ai/test";
-import { describe } from "node:test";
+import assert from "node:assert/strict";
+import { describe, it } from "node:test";
 import { z } from "zod";
 import { assertType } from "../../shared/src/ts.utils.ts";
 import { completion } from "./completion.builder.ts";
 import type { Llm } from "./llm.types.ts";
+import { userMsg } from "./message.builder.ts";
 
 describe("CompletionBuilder", () => {
   const _typesTesting = async () => {
@@ -119,4 +121,24 @@ describe("CompletionBuilder", () => {
       }>
     >(textWithTools.toolCalls);
   };
+
+  describe("generateText", () => {
+    it("generates text", async () => {
+      const builder = completion
+        .model(
+          new MockLanguageModelV1({
+            doGenerate: () =>
+              Promise.resolve({
+                rawCall: { rawPrompt: null, rawSettings: {} },
+                finishReason: "stop",
+                usage: { promptTokens: 10, completionTokens: 20 },
+                text: `Hello, world!`,
+              }),
+          }),
+        )
+        .messages(await Promise.all([userMsg`Hello, world!`]));
+      const res = await builder.generateText();
+      assert.equal(res.text, "Hello, world!");
+    });
+  });
 });
