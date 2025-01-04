@@ -1494,6 +1494,9 @@ __metadata:
     "@types/node": "npm:^22.10.1"
     tsup: "npm:^8.3.5"
     typescript: "npm:^5.7.2"
+  peerDependencies:
+    ai: "*"
+    zod: "*"
   languageName: unknown
   linkType: soft
 
