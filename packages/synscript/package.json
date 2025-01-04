@@ -37,16 +37,6 @@
         "default": "./dist/synscript.index.cjs"
       }
     },
-    "./anthropic": {
-      "import": {
-        "types": "./dist/sub-packages/anthropic.index.d.ts",
-        "default": "./dist/sub-packages/anthropic.index.js"
-      },
-      "require": {
-        "types": "./dist/sub-packages/anthropic.index.d.cts",
-        "default": "./dist/sub-packages/anthropic.index.cjs"
-      }
-    },
     "./enhance": {
       "import": {
         "types": "./dist/sub-packages/enhance.index.d.ts",
@@ -237,5 +227,9 @@
     "!src/**/*.test.ts",
     "dist/**/*"
   ],
-  "gitHead": "ed339f5b4ef3a70b7371313234250b1e7445ef69"
+  "gitHead": "ed339f5b4ef3a70b7371313234250b1e7445ef69",
+  "peerDependencies": {
+    "ai": "*",
+    "zod": "*"
+  }
 }
