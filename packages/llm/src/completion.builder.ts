@@ -294,20 +294,25 @@ export class CompletionBuilder<OPTIONS extends Llm.Completion.Partial> {
    *
    * @returns A result object that contains the generated text, the results of the tool calls, and additional information.
    */
-  public generateText<
+  public async generateText<
     VALID_OPTIONS extends Llm.Completion & { tools?: Llm.Tools },
     TOOLS extends VALID_OPTIONS["tools"],
   >(
     this: CompletionBuilder<VALID_OPTIONS>,
-  ): TOOLS extends Llm.Tools
-    ? Promise<GenerateTextResult<TOOLS, never>>
-    : Promise<GenerateTextResult<never, never>> {
-    return pipe(this._options.messages)._((msgs) =>
-      generateText({
-        ...this._options,
-        messages: msgs,
-      }),
-    ).$ as any;
+  ): Promise<
+    TOOLS extends Llm.Tools
+      ? GenerateTextResult<TOOLS, never>
+      : GenerateTextResult<never, never>
+  > {
+    const resolvedConfig = await pipe(this._options.messages)._((messages) => ({
+      ...this._options,
+      messages,
+    })).$;
+
+    const res = await generateText(resolvedConfig);
+
+    // Todo add a CompletionBuilder instance to the result
+    return res as any;
   }
 
   /**
