@@ -2,6 +2,7 @@ import { pipe } from "@synstack/resolved";
 import { never } from "../../shared/src/ts.utils.ts";
 
 import { t, type Text, tParse } from "@synstack/text";
+import { readFileSync } from "fs";
 import type { Llm } from "./llm.types.ts";
 
 export const userMsg = <
@@ -17,8 +18,20 @@ export const userMsg = <
       parts.map((v) => {
         if (typeof v === "string")
           return { type: "text", text: v } satisfies Llm.Message.Part.Text;
-        if (v.type === "image") return v;
-        if (v.type === "file") return v;
+        if (v.type === "image") {
+          return {
+            type: "image",
+            mimeType: v.mimeType,
+            image: v.encoding === "path" ? readFileSync(v.data) : v.data,
+          } satisfies Llm.Message.Part.Image;
+        }
+        if (v.type === "file") {
+          return {
+            type: "file",
+            mimeType: v.mimeType,
+            data: v.encoding === "path" ? readFileSync(v.data) : v.data,
+          } satisfies Llm.Message.Part.File;
+        }
         never(v);
       }),
     )
@@ -69,6 +82,9 @@ export const systemMsg = <
   ).$;
 };
 
+export const imagePart = () => {};
+export const filePart = () => {};
+
 export declare namespace MessageTemplate {
   export type Fn<TExtraValue extends Text.ExtraObject.Base = never> = (
     template: TemplateStringsArray,
@@ -92,7 +108,9 @@ export declare namespace MessageTemplate {
   }
 
   export namespace User {
-    export type ExtraValues = Llm.Message.Part.Image | Llm.Message.Part.File;
+    export type ExtraValues =
+      | Llm.Message.Template.Part.Image
+      | Llm.Message.Template.Part.File;
 
     export type TemplateValue = Text.TemplateValue<ExtraValues>;
 

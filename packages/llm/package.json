@@ -5,7 +5,7 @@
     "access": "public"
   },
   "version": "1.5.0",
-  "description": "Immutable & chainable LLM tools",
+  "description": "Immutable, chainable, and type-safe wrapper of Vercel's AI SDK",
   "keywords": [
     "llm",
     "prompt",
@@ -44,37 +44,18 @@
         "types": "./dist/llm.index.d.cts",
         "default": "./dist/llm.index.cjs"
       }
-    },
-    "./anthropic": {
-      "import": {
-        "types": "./dist/anthropic/anthropic.index.d.ts",
-        "default": "./dist/anthropic/anthropic.index.js"
-      },
-      "require": {
-        "types": "./dist/anthropic/anthropic.index.d.cts",
-        "default": "./dist/anthropic/anthropic.index.cjs"
-      }
-    },
-    "./openai": {
-      "import": {
-        "types": "./dist/openai/openai.index.d.ts",
-        "default": "./dist/openai/openai.index.js"
-      },
-      "require": {
-        "types": "./dist/openai/openai.index.d.cts",
-        "default": "./dist/openai/openai.index.cjs"
-      }
     }
   },
   "dependencies": {
-    "@synstack/enhance": "workspace:*",
-    "@synstack/json": "workspace:*",
+    "@synstack/fs": "workspace:*",
     "@synstack/resolved": "workspace:*",
     "@synstack/text": "workspace:*",
+    "mime-types": "^2.1.35",
     "zod-to-json-schema": "^3.23.5"
   },
   "devDependencies": {
     "@synstack/fs": "workspace:*",
+    "@types/mime-types": "^2.1.4",
     "@types/node": "^22.10.1",
     "ai": "^4.0.22",
     "tsup": "^8.3.5",

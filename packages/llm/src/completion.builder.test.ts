@@ -10,7 +10,7 @@ describe("CompletionBuilder", () => {
   const _typesTesting = async () => {
     // Assert base completion
     const builder = completion;
-    assertType<{}>(builder.$);
+    assertType<{}>(builder.options);
 
     // Assert configured completion
     const expected = {
@@ -40,7 +40,7 @@ describe("CompletionBuilder", () => {
       .abortSignal(expected.abortSignal)
       .maxSteps(expected.maxSteps);
 
-    assertType<typeof expected>(configuredBuilder.$);
+    assertType<typeof expected>(configuredBuilder.options);
 
     // Generation typings
 

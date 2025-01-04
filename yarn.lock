@@ -1370,13 +1370,13 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@synstack/llm@workspace:packages/llm"
   dependencies:
-    "@synstack/enhance": "workspace:*"
     "@synstack/fs": "workspace:*"
-    "@synstack/json": "workspace:*"
     "@synstack/resolved": "workspace:*"
     "@synstack/text": "workspace:*"
+    "@types/mime-types": "npm:^2.1.4"
     "@types/node": "npm:^22.10.1"
     ai: "npm:^4.0.22"
+    mime-types: "npm:^2.1.35"
     tsup: "npm:^8.3.5"
     typescript: "npm:^5.7.2"
     zod: "npm:^3.23.8"
