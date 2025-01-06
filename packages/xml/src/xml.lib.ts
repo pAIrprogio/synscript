@@ -167,7 +167,7 @@ const buildXmlTree = (parts: Array<XmlPart>) => {
       }
 
       if (part.type === "tagClose") {
-        while (draft.stack.length >= 0) {
+        while (draft.stack.length > 0) {
           const node = draft.stack.pop()!;
           lastNode = draft.stack.at(-1);
           lastContents = lastNode?.content ?? draft.chunks;
