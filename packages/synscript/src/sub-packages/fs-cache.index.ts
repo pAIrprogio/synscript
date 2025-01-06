@@ -1,1 +1,1 @@
-export { FsCache } from "@synstack/fs-cache";
+export { FsCache, deepEqual } from "@synstack/fs-cache";

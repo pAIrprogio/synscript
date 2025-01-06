@@ -4,6 +4,16 @@
   "publishConfig": {
     "access": "public"
   },
+  "description": "Glob pattern matching and file filtering utilities",
+  "keywords": [
+    "glob",
+    "pattern-matching",
+    "file-filtering",
+    "filesystem",
+    "minimatch",
+    "file-search",
+    "path-matching"
+  ],
   "version": "1.1.4",
   "author": {
     "name": "pAIrprog",

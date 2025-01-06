@@ -1,34 +1,47 @@
-# SynStack / SynScript
+# Synstack
 
-> A collection of packages for fast iterations on LLM scripts, workflows, and applications
+A collection of packages for fast iterations on LLM scripts, workflows, and applications
 
 ## Packages
 
 ### Bundle Package
 
-- [@synstack/synscript](./packages/synscript/README.md) - The one for all package, includes bundled exports from all other packages
+- [@synstack/synscript](./packages/synscript/README.md) - The one for all package, includes bundled exports from all other packages (recommended)
 
 ### Individual Packages
 
+#### AI/LLM
+
+- [@synstack/llm](./packages/llm/README.md) - Immutable, chainable, and type-safe wrapper of Vercel's AI SDK for LLM operations
+
+#### System Utilities
+
+- [@synstack/fs](./packages/fs/README.md) - File system operations made easy
+- [@synstack/fs-cache](./packages/fs-cache/README.md) - Human-friendly file system caching
+- [@synstack/git](./packages/git/README.md) - Subset of useful git commands for LLM scripts
+- [@synstack/enhance](./packages/enhance/README.md) - Proxy based utilities to enhance objects and functions with additional capabilities
+- [@synstack/glob](./packages/glob/README.md) - Glob pattern matching and file filtering utilities
+
+#### Web Scraping
+
+- [@synstack/web](./packages/web/README.md) - Web scraping utilities
+
 #### Data formats
 
-- [@synstack/json](./packages/json/README.md) - Safe JSON serialization and deserialization
+- [@synstack/json](./packages/json/README.md) - Type-safe JSON serialization and deserialization. Available directly through @synstack/fs
+- [@synstack/yaml](./packages/yaml/README.md) - Opiniated type-safe YAML serialization and deserialization. Available directly through @synstack/fs
 - [@synstack/xml](./packages/xml/README.md) - Lax, non spec-compliant XML utils tailored for LLMs
-- [@synstack/yaml](./packages/yaml/README.md) - Safe and opiniated YAML serialization and deserialization
+- [@synstack/markdown](./packages/markdown/README.md) - Type-safe markdown processing with YAML frontmatter support
 
-#### Functional programming
+#### Functional Programming
 
 - [@synstack/pipe](./packages/pipe/README.md) - Simple typesafe pipe utility for Functional Programming
 - [@synstack/resolved](./packages/resolved/README.md) - A piping utility which preserves the sync/async state of the value
 
-#### Text manipulation
+#### Text Processing
 
-- [@synstack/str](./packages/str/README.md) - Advanced chainable string manipulation
 - [@synstack/text](./packages/text/README.md) - String templating as it was meant to be
-
-#### Web scraping
-
-- [@synstack/web](./packages/web/README.md) - Web scraping utilities
+- [@synstack/str](./packages/str/README.md) - Advanced chainable string manipulation
 
 # Dependency Graph
 

@@ -5,6 +5,19 @@
     "access": "public"
   },
   "version": "1.4.2",
+  "description": "File system operations made easy",
+  "keywords": [
+    "synstack",
+    "fs",
+    "file system",
+    "immutable",
+    "chainable",
+    "path",
+    "json",
+    "yaml",
+    "xml",
+    "markdown"
+  ],
   "author": {
     "name": "pAIrprog",
     "url": "https://pairprog.io"

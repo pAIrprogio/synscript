@@ -4,6 +4,25 @@
   "publishConfig": {
     "access": "public"
   },
+  "keywords": [
+    "synstack",
+    "llm",
+    "ai",
+    "scripting",
+    "typescript",
+    "immutable",
+    "fs",
+    "cache",
+    "glob",
+    "json",
+    "markdown",
+    "reforge",
+    "str",
+    "text",
+    "web",
+    "xml",
+    "yaml"
+  ],
   "version": "2.1.0",
   "author": {
     "name": "pAIrprog",

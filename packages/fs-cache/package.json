@@ -8,7 +8,8 @@
   "description": "Human-friendly file system caching",
   "keywords": [
     "cache",
-    "memoize"
+    "memoize",
+    "file-system"
   ],
   "author": {
     "name": "pAIrprog",
