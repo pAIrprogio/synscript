@@ -7,11 +7,14 @@ import type {
   CoreToolChoice,
   CoreToolMessage,
   CoreUserMessage,
+  Experimental_LanguageModelV1Middleware,
   FilePart,
   GenerateObjectResult,
   GenerateTextResult,
   ImagePart,
   LanguageModel,
+  LanguageModelV1StreamPart,
+  ProviderMetadata,
   StepResult,
   StreamObjectResult,
   StreamTextResult,
@@ -28,6 +31,15 @@ export declare namespace Llm {
    * Language model that is used by the AI SDK Core functions.
    */
   export type Model = LanguageModel;
+
+  export namespace Model {
+    /**
+     * Experimental middleware for LanguageModelV1.
+     * This type defines the structure for middleware that can be used to modify
+     * the behavior of LanguageModelV1 operations.
+     */
+    export type Middleware = Experimental_LanguageModelV1Middleware;
+  }
 
   /**
    * A message that can be used in the `messages` field of a prompt.
@@ -99,6 +111,17 @@ export declare namespace Llm {
      */
     export type System = CoreSystemMessage;
 
+    export namespace User {
+      /**
+       * A user message where content is always an array of parts.
+       */
+      export type Pure = {
+        role: "user";
+        content: Array<Llm.Message.Part.User>;
+        experimental_providerMetadata?: ProviderMetadata;
+      };
+    }
+
     /**
      * A user message. It can contain text or a combination of text and images.
      */
@@ -108,6 +131,17 @@ export declare namespace Llm {
      * An assistant message. It can contain text, tool calls, or a combination of text and tool calls.
      */
     export type Assistant = CoreAssistantMessage;
+
+    export namespace Assistant {
+      /**
+       * An assistant message where content is always an array of parts.
+       */
+      export type Pure = {
+        role: "assistant";
+        content: Array<Llm.Message.Part.Assistant>;
+        experimental_providerMetadata?: ProviderMetadata;
+      };
+    }
 
     /**
      * A tool message. It contains the result of one or more tool calls.
@@ -316,6 +350,7 @@ export declare namespace Llm {
          * A result object for accessing different stream types and additional information.
          */
         export type Result<TOOLS extends Llm.Tools> = StreamTextResult<TOOLS>;
+        export type Part = LanguageModelV1StreamPart;
       }
 
       export namespace Object {
