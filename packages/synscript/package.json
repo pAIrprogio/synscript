@@ -107,6 +107,16 @@
         "default": "./dist/sub-packages/llm/extras.index.cjs"
       }
     },
+    "./llm/middleware": {
+      "import": {
+        "types": "./dist/sub-packages/llm/middleware.index.d.ts",
+        "default": "./dist/sub-packages/llm/middleware.index.js"
+      },
+      "require": {
+        "types": "./dist/sub-packages/llm/middleware.index.d.cts",
+        "default": "./dist/sub-packages/llm/middleware.index.cjs"
+      }
+    },
     "./markdown": {
       "import": {
         "types": "./dist/sub-packages/markdown.index.d.ts",

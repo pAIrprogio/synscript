@@ -1,0 +1,24 @@
+{
+  "input": [
+    {
+      "inputFormat": "messages",
+      "mode": { "type": "regular" },
+      "prompt": [
+        { "role": "user", "content": [{ "type": "text", "text": "Hello" }] }
+      ]
+    }
+  ],
+  "output": {
+    "rawCall": { "rawPrompt": null, "rawSettings": {} },
+    "stream": [
+      { "type": "text-delta", "textDelta": " " },
+      { "type": "text-delta", "textDelta": "world" },
+      { "type": "text-delta", "textDelta": "!" },
+      {
+        "type": "finish",
+        "finishReason": "stop",
+        "usage": { "promptTokens": 10, "completionTokens": 20 }
+      }
+    ]
+  }
+}

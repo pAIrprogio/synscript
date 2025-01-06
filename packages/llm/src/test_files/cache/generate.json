@@ -1,0 +1,27 @@
+{
+  "input": [
+    {
+      "inputFormat": "messages",
+      "mode": {
+        "type": "regular"
+      },
+      "prompt": [
+        {
+          "role": "user",
+          "content": [
+            {
+              "type": "text",
+              "text": "Hello"
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "output": {
+    "rawCall": { "rawPrompt": null, "rawSettings": {} },
+    "finishReason": "stop",
+    "usage": { "promptTokens": 10, "completionTokens": 20 },
+    "text": " world!"
+  }
+}

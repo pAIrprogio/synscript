@@ -33,7 +33,9 @@ declare namespace FsCache {
   }
 }
 
-export class FsCache<TConfig extends FsCache.Options.Partial> {
+export class FsCache<
+  TConfig extends FsCache.Options.Partial = FsCache.Options.Partial,
+> {
   private readonly _config: TConfig;
 
   private constructor(config: TConfig) {

@@ -38,6 +38,17 @@ export declare namespace Llm {
      * the behavior of LanguageModelV1 operations.
      */
     export type Middleware = (model: Llm.Model) => Llm.Model;
+
+    export namespace Generate {
+      export type Options = Parameters<LanguageModel["doGenerate"]>[0];
+      export type Return = ReturnType<LanguageModel["doGenerate"]>;
+    }
+
+    export namespace Stream {
+      export type Options = Parameters<LanguageModel["doStream"]>[0];
+      export type Part = LanguageModelV1StreamPart;
+      export type Return = ReturnType<LanguageModel["doStream"]>;
+    }
   }
 
   /**
@@ -361,7 +372,6 @@ export declare namespace Llm {
          * A result object for accessing different stream types and additional information.
          */
         export type Result<TOOLS extends Llm.Tools> = StreamTextResult<TOOLS>;
-        export type Part = LanguageModelV1StreamPart;
       }
 
       export namespace Object {

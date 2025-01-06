@@ -4,10 +4,10 @@ import assert from "node:assert/strict";
 import { describe, it } from "node:test";
 import { z } from "zod";
 import { assertType } from "../../shared/src/ts.utils.ts";
-import { includeAssistantMessage } from "../model.middleware.ts";
 import { completion } from "./completion.builder.ts";
 import type { Llm } from "./llm.types.ts";
 import { assistantMsg, userMsg } from "./message.builder.ts";
+import { includeAssistantMessage } from "./model.middleware.ts";
 
 describe("CompletionBuilder", () => {
   const _typesTesting = async () => {
