@@ -113,10 +113,10 @@ export class CompletionBuilder<OPTIONS extends Llm.Completion.Partial> {
    */
   public toolChoice<
     VALID_OPTIONS extends Llm.Completion.Partial & { tools: Llm.Tools },
-    TOOL_CHOICE extends Llm.Completion.ToolChoice<VALID_OPTIONS["tools"]>,
+    TOOL_CHOICE extends Llm.Tool.Choice<VALID_OPTIONS["tools"]>,
   >(this: CompletionBuilder<VALID_OPTIONS>, toolChoice: TOOL_CHOICE) {
     return this.merge({
-      toolChoice: toolChoice as Llm.Completion.ToolChoice<Llm.Tools>,
+      toolChoice: toolChoice as Llm.Tool.Choice<Llm.Tools>,
     });
   }
 
@@ -125,7 +125,7 @@ export class CompletionBuilder<OPTIONS extends Llm.Completion.Partial> {
    * @experimental
    */
   public repairToolCalls(
-    repairToolCalls: Llm.Completion.ToolCallRepairFunction<Llm.Tools>,
+    repairToolCalls: Llm.Tool.Call.RepairFunction<Llm.Tools>,
   ) {
     return this.merge({ experimental_repairToolCalls: repairToolCalls });
   }
@@ -297,8 +297,8 @@ export class CompletionBuilder<OPTIONS extends Llm.Completion.Partial> {
     this: CompletionBuilder<VALID_OPTIONS>,
   ): Promise<
     TOOLS extends Llm.Tools
-      ? Llm.Completion.GenerateTextResult<TOOLS, never>
-      : Llm.Completion.GenerateTextResult<never, never>
+      ? Llm.Completion.Generate.Text.Result<TOOLS, never>
+      : Llm.Completion.Generate.Text.Result<never, never>
   > {
     const resolvedConfig = await pipe(this._options.messages)._((messages) => ({
       ...this._options,
@@ -324,8 +324,8 @@ export class CompletionBuilder<OPTIONS extends Llm.Completion.Partial> {
   >(
     this: CompletionBuilder<VALID_OPTIONS>,
   ): TOOLS extends Llm.Tools
-    ? Promise<Llm.Completion.StreamTextResult<TOOLS>>
-    : Promise<Llm.Completion.StreamTextResult<never>> {
+    ? Promise<Llm.Completion.Stream.Text.Result<TOOLS>>
+    : Promise<Llm.Completion.Stream.Text.Result<never>> {
     return pipe(this._options.messages)._((msgs) =>
       streamText({
         ...this._options,

@@ -1,10 +1,5 @@
 import { type Resolvable } from "@synstack/resolved";
 import type {
-  GenerateObjectResult as $GenerateObjectResult,
-  GenerateTextResult as $GenerateTextResult,
-  StreamObjectResult as $StreamObjectResult,
-  StreamTextResult as $StreamTextResult,
-  ToolCallRepairFunction as $ToolCallRepairFunction,
   CoreAssistantMessage,
   CoreMessage,
   CoreSystemMessage,
@@ -13,11 +8,16 @@ import type {
   CoreToolMessage,
   CoreUserMessage,
   FilePart,
+  GenerateObjectResult,
+  GenerateTextResult,
   ImagePart,
   LanguageModel,
   StepResult,
+  StreamObjectResult,
+  StreamTextResult,
   TextPart,
   ToolCallPart,
+  ToolCallRepairFunction,
 } from "ai";
 import { z } from "zod";
 
@@ -213,7 +213,7 @@ export declare namespace Llm {
     /**
      * The tool choice strategy. Default: 'auto'.
      */
-    toolChoice?: Llm.Completion.ToolChoice<Record<string, Llm.Tool>>;
+    toolChoice?: Llm.Tool.Choice<Record<string, Llm.Tool>>;
     // #endregion
 
     // #region Flow
@@ -272,7 +272,7 @@ export declare namespace Llm {
     /**
      * A function that attempts to repair a tool call that failed to parse.
      */
-    experimental_repairToolCalls?: Llm.Completion.ToolCallRepairFunction<Llm.Tools>;
+    experimental_repairToolCalls?: Tool.Call.RepairFunction<Llm.Tools>;
     // experimental_output?: Output.Output<any>; // TODO
     // #endregion
 
@@ -290,58 +290,42 @@ export declare namespace Llm {
      */
     export type Partial = $Partial<Completion>;
 
-    /**
-     * The result of a `generateText` call.
-     * It contains the generated text, the tool calls that were made during the generation, and the results of the tool calls.
-     */
-    export type GenerateTextResult<
-      TOOLS extends Tools,
-      OUTPUT,
-    > = $GenerateTextResult<TOOLS, OUTPUT>;
+    export namespace Generate {
+      export namespace Text {
+        /**
+         * The result of a `generateText` call.
+         * It contains the generated text, the tool calls that were made during the generation, and the results of the tool calls.
+         */
+        export type Result<
+          TOOLS extends Llm.Tools,
+          OUTPUT,
+        > = GenerateTextResult<TOOLS, OUTPUT>;
+      }
 
-    /**
-     * A result object for accessing different stream types and additional information.
-     */
-    export type StreamTextResult<TOOLS extends Tools> =
-      $StreamTextResult<TOOLS>;
+      export namespace Object {
+        /**
+         * The result of a `generateObject` call.
+         */
+        export type Result<OBJECT> = GenerateObjectResult<OBJECT>;
+      }
+    }
 
-    /**
-     * The result of a `generateObject` call.
-     */
-    export type GenerateObjectResult<OBJECT> = $GenerateObjectResult<OBJECT>;
+    export namespace Stream {
+      export namespace Text {
+        /**
+         * A result object for accessing different stream types and additional information.
+         */
+        export type Result<TOOLS extends Llm.Tools> = StreamTextResult<TOOLS>;
+      }
 
-    /**
-     * The result of a `streamObject` call that contains the partial object stream and additional information.
-     */
-    export type StreamObjectResult<PARTIAL, RESULT, ELEMENT_STREAM> =
-      $StreamObjectResult<PARTIAL, RESULT, ELEMENT_STREAM>;
-
-    /**
-     * A function that attempts to repair a tool call that failed to parse.
-     *
-     * It receives the error and the context as arguments and returns the repair
-     * tool call JSON as text.
-     *
-     * @param options.system - The system prompt.
-     * @param options.messages - The messages in the current generation step.
-     * @param options.toolCall - The tool call that failed to parse.
-     * @param options.tools - The tools that are available.
-     * @param options.parameterSchema - A function that returns the JSON Schema for a tool.
-     * @param options.error - The error that occurred while parsing the tool call.
-     */
-    export type ToolCallRepairFunction<Tools extends Record<string, CoreTool>> =
-      $ToolCallRepairFunction<Tools>;
-
-    /**
-     * Tool choice for the generation. It supports the following settings:
-     *
-     * - `auto` (default): the model can choose whether and which tools to call.
-     * - `required`: the model must call a tool. It can choose which tool to call.
-     * - `none`: the model must not call tools
-     * - `{ type: 'tool', toolName: string (typed) }`: the model must call the specified tool
-     */
-    export type ToolChoice<Tools extends Record<string, CoreTool>> =
-      CoreToolChoice<Tools>;
+      export namespace Object {
+        /**
+         * The result of a `streamObject` call that contains the partial object stream and additional information.
+         */
+        export type Result<PARTIAL, RESULT, ELEMENT_STREAM> =
+          StreamObjectResult<PARTIAL, RESULT, ELEMENT_STREAM>;
+      }
+    }
   }
 
   /**
@@ -354,6 +338,37 @@ export declare namespace Llm {
     PARAMETERS extends z.ZodTypeAny = any,
     RESULT = any,
   > = CoreTool<PARAMETERS, RESULT>;
+
+  export namespace Tool {
+    /**
+     * Tool choice for the generation. It supports the following settings:
+     *
+     * - `auto` (default): the model can choose whether and which tools to call.
+     * - `required`: the model must call a tool. It can choose which tool to call.
+     * - `none`: the model must not call tools
+     * - `{ type: 'tool', toolName: string (typed) }`: the model must call the specified tool
+     */
+    export type Choice<Tools extends Record<string, CoreTool>> =
+      CoreToolChoice<Tools>;
+
+    export namespace Call {
+      /**
+       * A function that attempts to repair a tool call that failed to parse.
+       *
+       * It receives the error and the context as arguments and returns the repair
+       * tool call JSON as text.
+       *
+       * @param options.system - The system prompt.
+       * @param options.messages - The messages in the current generation step.
+       * @param options.toolCall - The tool call that failed to parse.
+       * @param options.tools - The tools that are available.
+       * @param options.parameterSchema - A function that returns the JSON Schema for a tool.
+       * @param options.error - The error that occurred while parsing the tool call.
+       */
+      export type RepairFunction<Tools extends Llm.Tools> =
+        ToolCallRepairFunction<Tools>;
+    }
+  }
 
   /**
    * A record of Llm.Tool
