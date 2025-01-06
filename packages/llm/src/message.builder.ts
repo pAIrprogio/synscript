@@ -40,7 +40,7 @@ export const userMsg = <
         ({
           role: "user" as const,
           content,
-        }) satisfies Llm.Message.User,
+        }) satisfies Llm.Message.User.Pure,
     ).$;
 
 export const assistantMsg = <
@@ -65,7 +65,7 @@ export const assistantMsg = <
         ({
           role: "assistant" as const,
           content,
-        }) satisfies Llm.Message.Assistant,
+        }) satisfies Llm.Message.Assistant.Pure,
     ).$;
 };
 
@@ -114,3 +114,11 @@ export declare namespace MessageTemplate {
     export type Fn = MessageTemplate.Fn<ExtraValues>;
   }
 }
+
+export const messageToText = (message: Llm.Message) => {
+  if (typeof message.content === "string") return message.content;
+  return message.content.reduce((v, c) => {
+    if (c.type === "text") return v + c.text;
+    return v;
+  }, "");
+};

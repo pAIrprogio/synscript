@@ -7,7 +7,6 @@ import type {
   CoreToolChoice,
   CoreToolMessage,
   CoreUserMessage,
-  Experimental_LanguageModelV1Middleware,
   FilePart,
   GenerateObjectResult,
   GenerateTextResult,
@@ -38,7 +37,7 @@ export declare namespace Llm {
      * This type defines the structure for middleware that can be used to modify
      * the behavior of LanguageModelV1 operations.
      */
-    export type Middleware = Experimental_LanguageModelV1Middleware;
+    export type Middleware = (model: Llm.Model) => Llm.Model;
   }
 
   /**
@@ -180,10 +179,22 @@ export declare namespace Llm {
   }
 
   export type Completion = {
+    // #region Model
     /**
      * The language model to use.
      */
     model: Llm.Model;
+
+    /**
+     * Middlewares to wrap the model with
+     *
+     * Will be executed from first to last:
+     * ```ts
+     * completion.middlewares([middleware1, middleware2]) // middleware2(middleware1(model))
+     * ```
+     */
+    middlewares?: Array<Llm.Model.Middleware>;
+    // #endregion
 
     /**
      * The messages to use in the prompt.

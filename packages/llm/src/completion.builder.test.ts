@@ -4,9 +4,10 @@ import assert from "node:assert/strict";
 import { describe, it } from "node:test";
 import { z } from "zod";
 import { assertType } from "../../shared/src/ts.utils.ts";
+import { includeAssistantMessage } from "../model.middleware.ts";
 import { completion } from "./completion.builder.ts";
 import type { Llm } from "./llm.types.ts";
-import { userMsg } from "./message.builder.ts";
+import { assistantMsg, userMsg } from "./message.builder.ts";
 
 describe("CompletionBuilder", () => {
   const _typesTesting = async () => {
@@ -132,13 +133,32 @@ describe("CompletionBuilder", () => {
                 rawCall: { rawPrompt: null, rawSettings: {} },
                 finishReason: "stop",
                 usage: { promptTokens: 10, completionTokens: 20 },
-                text: `Hello, world!`,
+                text: `Hello world!`,
               }),
           }),
         )
-        .messages([userMsg`Hello, world!`]);
+        .messages([userMsg`Hello world!`]);
       const res = await builder.generateText();
-      assert.equal(res.text, "Hello, world!");
+      assert.equal(res.text, "Hello world!");
+    });
+
+    it("uses middlewares", async () => {
+      const builder = completion
+        .model(
+          new MockLanguageModelV1({
+            doGenerate: () =>
+              Promise.resolve({
+                rawCall: { rawPrompt: null, rawSettings: {} },
+                finishReason: "stop",
+                usage: { promptTokens: 10, completionTokens: 20 },
+                text: ` world!`,
+              }),
+          }),
+        )
+        .appendMiddlewares([includeAssistantMessage])
+        .messages([assistantMsg`Hello`]);
+      const res = await builder.generateText();
+      assert.equal(res.text, "Hello world!");
     });
   });
 });

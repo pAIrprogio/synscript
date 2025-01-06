@@ -63,12 +63,45 @@ export class CompletionBuilder<OPTIONS extends Llm.Completion.Partial> {
     return this._options;
   }
 
+  // #region Model
+
   /**
    * Set the language model to use.
    */
   public model<VALUE extends Llm.Model>(model: VALUE) {
     return this.merge({ model });
   }
+
+  /**
+   * Set the middlewares to wrap the model with.
+   */
+  public middlewares(middlewares: Array<Llm.Model.Middleware>) {
+    return this.merge({ middlewares });
+  }
+
+  /**
+   * Append a middleware to the existing middlewares.
+   *
+   * Appended middlewares will be executed after the existing middlewares.
+   */
+  public appendMiddlewares(middlewares: Array<Llm.Model.Middleware>) {
+    return this.merge({
+      middlewares: [...(this._options.middlewares ?? []), ...middlewares],
+    });
+  }
+
+  /**
+   * Prepend a middleware to the existing middlewares.
+   *
+   * Prepended middlewares will be executed before the existing middlewares.
+   */
+  public prependMiddlewares(middlewares: Array<Llm.Model.Middleware>) {
+    return this.merge({
+      middlewares: [...middlewares, ...(this._options.middlewares ?? [])],
+    });
+  }
+
+  // #endregion
 
   // #region Messages
 
@@ -283,6 +316,15 @@ export class CompletionBuilder<OPTIONS extends Llm.Completion.Partial> {
 
   // #region Generate
 
+  private get modelWithMiddlewares() {
+    if (!this._options.middlewares) return this._options.model;
+
+    return this._options.middlewares.reduce(
+      (model, middleware) => middleware(model),
+      this._options.model!,
+    );
+  }
+
   /**
    * Generate a text and call tools for a given prompt using a language model.
    *
@@ -302,6 +344,7 @@ export class CompletionBuilder<OPTIONS extends Llm.Completion.Partial> {
   > {
     const resolvedConfig = await pipe(this._options.messages)._((messages) => ({
       ...this._options,
+      model: this.modelWithMiddlewares,
       messages,
     })).$;
 
@@ -329,6 +372,7 @@ export class CompletionBuilder<OPTIONS extends Llm.Completion.Partial> {
     return pipe(this._options.messages)._((msgs) =>
       streamText({
         ...this._options,
+        model: this.modelWithMiddlewares,
         messages: msgs,
       }),
     ).$ as any;
@@ -349,6 +393,7 @@ export class CompletionBuilder<OPTIONS extends Llm.Completion.Partial> {
       generateObject({
         ...this._options,
         messages: msgs,
+        model: this.modelWithMiddlewares,
         schema: options.schema,
         schemaName: options.name,
         schemaDescription: options.description,
@@ -370,6 +415,7 @@ export class CompletionBuilder<OPTIONS extends Llm.Completion.Partial> {
     return pipe(this._options.messages)._((msgs) =>
       streamObject({
         ...this._options,
+        model: this.modelWithMiddlewares,
         messages: msgs,
         schema: options.schema,
         schemaName: options.name,
