@@ -1,13 +1,5 @@
 import { pipe, type Resolvable } from "@synstack/resolved";
-import {
-  generateObject,
-  generateText,
-  streamObject,
-  streamText,
-  type GenerateTextResult,
-  type StreamTextResult,
-  type ToolCallRepairFunction,
-} from "ai";
+import { generateObject, generateText, streamObject, streamText } from "ai";
 import type { z } from "zod";
 import type { Llm } from "./llm.types.ts";
 
@@ -121,16 +113,20 @@ export class CompletionBuilder<OPTIONS extends Llm.Completion.Partial> {
    */
   public toolChoice<
     VALID_OPTIONS extends Llm.Completion.Partial & { tools: Llm.Tools },
-    TOOL_CHOICE extends Llm.ToolChoice<VALID_OPTIONS["tools"]>,
+    TOOL_CHOICE extends Llm.Completion.ToolChoice<VALID_OPTIONS["tools"]>,
   >(this: CompletionBuilder<VALID_OPTIONS>, toolChoice: TOOL_CHOICE) {
-    return this.merge({ toolChoice: toolChoice as Llm.ToolChoice<Llm.Tools> });
+    return this.merge({
+      toolChoice: toolChoice as Llm.Completion.ToolChoice<Llm.Tools>,
+    });
   }
 
   /**
    * Set a function that attempts to repair a tool call that failed to parse.
    * @experimental
    */
-  public repairToolCalls(repairToolCalls: ToolCallRepairFunction<Llm.Tools>) {
+  public repairToolCalls(
+    repairToolCalls: Llm.Completion.ToolCallRepairFunction<Llm.Tools>,
+  ) {
     return this.merge({ experimental_repairToolCalls: repairToolCalls });
   }
 
@@ -301,8 +297,8 @@ export class CompletionBuilder<OPTIONS extends Llm.Completion.Partial> {
     this: CompletionBuilder<VALID_OPTIONS>,
   ): Promise<
     TOOLS extends Llm.Tools
-      ? GenerateTextResult<TOOLS, never>
-      : GenerateTextResult<never, never>
+      ? Llm.Completion.GenerateTextResult<TOOLS, never>
+      : Llm.Completion.GenerateTextResult<never, never>
   > {
     const resolvedConfig = await pipe(this._options.messages)._((messages) => ({
       ...this._options,
@@ -328,8 +324,8 @@ export class CompletionBuilder<OPTIONS extends Llm.Completion.Partial> {
   >(
     this: CompletionBuilder<VALID_OPTIONS>,
   ): TOOLS extends Llm.Tools
-    ? Promise<StreamTextResult<TOOLS>>
-    : Promise<StreamTextResult<never>> {
+    ? Promise<Llm.Completion.StreamTextResult<TOOLS>>
+    : Promise<Llm.Completion.StreamTextResult<never>> {
     return pipe(this._options.messages)._((msgs) =>
       streamText({
         ...this._options,
