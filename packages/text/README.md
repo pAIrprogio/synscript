@@ -46,7 +46,6 @@ List of items:
 
 **What's baked in ?**
 
-- Functions are called
 - Promises even nested in arrays are resolved in parallel
 - Array values are joined with a newline
 - Text is trimmed
@@ -164,9 +163,6 @@ const textFail: Text.String<{ type: "extra"; value: string }> =
 // string & { __extra: { type: "extra"; value: string } } is equivalent to Text.String<{ type: "extra"; value: string }>
 const text: string & { __extra: { type: "extra"; value: string } } =
   t`Hello ${{ type: "extra" as const, value: "Hello" }} World`;
-
-console.log(text);
-// Hello %STR_EXTRA%{"type":"extra","value":"Hello"}%!STR_EXTRA% World
 
 console.log(tParse(text));
 // ["Hello ", { type: "extra", value: "Hello" }, " World"]

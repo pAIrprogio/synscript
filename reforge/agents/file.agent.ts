@@ -1,25 +1,24 @@
 import { reforge, str, xml } from "@synstack/synscript";
 import { type Llm } from "@synstack/synscript/llm";
+import { type Resolvable } from "@synstack/synscript/resolved";
 import { type Xml } from "@synstack/synscript/xml";
 import type { FsFile } from "../../packages/fs/src/file.lib.ts";
-import {
-  baseCache,
-  baseCompletion,
-  completionRunner,
-} from "../runtime/completion.runtime.ts";
+import { baseCompletion } from "../runtime/completion.runtime.ts";
 import { type BaseContext } from "../runtime/context.runtime.ts";
 import { rootDir } from "../runtime/workspace.runtime.ts";
 
-export async function fileAgent<TContext extends BaseContext>(
-  context: TContext,
-  prompt: (context: TContext) => Array<Llm.Message>,
-) {
-  const completion = baseCompletion.messages(prompt(context));
-  const _response = await completion.run(
-    completionRunner.cache(
-      baseCache.key([context.focusedFile.relativePathFrom(rootDir)]),
-    ),
-  );
+export async function fileAgent(
+  prompt: Array<Resolvable<Llm.Message>>,
+): Promise<void>;
+export async function fileAgent<
+  PROMPT extends (context: CONTEXT) => Array<Resolvable<Llm.Message>>,
+  CONTEXT extends BaseContext = never,
+>(prompt: PROMPT, context: CONTEXT): Promise<void>;
+export async function fileAgent(prompt: any, context?: any) {
+  const messages = typeof prompt === "function" ? prompt(context) : prompt;
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
+  const res = await baseCompletion.messages(messages).generateText();
+  await writeResponseToFiles(res.text);
 }
 
 /**

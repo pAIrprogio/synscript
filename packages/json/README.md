@@ -17,7 +17,7 @@ import { serialize, deserialize } from "@synstack/json";
 import { z } from "zod";
 
 // Define a schema for type safety
-const UserSchema = z.object({
+const userSchema = z.object({
   name: z.string(),
   age: z.number(),
 });
@@ -25,11 +25,11 @@ const UserSchema = z.object({
 // Serialize data with schema validation
 const jsonString = serialize(
   { name: "John", age: 30 },
-  { schema: UserSchema, pretty: true },
+  { schema: userSchema, pretty: true },
 );
 
 // Deserialize with type inference
-const user = deserialize(jsonString, { schema: UserSchema });
+const user = deserialize(jsonString, { schema: userSchema });
 console.log(user.name); // Type-safe access
 
 // Handle invalid JSON gracefully
@@ -103,7 +103,7 @@ import { serialize, deserialize } from "@synstack/json";
 import { z } from "zod";
 
 // Define a schema
-const ConfigSchema = z.object({
+const configSchema = z.object({
   port: z.number(),
   host: z.string(),
   debug: z.boolean(),
@@ -112,12 +112,12 @@ const ConfigSchema = z.object({
 // Validate during serialization
 const jsonString = serialize(
   { port: 3000, host: "localhost", debug: true },
-  { schema: ConfigSchema },
+  { schema: configSchema },
 );
 
 // Validate during deserialization
 const config = deserialize(jsonString, {
-  schema: ConfigSchema,
+  schema: configSchema,
 });
 // config has type { port: number; host: string; debug: boolean }
 ```

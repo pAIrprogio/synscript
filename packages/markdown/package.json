@@ -12,6 +12,7 @@
     "html",
     "yaml",
     "frontmatter",
+    "zod",
     "typescript"
   ],
   "author": {

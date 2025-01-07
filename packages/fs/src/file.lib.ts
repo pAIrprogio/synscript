@@ -931,6 +931,8 @@ class FsFileWrite<
     return this.text(json.serialize(data, { schema: this._schema }));
   }
 
+  // Todo: add mergeJson
+
   /**
    * Write data as formatted JSON to a file asynchronously.
    * The data will be serialized using JSON.stringify with pretty printing.

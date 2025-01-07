@@ -7,6 +7,9 @@ This package provides a strongly-typed interface for working with glob patterns,
 > [!WARNING]
 > This package is included in the [@synstack/synscript](https://github.com/pAIrprogio/synscript) package. It is not recommended to install both packages at the same time.
 
+> [!NOTE]
+> Glob search on directories is available through [@synstack/fs](../fs/README.md) for convenience.
+
 ## What is it for?
 
 When you need to find files using glob patterns or filter paths based on patterns, this package provides type-safe utilities:

@@ -22,7 +22,7 @@ export interface FsFileArrayMethods {
 
 const filesArrayMethods: FsFileArrayMethods = {
   filter(fn) {
-    return files(this.$.filter(fn));
+    return files(this.filter(fn));
   },
 
   filterGlobs(...patterns) {

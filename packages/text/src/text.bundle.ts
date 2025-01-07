@@ -1,1 +1,1 @@
-export { t, tParse } from "./text.lib.ts";
+export { t, tIf, tParse } from "./text.lib.ts";

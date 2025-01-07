@@ -1,5 +1,5 @@
 import { json } from "@synstack/json";
-import { resolvable } from "@synstack/resolved";
+import { resolvable, type Resolvable } from "@synstack/resolved";
 import { callable, type CallableResolvable } from "@synstack/resolved/callable";
 import { str } from "@synstack/str";
 import { type MaybeArray } from "../../shared/src/ts.utils.ts";
@@ -211,5 +211,85 @@ ${str(cause instanceof Error ? cause.message : (cause as string))
   }
 }
 
+/**
+ * @param condition - The condition to check, can be:
+ * - primitive values
+ * - promise of a primitive value
+ * @returns The result of the template string if the resolved value is true, otherwise an empty string
+ *
+ * @example
+ * ```ts
+ * const text = tIf(true)`Hello World`;
+ * assert.equal(text, "Hello World");
+ * ```
+ */
+export const tIf =
+  <CHECK extends Resolvable<any>>(condition: CHECK) =>
+  <TValues extends Array<Text.TemplateValue.Base>>(
+    template: TemplateStringsArray,
+    ...args: TValues
+  ): CHECK extends Promise<any>
+    ? // CHECK is a promise
+      Text.Return<TValues> extends Promise<any>
+      ? // Text.Return<TValues> is a promise as well, so we don't need to wrap it in a promise
+        Text.Return<TValues>
+      : // Text.Return<TValues> is not a promise, so we need to wrap it in a promise
+        Promise<Text.Return<TValues>>
+    : // Neither are promises, so we don't need to wrap the return value in a promise
+      Text.Return<TValues> => {
+    if (!condition) return "" as any;
+
+    if (condition instanceof Promise)
+      return condition.then((c) =>
+        c ? t(template, ...args) : ("" as any),
+      ) as any;
+
+    return t(template, ...args) as any;
+  };
+
+/**
+ * Serializes and formats a template string with values into a single string while preserving extra values typings
+ * @returns The serialized and formatted string
+ *
+ * @features
+ * - Promises even nested in arrays are resolved in parallel
+ * - Array values are joined with a newline
+ * - Text is trimmed
+ * - Base indentation is removed
+ * - Nested indentation is preserved for multi-line values
+ * - Returned value is either a string or a promise of a string based on interpolated values
+ * - Extra values are serialized and added to the returned value type
+ *
+ * @example
+ * For the following template:
+ * ```ts
+ * const text: string = t`
+ *     Hello
+ *       ${"- Item 1\n- Item 2"}
+ *     World
+ * `;
+ * ```
+ *
+ * The output will be:
+ * ```plain
+ * Hello
+ *   - Item 1
+ *   - Item 2
+ * World
+ * ```
+ */
 export const t = Text.t;
+
+/**
+ * Deserializes a serialized string with extra values
+ *
+ * @param text - The text string to parse
+ * @returns Array of strings and extra objects
+ *
+ * @example
+ * ```ts
+ * const text = t`Hello ${{type: "item", value: "World"}}`;
+ * assert.equal(tParse(text), ["Hello", { type: "item", value: "World" }]);
+ * ```
+ */
 export const tParse = Text.parse;

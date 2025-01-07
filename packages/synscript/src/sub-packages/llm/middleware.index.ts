@@ -1,1 +1,1 @@
-export * from "@synstack/llm/middleware";
+export { cacheCalls, includeAssistantMessage } from "@synstack/llm/middleware";

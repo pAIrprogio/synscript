@@ -7,7 +7,11 @@ Type-safe markdown processing with YAML frontmatter support
 
 ## What is it for?
 
-Working with markdown documents should be type-safe and intuitive. This package provides tools for converting HTML to markdown, managing YAML frontmatter, and handling markdown content:
+This package provides tools for:
+
+- Converting HTML to markdown
+- Managing YAML frontmatter with type-safe data
+- Handling markdown content
 
 ```typescript
 import { fromHtml, MdDoc } from "@synstack/markdown";

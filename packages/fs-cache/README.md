@@ -95,7 +95,7 @@ await cache.setDefault(["key"], "default");
 ## Deep Equality
 
 A custom deep equality function is provided.
-The only custom behavior implemented, is that objects with undefined values are considered equal to objects with missing values.
+The only custom behavior implemented, is that objects with undefined values are considered equal to objects with matching missing values.
 
 ```typescript
 import { deepEqual } from "@synstack/fs-cache";

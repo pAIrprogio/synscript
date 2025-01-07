@@ -9,7 +9,7 @@ This package provides a type-safe way to extend JavaScript objects with addition
 
 ## What is it for?
 
-Sometimes you need to add functionality to existing objects without modifying their prototype or risking property collisions. This package provides a safe way to enhance objects with new methods while maintaining type safety:
+Sometimes you need to add functionality to existing objects without modifying their prototype or breaking equality checks. This package provides a safe way to enhance objects with new methods while maintaining type safety:
 
 ```typescript
 import { enhance } from "@synstack/enhance";
