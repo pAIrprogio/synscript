@@ -3,9 +3,11 @@
   "private": true,
   "type": "module",
   "dependencies": {
-    "@anthropic-ai/sdk": "^0.32.1",
+    "@ai-sdk/anthropic": "^1.0.6",
     "@synstack/synscript": "workspace:*",
-    "ts-pattern": "^5.5.0"
+    "ai": "^4.0.27",
+    "ts-pattern": "^5.5.0",
+    "tsx": "^4.19.2"
   },
   "devDependencies": {
     "@types/node": "^22.10.1",
