@@ -5,6 +5,18 @@ __metadata:
   version: 8
   cacheKey: 10c0
 
+"@ai-sdk/anthropic@npm:^1.0.6":
+  version: 1.0.6
+  resolution: "@ai-sdk/anthropic@npm:1.0.6"
+  dependencies:
+    "@ai-sdk/provider": "npm:1.0.3"
+    "@ai-sdk/provider-utils": "npm:2.0.5"
+  peerDependencies:
+    zod: ^3.0.0
+  checksum: 10c0/a21553c9d144f03a5ce9910fa241af31dd485cd260ff4b32d753c1aedf711651dc8a2679f9860516185f24c05edfc425798b739310b1520b310cc89ab76e103b
+  languageName: node
+  linkType: hard
+
 "@ai-sdk/provider-utils@npm:2.0.5":
   version: 2.0.5
   resolution: "@ai-sdk/provider-utils@npm:2.0.5"
@@ -6866,6 +6878,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "synscript-workspace@workspace:."
   dependencies:
+    "@ai-sdk/anthropic": "npm:^1.0.6"
     "@eslint/js": "npm:^9.16.0"
     "@types/eslint": "npm:^9.6.1"
     "@types/eslint__js": "npm:^8.42.3"
@@ -6873,6 +6886,7 @@ __metadata:
     glob: "npm:^11.0.0"
     lerna: "npm:^8.1.9"
     prettier: "npm:^3.4.1"
+    ts-pattern: "npm:^5.6.0"
     tsup: "npm:^8.3.5"
     typescript: "npm:^5.7.2"
     typescript-eslint: "npm:^8.16.0"
@@ -7064,6 +7078,13 @@ __metadata:
   version: 5.5.0
   resolution: "ts-pattern@npm:5.5.0"
   checksum: 10c0/4ae1fbeadcf193e72b27419d5fe71f559c100e45710eabf29e2ff3a8fa9ba29adfcd6d5d7d8169b95e2b264683a2eb8d94dbd3c893357b045b52b0c34c2b7c72
+  languageName: node
+  linkType: hard
+
+"ts-pattern@npm:^5.6.0":
+  version: 5.6.0
+  resolution: "ts-pattern@npm:5.6.0"
+  checksum: 10c0/0da058218634ba5880d21816493c6634b56c111044aaec8e882a7b58a7564b6cc201b03012b7fd54b775af4ebe723d3ff91243769e9dc8aedb1f10dacc5f8f83
   languageName: node
   linkType: hard
 
