@@ -4,6 +4,7 @@
   "publishConfig": {
     "access": "public"
   },
+  "version": "2.1.1",
   "description": "Your core stack for AI scripting and workflow automation",
   "keywords": [
     "synstack",
@@ -24,7 +25,6 @@
     "xml",
     "yaml"
   ],
-  "version": "2.1.1",
   "author": {
     "name": "pAIrprog",
     "url": "https://pairprog.io"
@@ -32,7 +32,7 @@
   "homepage": "https://github.com/pAIrprogio/synscript/tree/main/packages/synscript",
   "repository": {
     "type": "git",
-    "url": "https://github.com/pAIrprogio/syn-stack.git",
+    "url": "https://github.com/pAIrprogio/synscript.git",
     "directory": "packages/synscript"
   },
   "license": "Apache-2.0",
@@ -252,14 +252,14 @@
     "tsup": "^8.3.5",
     "typescript": "^5.7.2"
   },
+  "peerDependencies": {
+    "ai": "*",
+    "zod": "*"
+  },
   "files": [
     "src/**/*.ts",
     "!src/**/*.test.ts",
     "dist/**/*"
   ],
-  "gitHead": "ed339f5b4ef3a70b7371313234250b1e7445ef69",
-  "peerDependencies": {
-    "ai": "*",
-    "zod": "*"
-  }
+  "gitHead": "ed339f5b4ef3a70b7371313234250b1e7445ef69"
 }

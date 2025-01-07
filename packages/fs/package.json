@@ -25,7 +25,7 @@
   "homepage": "https://github.com/pAIrprogio/synscript/tree/main/packages/fs",
   "repository": {
     "type": "git",
-    "url": "https://github.com/pAIrprogio/syn-stack.git",
+    "url": "https://github.com/pAIrprogio/synscript.git",
     "directory": "packages/fs"
   },
   "license": "Apache-2.0",

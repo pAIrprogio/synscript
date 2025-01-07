@@ -20,7 +20,7 @@
   "homepage": "https://github.com/pAIrprogio/synscript/tree/main/packages/web",
   "repository": {
     "type": "git",
-    "url": "https://github.com/pAIrprogio/syn-stack.git",
+    "url": "https://github.com/pAIrprogio/synscript.git",
     "directory": "packages/web"
   },
   "license": "Apache-2.0",

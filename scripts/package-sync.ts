@@ -41,7 +41,7 @@ await Promise.all(
       homepage: `https://github.com/pAIrprogio/synscript/tree/main/packages/${name}`,
       repository: {
         type: "git",
-        url: "https://github.com/pAIrprogio/syn-stack.git",
+        url: "https://github.com/pAIrprogio/synscript.git",
         directory: `packages/${name}`,
       },
       license: "Apache-2.0",

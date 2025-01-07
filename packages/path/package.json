@@ -4,6 +4,7 @@
   "publishConfig": {
     "access": "public"
   },
+  "version": "1.1.5",
   "description": "Advanced path manipulation utilities",
   "keywords": [
     "synstack",
@@ -12,7 +13,6 @@
     "fs",
     "typescript"
   ],
-  "version": "1.1.5",
   "author": {
     "name": "pAIrprog",
     "url": "https://pairprog.io"
@@ -20,7 +20,7 @@
   "homepage": "https://github.com/pAIrprogio/synscript/tree/main/packages/path",
   "repository": {
     "type": "git",
-    "url": "https://github.com/pAIrprogio/syn-stack.git",
+    "url": "https://github.com/pAIrprogio/synscript.git",
     "directory": "packages/path"
   },
   "license": "Apache-2.0",

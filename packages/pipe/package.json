@@ -21,7 +21,7 @@
   "homepage": "https://github.com/pAIrprogio/synscript/tree/main/packages/pipe",
   "repository": {
     "type": "git",
-    "url": "https://github.com/pAIrprogio/syn-stack.git",
+    "url": "https://github.com/pAIrprogio/synscript.git",
     "directory": "packages/pipe"
   },
   "license": "Apache-2.0",
