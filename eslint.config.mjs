@@ -75,4 +75,10 @@ export default [
   {
     ignores: ["**/dist"],
   },
+  {
+    files: ["reforge/**/*"],
+    rules: {
+      "@typescript-eslint/no-unused-vars": "warn",
+    },
+  },
 ];
