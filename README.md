@@ -2,6 +2,10 @@
 
 A collection of packages for fast iterations on LLM scripts, workflows, and applications. Synstack provides strongly-typed, chainable, and immutable APIs for common operations needed when building AI/LLM integrations.
 
+## Want an example?
+
+Check out the [reforge](https://github.com/pAIrprogio/synscript/tree/main/reforge) folder to see how we use synstack to build itself.
+
 ## Quick Start
 
 ```bash
