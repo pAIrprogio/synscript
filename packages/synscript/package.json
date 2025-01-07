@@ -4,6 +4,7 @@
   "publishConfig": {
     "access": "public"
   },
+  "description": "Your core stack for AI scripting and workflow automation",
   "keywords": [
     "synstack",
     "llm",

@@ -1,8 +1,6 @@
 # @synstack/glob
 
-> Type-safe glob pattern matching and file filtering utilities
-
-This package provides a strongly-typed interface for working with glob patterns, including file matching, filtering, and pattern capturing capabilities.
+Glob pattern matching and file filtering utilities
 
 > [!WARNING]
 > This package is included in the [@synstack/synscript](https://github.com/pAIrprogio/synscript) package. It is not recommended to install both packages at the same time.

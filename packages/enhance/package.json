@@ -5,7 +5,7 @@
     "access": "public"
   },
   "version": "1.1.3",
-  "description": "Safely enhance a JS object with additional properties",
+  "description": "Type-safe object enhancement with proxy-based method extension",
   "keywords": [
     "synstack",
     "proxy",

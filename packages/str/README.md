@@ -1,6 +1,6 @@
 # @synstack/str
 
-Advanced chainable string manipulation utilities for TypeScript
+Advanced chainable string manipulation utilities
 
 > [!WARNING]
 > This package is included in the [@synstack/synscript](../synscript/README.md) package. It is not recommended to install both packages at the same time.

@@ -1,8 +1,6 @@
 # @synstack/enhance
 
-> Type-safe object enhancement with proxy-based method extension
-
-This package provides a type-safe way to extend JavaScript objects with additional methods while maintaining access to the original object through proxies.
+Type-safe object enhancement with proxy-based method extension
 
 > [!WARNING]
 > This package is included in the [@synstack/synscript](https://github.com/pAIrprogio/synscript) package. It is not recommended to install both packages at the same time.

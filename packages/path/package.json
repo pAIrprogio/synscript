@@ -4,6 +4,14 @@
   "publishConfig": {
     "access": "public"
   },
+  "description": "Advanced path manipulation utilities",
+  "keywords": [
+    "synstack",
+    "path",
+    "file",
+    "fs",
+    "typescript"
+  ],
   "version": "1.1.4",
   "author": {
     "name": "pAIrprog",
