@@ -5,6 +5,14 @@
     "access": "public"
   },
   "version": "1.2.1",
+  "description": "Git utilities for AI prompting and automation",
+  "keywords": [
+    "synstack",
+    "git",
+    "repository",
+    "commit",
+    "branch"
+  ],
   "author": {
     "name": "pAIrprog",
     "url": "https://pairprog.io"

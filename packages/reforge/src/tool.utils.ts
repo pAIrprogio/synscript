@@ -49,6 +49,12 @@ export type ToolFn<
   ? (data: z.input<TRequestSchema>) => Promise<z.output<TResponseSchema>>
   : () => Promise<z.output<TResponseSchema>>;
 
+export const baseResponseSchema = z.object({
+  type: z.string(),
+  id: z.string(),
+  status: z.union([z.literal("ok"), z.literal("error")]),
+});
+
 export const toolFactory = <
   TName extends string,
   TRequestSchema extends z.ZodSchema | null,
@@ -86,8 +92,9 @@ export const toolFactory = <
 
       const responseHandler = (response: string) => {
         const resData = json.deserialize(response);
-        const parsedResponse = responseSchema.parse(resData);
-        if (parsedResponse.type === responseName && parsedResponse.id === id) {
+        const baseResponse = baseResponseSchema.parse(resData);
+        if (baseResponse.type === responseName && baseResponse.id === id) {
+          const parsedResponse = responseSchema.parse(resData);
           client.removeListener("error", errorHandler);
           client.removeListener("data", responseHandler);
           if (parsedResponse.status === "ok") resolve(parsedResponse.data);

@@ -3,6 +3,11 @@ import TurndownService from "turndown";
 import { ZodSchema } from "zod";
 import { type Stringable } from "../../shared/src/ts.utils.ts";
 
+/**
+ * Convert HTML to markdown
+ * @param html - The HTML to convert
+ * @returns The markdown
+ */
 export const fromHtml = (html: Stringable) => {
   const turndown = new TurndownService({
     headingStyle: "atx",
@@ -18,6 +23,13 @@ export const fromHtml = (html: Stringable) => {
 
 const HEADER_REGEX = /^---\n([\s\S]*?)\n---\n/;
 
+/**
+ * Get the header data from a markdown document
+ * @param text - The markdown document
+ * @param options - The options (optional)
+ * @param options.schema - The schema to use for deserialization (optional)
+ * @returns The header data
+ */
 export const getHeaderData = <TFormat = any>(
   text: Stringable,
   { schema }: { schema?: ZodSchema<TFormat> } = {},
@@ -27,6 +39,14 @@ export const getHeaderData = <TFormat = any>(
   return yaml.deserialize(header, { schema });
 };
 
+/**
+ * Set the header data in a markdown document while preserving the body
+ * @param text - The markdown document
+ * @param data - The data to set
+ * @param options - The options (optional)
+ * @param options.schema - The schema to use for serialization (optional)
+ * @returns The markdown document with the header data set
+ */
 export const setHeaderData = <TFormat = any>(
   text: Stringable,
   data: TFormat,
@@ -35,15 +55,27 @@ export const setHeaderData = <TFormat = any>(
   return `---\n${yaml.serialize(data, { schema: options.schema })}---\n${getBody(text.toString())}`;
 };
 
+/**
+ * Get the body of a markdown document
+ * @param text - The markdown document
+ * @returns The body as a string
+ */
 export const getBody = (text: string) => {
   return text.replace(HEADER_REGEX, "");
 };
 
+/**
+ * Set the body of a markdown document while preserving the header
+ * @param text - The markdown document
+ * @param body - The body to set
+ * @returns The markdown document with the body set
+ */
 export const setBody = (text: string, body: string) => {
   const header = text.match(HEADER_REGEX)?.[0];
   return `${header ?? ""}${body}`;
 };
 
+// Todo: add docs
 export class MdDoc<
   TShape = never,
   TData extends TShape | undefined = never,

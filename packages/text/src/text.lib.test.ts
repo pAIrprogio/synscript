@@ -1,7 +1,7 @@
 import assert from "node:assert/strict";
 import { describe, it } from "node:test";
-import { assertExtends } from "../../shared/src/ts.utils.ts";
-import { Text } from "./text.lib.ts";
+import { assertExtends, assertType } from "../../shared/src/ts.utils.ts";
+import { Text, tIf } from "./text.lib.ts";
 
 const _types = () => {
   assertExtends<{ type: "1" }, Text.ExtraObject.Infer<[() => { type: "1" }]>>();
@@ -144,5 +144,33 @@ describe("split", () => {
     assertExtends<typeof split, ExpectedType>();
 
     assert.deepEqual(split, [{ type: "extra" }, { type: "extra" }]);
+  });
+});
+
+describe("tIf", () => {
+  it("returns the text if the condition is truthy", () => {
+    const text = tIf(5)`Hello World`;
+    assertType<string, typeof text>(text);
+    assert.equal(text, "Hello World");
+  });
+
+  it("returns an empty string if the condition is falsy", () => {
+    const text = tIf(undefined)`Hello World`;
+    assertType<string, typeof text>(text);
+    assert.equal(text, "");
+  });
+
+  it("returns a string promise if the condition is a truthy promise", async () => {
+    const text = tIf(Promise.resolve(true))`Hello World`;
+    assertType<Promise<string>, typeof text>(text);
+    assert.equal(text instanceof Promise, true);
+    assert.equal(await text, "Hello World");
+  });
+
+  it("returns an empty string promise if the condition is a falsy promise", async () => {
+    const text = tIf(Promise.resolve(false))`Hello World`;
+    assertType<Promise<string>, typeof text>(text);
+    assert.equal(text instanceof Promise, true);
+    assert.equal(await text, "");
   });
 });

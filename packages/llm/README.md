@@ -2,10 +2,13 @@
 
 Immutable, chainable, and type-safe wrapper of Vercel's AI SDK.
 
+> [!WARNING]
+> This package is included in the [@synstack/synscript](https://github.com/pAIrprogio/synscript) package. It is not recommended to install both packages at the same time.
+
 ## Sample usage
 
 ```ts
-import { completion } from "@synstack/llm";
+import { completion } from "@synstack/llm"; // or @synstack/synscript/llm
 import { openai } from "@ai-sdk/openai";
 
 const baseCompletion = completion
@@ -74,9 +77,9 @@ The completion builder provides a type-safe API to configure LLM completions:
 
 ### Message building
 
-As these template strings use [@synstack/text](https://github.com/pAIrprogio/synscript/tree/main/packages/text), there are several features emebed in message templates:
+As these template strings use [@synstack/text](https://github.com/pAIrprogio/synscript/tree/main/packages/text), there are several features embeded in message templates:
 
-- You can add promises or array of promises in your template string as if they were synchronous. Resolution is handled for you.
+- Aadd promises or array of promises in your template string as if they were synchronous. Resolution is handled for you.
 - Format your prompt for readability. Trimming and removing extra padding is done on string resolution.
 - Template values are type-safe, you cannot add a value that is not usable in the prompt.
 
@@ -86,7 +89,10 @@ To sum it up, this is valid:
 const agent = completion.messages([
   userMsg`
     You are a helpful assistant.
-    ${[Promise.resolve("- Read the image"), Promise.resolve("- Describe the image")]}
+    ${[
+      Promise.resolve("- Read the image"),
+      Promise.resolve("- Describe the image"),
+    ]}
     ${filePart.fromFile("./image.png")}
   `,
 ]);
@@ -105,7 +111,7 @@ messages:
           - Describe the image
       - type: image
         mimeType: image/png
-        image:
+        image: ...base64Data...
 ```
 
 Template-based message builders for different roles:
@@ -159,4 +165,40 @@ const completion = baseCompletion
   })
   .activeTools(["search"])
   .toolChoice("auto"); // or 'none', 'required', or { type: 'tool', toolName: 'search' }
+```
+
+### Model middlewares
+
+The library provides middleware utilities to enhance model behavior:
+
+- **includeAssistantMessage**: Prepends the last assistant message to the output
+
+  ```ts
+  import { includeAssistantMessage } from "@synstack/llm/middleware"; // or @synstack/synscript/llm/middleware
+  const modelWithAssistant = includeAssistantMessage(baseModel);
+  ```
+
+- **cacheCalls**: Caches model responses using @synstack/fs-cache
+
+  ```ts
+  import { cacheCalls } from "@synstack/llm/middleware"; // or @synstack/synscript/llm/middleware
+  import { fsCache } from "@synstack/fs-cache"; // or @synstack/synscript
+
+  const cache = fsCache("path/to/cache").key(["generate"]);
+  const modelWithCache = cacheCalls(cache)(baseModel);
+  ```
+
+These middlewares can be added by using the `.middlewares`, `.prependMiddlewares` and `.appendMiddlewares` methods on completion to load them dynamically.
+
+```ts
+const baseCompletion = completion.middlewares([includeAssistantMessage])(
+  baseModel,
+);
+
+// And later on
+
+baseCompletion
+  // We prepend so that caching is closest to the actual LLM call
+  .prependMiddlewares([cacheCalls(cache).key(["generate"])])
+  .generateText();
 ```

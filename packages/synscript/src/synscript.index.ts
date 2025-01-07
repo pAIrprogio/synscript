@@ -10,7 +10,7 @@ export { pipe } from "@synstack/pipe";
 export { reforge } from "@synstack/reforge";
 export { resolvable } from "@synstack/resolved";
 export { str } from "@synstack/str";
-export { t } from "@synstack/text";
+export { t, tIf } from "@synstack/text";
 export { web } from "@synstack/web";
 export { xml } from "@synstack/xml";
 export { yaml } from "@synstack/yaml";

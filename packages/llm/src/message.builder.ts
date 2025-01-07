@@ -1,9 +1,31 @@
 import { pipe } from "@synstack/resolved";
-import { never } from "../../shared/src/ts.utils.ts";
+import { match, P } from "ts-pattern";
 
 import { t, type Text, tParse } from "@synstack/text";
 import { readFileSync } from "fs";
 import type { Llm } from "./llm.types.ts";
+
+function mapTextPart(v: string): Llm.Message.Part.Text {
+  return { type: "text", text: v };
+}
+
+function mapImagePart(
+  v: Llm.Message.Template.Part.Image,
+): Llm.Message.Part.Image {
+  return {
+    type: "image",
+    mimeType: v.mimeType,
+    image: v.encoding === "path" ? readFileSync(v.data) : v.data,
+  };
+}
+
+function mapFilePart(v: Llm.Message.Template.Part.File): Llm.Message.Part.File {
+  return {
+    type: "file",
+    mimeType: v.mimeType,
+    data: v.encoding === "path" ? readFileSync(v.data) : v.data,
+  };
+}
 
 export const userMsg = <
   T extends
@@ -15,32 +37,21 @@ export const userMsg = <
   pipe(t(template, ...values))
     ._(tParse)
     ._((parts) =>
-      parts.map((v) => {
-        if (typeof v === "string")
-          return { type: "text", text: v } satisfies Llm.Message.Part.Text;
-        if (v.type === "image") {
-          return {
-            type: "image",
-            mimeType: v.mimeType,
-            image: v.encoding === "path" ? readFileSync(v.data) : v.data,
-          } satisfies Llm.Message.Part.Image;
-        }
-        if (v.type === "file") {
-          return {
-            type: "file",
-            mimeType: v.mimeType,
-            data: v.encoding === "path" ? readFileSync(v.data) : v.data,
-          } satisfies Llm.Message.Part.File;
-        }
-        never(v);
-      }),
+      parts.map(
+        (v: Llm.Message.User.Template.Part): Llm.Message.User.Part =>
+          match(v)
+            .with(P.string, mapTextPart)
+            .with({ type: "image" }, mapImagePart)
+            .with({ type: "file" }, mapFilePart)
+            .exhaustive(),
+      ),
     )
     ._(
       (content) =>
         ({
           role: "user" as const,
           content,
-        }) satisfies Llm.Message.User.Pure,
+        }) satisfies Llm.Message.User,
     ).$;
 
 export const assistantMsg = <
@@ -53,19 +64,20 @@ export const assistantMsg = <
   return pipe(t(template, ...values))
     ._(tParse)
     ._((parts) =>
-      parts.map((v) => {
-        if (typeof v === "string")
-          return { type: "text", text: v } satisfies Llm.Message.Part.Text;
-        if (v.type === "tool-call") return v;
-        never(v.type);
-      }),
+      parts.map(
+        (v: Llm.Message.Assistant.Template.Part): Llm.Message.Assistant.Part =>
+          match(v)
+            .with(P.string, mapTextPart)
+            .with({ type: "tool-call" }, (v) => v)
+            .exhaustive(),
+      ),
     )
     ._(
       (content) =>
         ({
           role: "assistant" as const,
           content,
-        }) satisfies Llm.Message.Assistant.Pure,
+        }) satisfies Llm.Message.Assistant,
     ).$;
 };
 

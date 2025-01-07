@@ -4,6 +4,26 @@
   "publishConfig": {
     "access": "public"
   },
+  "description": "Your core stack for AI scripting and workflow automation",
+  "keywords": [
+    "synstack",
+    "llm",
+    "ai",
+    "scripting",
+    "typescript",
+    "immutable",
+    "fs",
+    "cache",
+    "glob",
+    "json",
+    "markdown",
+    "reforge",
+    "str",
+    "text",
+    "web",
+    "xml",
+    "yaml"
+  ],
   "version": "2.1.0",
   "author": {
     "name": "pAIrprog",

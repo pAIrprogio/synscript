@@ -15,7 +15,7 @@ export function packageWorkflow(context: BaseContext) {
 
   const newContext: PackageContext = {
     ...context,
-    packageName,
+    packageName: "@synstack/" + packageName,
   };
 
   if (context.focusedFile.matchesGlobs("**/packages/*/README.md"))
