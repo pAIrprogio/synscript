@@ -12,6 +12,16 @@ yarn add @synstack/synscript
 pnpm add @synstack/synscript
 ```
 
+For LLM operations, and schema validation you need to install these peer dependencies:
+
+```bash
+npm install zod ai @ai-sdk/${your-provider-name}
+# or
+yarn add zod ai @ai-sdk/${your-provider-name}
+# or
+pnpm add zod ai @ai-sdk/${your-provider-name}
+```
+
 ## Available Libraries
 
 ### Main libraries
