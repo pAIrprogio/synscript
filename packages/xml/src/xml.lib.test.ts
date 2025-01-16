@@ -287,14 +287,21 @@ attr2="value2"
       },
     ]);
   });
-  it("transforms unclosed tags as text", () => {
-    assert.deepEqual(parse("<root><child>Content<a/></root>"), [
+  it("handles mismatched tags by treating them as text", () => {
+    const input = "<file><a>text</b></file>";
+    const result = parse(input);
+    assert.deepEqual(result, [
       {
         type: "tag",
-        tag: "root",
+        tag: "file",
         attrs: {},
-        content: [{ type: "text", text: "<child>Content<a/>" }],
-        text: "<root><child>Content<a/></root>",
+        content: [
+          {
+            type: "text",
+            text: "<a>text</b>",
+          },
+        ],
+        text: "<file><a>text</b></file>",
       },
     ]);
   });

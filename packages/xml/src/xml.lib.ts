@@ -22,11 +22,11 @@ type XmlPart =
     };
 
 export const xmlOpeningTagRegex =
-  /<([a-zA-Z_][a-zA-Z0-9_:-]*)((?:\s+[a-zA-Z_][a-zA-Z0-9_:-]*="[^"]*")*)\s*(\/?)>/;
+  /<([a-zA-Z][a-zA-Z0-9_:-]*)((?:\s+[a-zA-Z][a-zA-Z0-9_:-]*="[^"]*")*)\s*(\/?)>/;
 
 export const xmlClosingTagRegex = /<\/([a-zA-Z_][a-zA-Z0-9_:-]*)>/;
 
-export const xmlAttributeRegex = /([a-zA-Z_][a-zA-Z0-9_:-]*)="([^"]*)"/g;
+export const xmlAttributeRegex = /([a-zA-Z][a-zA-Z0-9_:-]*)="([^"]*)"/g;
 
 export const parseAttributes = (attributes: string) => {
   const matches = [...attributes.matchAll(xmlAttributeRegex)];
@@ -167,28 +167,61 @@ const buildXmlTree = (parts: Array<XmlPart>) => {
       }
 
       if (part.type === "tagClose") {
+        // If we have no open tags, treat the closing tag as text
+        if (draft.stack.length === 0) {
+          lastContents.push({
+            type: "text" as const,
+            text: part.text,
+          });
+          return;
+        }
+
+        let foundMatchingTag = false;
+        const tempStack: Array<Xml.Node.Tag> = [];
+
+        // Look for matching tag in the stack
         while (draft.stack.length > 0) {
           const node = draft.stack.pop()!;
-          lastNode = draft.stack.at(-1);
-          lastContents = lastNode?.content ?? draft.chunks;
-
-          // Handle last tag closing
           if (node.tag === part.name) {
+            foundMatchingTag = true;
             updateStackText(part.text);
+
+            // If we have mismatched tags in between, convert them to a single text node
+            if (tempStack.length > 0) {
+              const textContent = tempStack
+                .reverse()
+                .map((n) => n.text)
+                .join("");
+              node.content.push({
+                type: "text" as const,
+                text: textContent,
+              });
+            }
+
+            lastNode = draft.stack.at(-1);
+            lastContents = lastNode?.content ?? draft.chunks;
             lastContents.push({
               ...node,
               text: node.text + part.text,
             });
-            return;
+            break;
           }
+          tempStack.push(node);
+        }
 
-          // Handle unclosed tag
+        // If no matching tag was found, treat everything as text
+        if (!foundMatchingTag) {
+          // Restore the stack
+          while (tempStack.length > 0) {
+            draft.stack.push(tempStack.pop()!);
+          }
+          // Add the closing tag as text
+          updateStackText(part.text);
           lastContents.push({
             type: "text" as const,
-            text: node.text,
+            text: part.text,
           });
         }
-        // Handle last tag closing here
         return;
       }
     });
@@ -200,14 +233,10 @@ const buildXmlTree = (parts: Array<XmlPart>) => {
     stack: [],
   });
 
-  if (stack.length > 0)
-    return [
-      ...chunks,
-      {
-        type: "text",
-        text: stack.at(0)!.text,
-      },
-    ];
+  if (stack.length > 0) {
+    // If we have any open tags left, treat them as text
+    return [...chunks, { type: "text", text: stack.at(0)!.text }];
+  }
 
   return chunks;
 };
