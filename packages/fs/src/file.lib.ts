@@ -49,22 +49,29 @@ export class FsFile<
   private readonly _schema?: TSchema;
 
   /**
-   * Create a new FsFile instance from a path or a list of paths to be resolved.
+   * Create a new FsFile instance from a path, a list of paths to be resolved, or an existing FsFile instance.
    * The resulting path will be an absolute path.
    *
-   * @param paths - One or more path segments to join into a file path
+   * @param paths - One or more path segments to join into a file path, or an existing FsFile instance
    * @returns A new FsFile instance with UTF-8 encoding
    *
    * ```typescript
    * import { file } from "@synstack/fs";
    *
-   * const configFile = file("/path/to/config.json");
    * const relativeFile = file("./relative/path.txt");
    * const joinedFile = file("/base/path", "subdir", "file.txt");
+   * const existingFile = file(file("/path/to/existing.txt"));
    * ```
    */
-  public static from(this: void, ...paths: Array<AnyPath>) {
-    return new FsFile<"utf-8", undefined>(path.join(...paths), "utf-8");
+  public static from(this: void, file: FsFile): FsFile;
+  public static from(this: void, ...paths: Array<AnyPath>): FsFile;
+  public static from(this: void, ...args: [FsFile] | Array<AnyPath>) {
+    function isFile(paths: Array<AnyPath> | [FsFile]): paths is [FsFile] {
+      return paths.length === 1 && paths[0] instanceof FsFile;
+    }
+
+    if (isFile(args)) return args[0];
+    return new FsFile<"utf-8", undefined>(path.join(...args), "utf-8");
   }
 
   private constructor(path: AnyPath, encoding?: TEncoding, schema?: TSchema) {
@@ -1061,6 +1068,20 @@ class FsFileWrite<
 }
 
 /**
- * Creates a new FsFile instance with the provided path
+ * Create a new FsFile instance from a path, a list of paths to be resolved, or an existing FsFile instance.
+ * The resulting path will be an absolute path.
+ *
+ * @param args - One or more path segments to join into a file path, or an existing FsFile instance
+ * @returns A new FsFile instance with UTF-8 encoding
+ *
+ * ```typescript
+ * import { file } from "@synstack/fs";
+ *
+ * const relativeFile = file("./relative/path.txt");
+ * const joinedFile = file("/base/path", "subdir", "file.txt");
+ * const existingFile = file(file("/path/to/existing.txt"));
+ * ```
  */
 export const file = FsFile.from;
+
+file(file("test.txt"));

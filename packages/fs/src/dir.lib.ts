@@ -85,10 +85,10 @@ export class FsDir extends Pipeable<FsDir> {
   }
 
   /**
-   * Create a new directory instance with the provided path.
+   * Create a new directory instance with the provided path(s).
    * Resolves relative paths to absolute paths.
    *
-   * @param paths - One or more path segments to join into a directory path
+   * @param args - One or more path segments to join into a directory path or an existing FsDir instance
    * @returns A new FsDir instance with the resolved path
    *
    * ```typescript
@@ -100,10 +100,19 @@ export class FsDir extends Pipeable<FsDir> {
    *
    * // Create from multiple segments
    * const configDir = dir("project", "config");
+   *
+   * // Create from existing directory
+   * const existingDir = dir(dir("/path/to/existing"));
    * ```
    */
-  public static cwd(this: void, ...paths: Array<string>) {
-    return new FsDir(path.resolve(...paths));
+  public static cwd(this: void, dir: FsDir): FsDir;
+  public static cwd(this: void, ...paths: Array<AnyPath>): FsDir;
+  public static cwd(this: void, ...args: [FsDir] | Array<AnyPath>) {
+    function isDir(args: Array<AnyPath> | [FsDir]): args is [FsDir] {
+      return args.length === 1 && args[0] instanceof FsDir;
+    }
+    if (isDir(args)) return args[0];
+    return new FsDir(path.resolve(...args));
   }
 
   /**
@@ -361,15 +370,24 @@ Trying to access a dir file from an absolute paths:
 }
 
 /**
- * Creates a new FsDir instance with the provided path.
- * @param paths - One or more path segments to join
- * @returns A new FsDir instance
+ * Create a new directory instance with the provided path(s).
+ * Resolves relative paths to absolute paths.
+ *
+ * @param args - One or more path segments to join into a directory path, or an existing FsDir instance
+ * @returns A new FsDir instance with the resolved path
  *
  * ```typescript
- * import { dir } from "@synstack/fs";
+ * // Create from absolute path
+ * const rootDir = dir("/path/to/project");
  *
- * const projectDir = dir("./project");
- * const srcDir = dir("/absolute/path/to/src");
+ * // Create from relative path
+ * const srcDir = dir("./src");
+ *
+ * // Create from multiple segments
+ * const configDir = dir("project", "config");
+ *
+ * // Create from existing directory
+ * const existingDir = dir(dir("/path/to/existing"));
  * ```
  */
 export const dir = FsDir.cwd;
