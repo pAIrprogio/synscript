@@ -50,4 +50,8 @@ export const executeCommandConfig = {
  *
  * Allows calling bundled vscode commands as well as commands from other extensions
  */
-export const executeCommand = toolFactory(executeCommandConfig);
+export const executeCommand = toolFactory(executeCommandConfig) as <
+  OUTPUT = any,
+>(
+  args: z.input<typeof executeCommandConfig.requestSchema>,
+) => Promise<OUTPUT>;
