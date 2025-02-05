@@ -1,4 +1,4 @@
-import { pipe } from "@synstack/resolved";
+import { pipe, type Resolvable } from "@synstack/resolved";
 import { match, P } from "ts-pattern";
 
 import { t, type Text, tParse } from "@synstack/text";
@@ -52,7 +52,7 @@ export const userMsg = <
           role: "user" as const,
           content,
         }) satisfies Llm.Message.User,
-    ).$;
+    ).$ as MessageTemplate.User.Return<T>;
 
 export const assistantMsg = <
   T extends
@@ -78,7 +78,7 @@ export const assistantMsg = <
           role: "assistant" as const,
           content,
         }) satisfies Llm.Message.Assistant,
-    ).$;
+    ).$ as MessageTemplate.Assistant.Return<T>;
 };
 
 export const systemMsg = <
@@ -114,6 +114,11 @@ export declare namespace MessageTemplate {
     export type TemplateValue = Text.TemplateValue<ExtraValues>;
 
     export type Fn = MessageTemplate.Fn<ExtraValues>;
+
+    export type Return<T> =
+      Resolvable.MaybeArray.IsPromise<T> extends true
+        ? Promise<Llm.Message.Assistant>
+        : Llm.Message.Assistant;
   }
 
   export namespace User {
@@ -124,8 +129,19 @@ export declare namespace MessageTemplate {
     export type TemplateValue = Text.TemplateValue<ExtraValues>;
 
     export type Fn = MessageTemplate.Fn<ExtraValues>;
+
+    export type Return<T> =
+      Resolvable.MaybeArray.IsPromise<T> extends true
+        ? Promise<Llm.Message.User>
+        : Llm.Message.User;
   }
 }
+
+type Test =
+  Resolvable.MaybeArray.IsPromise<Array<string>> extends true
+    ? Promise<null>
+    : null;
+//^?
 
 export const messageToText = (message: Llm.Message) => {
   if (typeof message.content === "string") return message.content;

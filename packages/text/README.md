@@ -19,13 +19,12 @@ const items = ["Hello", "World"];
 const text: string = await t`
     Value: ${items.join(", ")}
     Promise: ${Promise.resolve(items.join(", "))}
-
-    Callables:
-      Callable: ${() => items.join(", ")}
-      Callable Promise: ${() => Promise.resolve(items.join(", "))}
-
     List of items:
-      ${() => Promise.resolve(items.map((item) => `- ${item}`))}
+      ${items.map((item) => `- ${item}`)}
+    Promise with list of items:
+      ${Promise.resolve(items.map((item) => `- ${item}`))}
+    List of items with promises:
+      ${items.map((item) => Promise.resolve(`- ${item}`))}
 `;
 ```
 
@@ -34,12 +33,13 @@ Into this:
 ```plain
 Value: Hello, World
 Promise: Hello, World
-
-Callables:
-  Callable: Hello, World
-  Callable Promise: Hello, World
-
 List of items:
+  - Hello
+  - World
+Promise with list of items:
+  - Hello
+  - World
+List of items with promises:
   - Hello
   - World
 ```
@@ -100,19 +100,6 @@ Asuming retrieveUserName and retrieveUserEmail are async functions
 Both queries will be resolved in parallel 
 */
 const async: Promise<string> = t`Hello ${retrieveUserName()} ${retrieveUserEmail()}`;
-```
-
-### Callable values
-
-- You can use any function without argument as a template value.
-- `t` will call the function and then handle it's `sync` or `async` state through the async support logic.
-
-```ts
-/*
-Asuming retrieveUserName and retrieveUserEmail are async functions with no arguments
-Both queries will be called and resolved in parallel 
-*/
-const async: Promise<string> = t`Hello ${retrieveUserName} ${retrieveUserEmail}`;
 ```
 
 ### Arrays

@@ -1,7 +1,7 @@
 import assert from "node:assert/strict";
 import { describe, it } from "node:test";
-import { assertExtends } from "../../shared/src/ts.utils.ts";
-import { type Resolvable, pipe } from "./resolvable.lib.ts";
+import { assertExtends, assertType } from "../../shared/src/ts.utils.ts";
+import { type Resolvable, pipe, resolveNested } from "./resolvable.lib.ts";
 
 // As never extends true, check never assertions by puting them after
 
@@ -72,6 +72,51 @@ describe("Resolver", () => {
       ]).$;
       assert.equal(value instanceof Promise, true);
       assert.deepEqual(await value, ["Not a promise", "Not a promise"]);
+    });
+  });
+  describe("resolveNested", () => {
+    it("resolves an empty array", () => {
+      const value = resolveNested([]);
+      assertType<Array<never>>(value);
+      assert.deepEqual(value, []);
+    });
+
+    it("resolves an array of sync values", () => {
+      const value = resolveNested(["a", "b"]);
+      assertType<Array<string>>(value);
+      assert.deepEqual(value, ["a", "b"]);
+    });
+
+    it("resolves an array of promises", async () => {
+      const value = resolveNested([Promise.resolve("a"), Promise.resolve("b")]);
+      assertType<Promise<Array<string>>>(value);
+      assert.equal(value instanceof Promise, true);
+      assert.deepEqual(await value, ["a", "b"]);
+    });
+
+    it("resolves an array of arrays", () => {
+      const value = resolveNested([
+        ["a", "b"],
+        ["c", "d"],
+      ]);
+      assertType<Array<Array<string>>>(value);
+      assert.deepEqual(value, [
+        ["a", "b"],
+        ["c", "d"],
+      ]);
+    });
+
+    it("resolves an array of arrays of promises", async () => {
+      const value = resolveNested([
+        [Promise.resolve("a"), Promise.resolve("b")],
+        [Promise.resolve("c"), Promise.resolve("d")],
+      ]);
+      assertType<Promise<Array<Array<string>>>>(value);
+      assert.equal(value instanceof Promise, true);
+      assert.deepEqual(await value, [
+        ["a", "b"],
+        ["c", "d"],
+      ]);
     });
   });
 });

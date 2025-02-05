@@ -1,7 +1,14 @@
 import assert from "node:assert/strict";
 import { describe, it } from "node:test";
+import { assertType } from "../../shared/src/ts.utils.ts";
+import type { Llm } from "./llm.types.ts";
 import { userMsg } from "./message.builder.ts";
 import { filePart } from "./part.builder.ts";
+
+const _typings = () => {
+  assertType<Llm.Message.User>(userMsg``);
+  assertType<Promise<Llm.Message.User>>(userMsg`${Promise.resolve("Value")}`);
+};
 
 describe("MessageBuilder", () => {
   /**

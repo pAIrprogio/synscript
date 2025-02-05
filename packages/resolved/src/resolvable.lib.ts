@@ -31,6 +31,22 @@ export declare namespace Resolvable {
       ? { [K in keyof T]: Resolvable.IsPromise<T[K]> }[number]
       : Resolvable.IsPromise<T>;
   }
+
+  export type Nested<T> = readonly Resolvable.MaybeArray<T>[];
+  export namespace Nested {
+    export type Infer<T extends readonly Resolvable.MaybeArray<any>[]> = {
+      [K in keyof T]: Resolvable.MaybeArray.Infer<T[K]>;
+    };
+
+    export type IsPromise<T extends readonly Resolvable.MaybeArray<any>[]> = {
+      [K in keyof T]: Resolvable.MaybeArray.IsPromise<T[K]>;
+    }[number];
+
+    export type Return<T extends readonly Resolvable.MaybeArray<any>[]> =
+      true extends Nested.IsPromise<T>
+        ? Promise<Nested.Infer<T>>
+        : Nested.Infer<T>;
+  }
 }
 
 /**
@@ -125,4 +141,23 @@ export class Resolver<T extends Resolvable<any>> {
  */
 export const pipe = <T>(value: T) => {
   return new Resolver<T>(value);
+};
+
+export const resolveNested = <T extends readonly Resolvable.MaybeArray<any>[]>(
+  args: T,
+): Resolvable.Nested.Return<T> => {
+  // @ts-expect-error - We know that the values are not a promise
+  if (args.length === 0) return [];
+
+  const isPromise = args.some((v) => {
+    if (v instanceof Promise) return true;
+    if (Array.isArray(v)) return v.some((v) => v instanceof Promise);
+    return false;
+  });
+
+  // @ts-expect-error - We know that the values don't contain promises
+  if (!isPromise) return args;
+
+  // @ts-expect-error - We know that the values contain promises
+  return Promise.all(args.map((v) => (Array.isArray(v) ? Promise.all(v) : v)));
 };

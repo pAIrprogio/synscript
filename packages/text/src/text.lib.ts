@@ -1,6 +1,5 @@
 import { json } from "@synstack/json";
 import { resolvable, type Resolvable } from "@synstack/resolved";
-import { callable, type CallableResolvable } from "@synstack/resolved/callable";
 import { str } from "@synstack/str";
 import { type MaybeArray } from "../../shared/src/ts.utils.ts";
 
@@ -34,15 +33,14 @@ export class Text {
     return Text.options().t(template, ...values);
   }
 
-  public t<T extends Array<Text.TemplateValue.Base>>(
+  public t<T extends Resolvable.Nested<Text.TemplateValue.Base>>(
     template: TemplateStringsArray,
     ...values: T
   ): Text.Return<T> {
     // @ts-expect-error - Of course the default value is ""
     if (template.length === 0) return "";
 
-    const resolvedValues = callable.resolveNested(values);
-    return resolvable.pipe(resolvedValues)._((values) => {
+    return resolvable.pipe(values)._((values) => {
       let text = template[0];
 
       for (let i = 0; i < values.length; i++) {
@@ -149,13 +147,10 @@ export declare namespace Text {
     export type Base = { type: string };
 
     type InferExtraObjectValue<T> = T extends Text.OptionalString ? never : T;
-    type InferExtraObjectCallableResolvable<T> = InferExtraObjectValue<
-      CallableResolvable.Infer<T>
-    >;
     type InferExtraArrayable<T> =
       T extends Array<any>
-        ? { [K in keyof T]: InferExtraObjectCallableResolvable<T[K]> }[number]
-        : InferExtraObjectCallableResolvable<T>;
+        ? { [K in keyof T]: InferExtraObjectValue<T[K]> }[number]
+        : InferExtraObjectValue<T>;
 
     export type Infer<T extends any[]> = {
       // Check if it's an array
@@ -173,7 +168,7 @@ export declare namespace Text {
 
   export type TemplateValue<
     TExtraObject extends Text.ExtraObject.Base = never,
-  > = CallableResolvable.MaybeArray<Value<TExtraObject>>;
+  > = Resolvable.MaybeArray<Value<TExtraObject>>;
 
   export namespace TemplateValue {
     export type Base = TemplateValue<ExtraObject.Base>;
@@ -186,7 +181,7 @@ export declare namespace Text {
   }
 
   export type Return<T extends Array<Text.TemplateValue.Base>> =
-    true extends CallableResolvable.MaybeArray.ArrayOf.IsPromise<T>
+    true extends Resolvable.Nested.IsPromise<T>
       ? Promise<string & { __extra: ExtraObject.Infer<T> }>
       : string & { __extra: ExtraObject.Infer<T> };
 }

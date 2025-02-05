@@ -55,3 +55,24 @@ export const executeCommand = toolFactory(executeCommandConfig) as <
 >(
   args: z.input<typeof executeCommandConfig.requestSchema>,
 ) => Promise<OUTPUT>;
+
+{
+  {
+    const plop = executeCommandConfig.requestSchema.parse({
+      command: "workbench.action.files.save",
+      args: [
+        {
+          type: "path",
+          value: "/path/to/file.txt",
+        },
+        {
+          type: "primitive",
+          value: {
+            a: 1,
+            b: 2,
+          },
+        },
+      ],
+    }); //?
+  }
+}

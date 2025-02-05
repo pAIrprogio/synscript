@@ -42,16 +42,6 @@
         "types": "./dist/resolved.index.d.cts",
         "default": "./dist/resolved.index.cjs"
       }
-    },
-    "./callable": {
-      "import": {
-        "types": "./dist/callable/callable.index.d.ts",
-        "default": "./dist/callable/callable.index.js"
-      },
-      "require": {
-        "types": "./dist/callable/callable.index.d.cts",
-        "default": "./dist/callable/callable.index.cjs"
-      }
     }
   },
   "devDependencies": {
