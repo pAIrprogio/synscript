@@ -101,11 +101,20 @@ describe("pipe", () => {
       assert.equal(await value, 2);
     });
 
-    void it.skip("allows chaining promisifed pipeables", async () => {
+    void it.skip("skips on catch", () => {
       // @ts-expect-error For future implementation
-      const value = pipe(Promise.resolve(new Test(1))).add(1).$;
-      assert.equal(value instanceof Promise, true);
-      assert.equal(await value, 2);
+      const value = pipe(Promise.reject(new Error("test")))._((v) => v + 1).$;
+      assert.equal(value, undefined);
+    });
+  });
+  describe("iterable", () => {
+    void it.skip("iterates over an array", () => {
+      const value = pipe([1, 2, 3])
+        // @ts-expect-error For future implementation
+        .map((v) => v + 1)
+        .append([5, 6])
+        .toArray().$;
+      assert.deepEqual(value, [2, 3, 4, 5, 6]);
     });
   });
 });
