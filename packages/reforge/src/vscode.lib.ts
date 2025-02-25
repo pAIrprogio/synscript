@@ -106,8 +106,12 @@ export const executeCommandConfig = {
       .array(
         z.discriminatedUnion("type", [
           z.object({
-            type: z.union([z.literal("path"), z.literal("Uri")]),
+            type: z.literal("path"),
             value: z.string(),
+          }),
+          z.object({
+            type: z.literal("Uri"),
+            value: z.string().describe("Absolute path to the file"),
           }),
           z.object({
             type: z.literal("Range"),
