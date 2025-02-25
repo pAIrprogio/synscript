@@ -4,7 +4,7 @@
   "publishConfig": {
     "access": "public"
   },
-  "version": "2.1.7",
+  "version": "2.2.0",
   "description": "Your core stack for AI scripting and workflow automation",
   "keywords": [
     "synstack",
