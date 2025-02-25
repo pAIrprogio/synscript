@@ -143,17 +143,14 @@ The library provides middleware utilities to enhance model behavior:
 import { includeAssistantMessage, cacheCalls } from "@synstack/llm/middleware";
 import { fsCache } from "@synstack/fs-cache";
 
-// Include last assistant message in output
-const modelWithAssistant = includeAssistantMessage(baseModel);
-
-// Cache model responses
-const cache = fsCache("path/to/cache").key(["generate"]);
-const modelWithCache = cacheCalls(cache)(baseModel);
-
 // Apply middlewares to completion
 const completion = baseCompletion
-  .middlewares([includeAssistantMessage])
-  .prependMiddlewares([cacheCalls(cache)]);
+  .middlewares([includeAssistantMessage]) // Include last assistant message in output
+  .prependMiddlewares([cacheCalls(cache)]); // Cache model responses
+
+// Apply middlewares directly to the model
+const modelWithAssistant = includeAssistantMessage(baseModel);
+const modelWithCache = cacheCalls(cache)(baseModel);
 ```
 
 - `middlewares()`: Replace the middlewares
