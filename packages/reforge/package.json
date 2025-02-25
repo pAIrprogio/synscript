@@ -57,10 +57,12 @@
     }
   },
   "dependencies": {
-    "@synstack/json": "workspace:*"
+    "@synstack/json": "workspace:*",
+    "pako": "^2.1.0"
   },
   "devDependencies": {
     "@types/node": "^22.10.1",
+    "@types/pako": "^2.0.3",
     "@types/vscode": "^1.97.0",
     "tsup": "^8.3.5",
     "typescript": "^5.7.2"

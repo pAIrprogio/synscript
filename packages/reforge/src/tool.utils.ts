@@ -1,5 +1,6 @@
 import { json } from "@synstack/json";
 import * as net from "net";
+import pako from "pako";
 import { z } from "zod";
 
 export const RESPONSE_SUFFIX = "_RESPONSE";
@@ -90,8 +91,10 @@ export const toolFactory = <
         reject(error);
       };
 
-      const responseHandler = (response: string) => {
-        const resData = json.deserialize(response);
+      const responseHandler = (response: Uint8Array) => {
+        const resData = json.deserialize(
+          pako.inflate(response, { to: "string" }),
+        );
         const baseResponse = baseResponseSchema.parse(resData);
         if (baseResponse.type === responseName && baseResponse.id === id) {
           const parsedResponse = responseSchema.parse(resData);
@@ -105,11 +108,13 @@ export const toolFactory = <
       client.once("error", errorHandler);
       client.on("data", responseHandler);
       client.write(
-        json.serialize({
-          type: toolConfig.name,
-          id,
-          data: validatedData,
-        }),
+        pako.deflate(
+          json.serialize({
+            type: toolConfig.name,
+            id,
+            data: validatedData,
+          }),
+        ),
       );
     });
   };
