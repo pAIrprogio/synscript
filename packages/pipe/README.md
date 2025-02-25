@@ -10,26 +10,22 @@ Type-safe chainable operations with immutable transformations
 
 ## What is it for?
 
-Create type-safe chainable operations that maintain immutability. Each operation returns a new instance, allowing for safe method chaining:
+Create type-safe chainable operations inspired by the functional programming concept of pipes. Each operation can transform the value while maintaining type safety through the chain:
 
 ```typescript
 import { pipe } from "@synstack/pipe";
 
-// Each operation returns a new instance
+// Chain multiple transformations
 const result = pipe("hello")
   ._((str) => str.toUpperCase()) // Returns new Pipeable
   ._((str) => str.split("")) // Returns new Pipeable
-  ._((arr) => arr.reverse()).$; // Returns new Pipeable // Get final value
+  ._((arr) => arr.reverse()).$; // Get final value
 
 console.log(result); // ['O','L','L','E','H']
-
-// Original value remains unchanged
-const original = "hello";
-const modified = pipe(original)._((str) => str.toUpperCase()).$;
-
-console.log(original); // 'hello'
-console.log(modified); // 'HELLO'
 ```
+
+> [!NOTE]
+> While the library provides the structure for chaining operations, it's up to you to ensure immutability by not modifying values within the transformations.
 
 ## Installation
 
@@ -46,7 +42,7 @@ pnpm add @synstack/pipe
 
 ## Features
 
-### Immutable Chaining
+### Chainable Operations
 
 The `pipe` function creates a `Pipeable` instance that wraps a value and provides chainable methods:
 
@@ -55,7 +51,7 @@ import { pipe } from "@synstack/pipe";
 
 // Chain multiple transformations
 const result = pipe({ count: 1 })
-  ._((obj) => ({ ...obj, doubled: obj.count * 2 }))
+  ._((obj) => ({ ...obj, doubled: obj.count * 2 })) // Create new object to maintain immutability
   ._((obj) => ({ ...obj, squared: obj.doubled ** 2 })).$;
 
 console.log(result); // { count: 1, doubled: 2, squared: 4 }
@@ -82,4 +78,76 @@ const result = pipe(user)
 
 // Result type is inferred as:
 // { name: string; age: number; email: string; isAdult: boolean }
+```
+
+### Instance vs Value Operations
+
+The library provides two ways to transform values:
+
+```typescript
+import { pipe, Pipeable } from "@synstack/pipe";
+
+class Counter extends Pipeable<Counter, number> {
+  private value: number;
+  
+  constructor(value: number) {
+    super();
+    this.value = value;
+  }
+
+  instanceOf(): Counter {
+    return this;
+  }
+
+  valueOf(): number {
+    return this.value;
+  }
+
+  add(n: number): Counter {
+    return new Counter(this.value + n);
+  }
+}
+
+// Transform using the instance (._)
+const withInstance = pipe(new Counter(1))
+  ._(counter => counter.add(2)).$; // 3
+
+// Transform using the value (._$)
+const withValue = pipe(new Counter(1))
+  ._$(value => value + 2).$; // 3
+```
+
+### Custom Pipeable Classes
+
+You can create your own pipeable classes by extending the `Pipeable` class:
+
+```typescript
+import { Pipeable } from "@synstack/pipe";
+
+class StringPipe extends Pipeable<StringPipe, string> {
+  private readonly value: string;
+
+  constructor(value: string) {
+    super();
+    this.value = value;
+  }
+
+  instanceOf(): StringPipe {
+    return this;
+  }
+
+  valueOf(): string {
+    return this.value;
+  }
+
+  append(str: string): StringPipe {
+    return new StringPipe(this.value + str);
+  }
+}
+
+const result = pipe(new StringPipe("Hello"))
+  .append(" ")
+  .append("World").$;
+
+console.log(result); // "Hello World"
 ```
