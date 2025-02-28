@@ -387,7 +387,10 @@ export declare namespace Llm {
         /**
          * A result object for accessing different stream types and additional information.
          */
-        export type Result<TOOLS extends Llm.Tools> = StreamTextResult<TOOLS>;
+        export type Result<
+          TOOLS extends Llm.Tools,
+          PARTIAL_OUTPUT = never,
+        > = StreamTextResult<TOOLS, PARTIAL_OUTPUT>;
       }
 
       export namespace Object {
