@@ -61,6 +61,7 @@
     "@synstack/resolved": "workspace:*",
     "@synstack/text": "workspace:*",
     "mime-types": "^2.1.35",
+    "ts-pattern": "^5.6.2",
     "zod-to-json-schema": "^3.24.3"
   },
   "devDependencies": {
