@@ -115,7 +115,7 @@ export class CompletionBuilder<OPTIONS extends Llm.Completion.Partial> {
   /**
    * Append messages to the existing prompt messages.
    */
-  public appendMessages(messages: Array<Llm.Message>) {
+  public appendMessages(messages: Resolvable.ArrayOf<Llm.Message>) {
     return this.merge({
       messages: pipe([
         this._options.messages ?? [],
