@@ -49,13 +49,13 @@
   },
   "dependencies": {
     "@synstack/path": "workspace:*",
-    "glob": "^11.0.0",
+    "glob": "^11.0.1",
     "minimatch": "^10.0.1"
   },
   "devDependencies": {
     "@types/node": "^22.10.1",
-    "tsup": "^8.3.5",
-    "typescript": "^5.7.2"
+    "tsup": "^8.4.0",
+    "typescript": "^5.7.3"
   },
   "files": [
     "src/**/*.ts",

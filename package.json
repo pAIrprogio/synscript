@@ -29,19 +29,19 @@
     "package:sync": "./scripts/package-sync.ts"
   },
   "devDependencies": {
-    "@eslint/js": "^9.16.0",
+    "@eslint/js": "^9.21.0",
     "@types/eslint": "^9.6.1",
-    "eslint": "^9.16.0",
-    "lerna": "^8.1.9",
-    "prettier": "^3.4.1",
-    "tsup": "^8.3.5",
-    "typescript": "^5.7.2",
-    "typescript-eslint": "^8.16.0"
+    "eslint": "^9.21.0",
+    "lerna": "^8.2.0",
+    "prettier": "^3.5.2",
+    "tsup": "^8.4.0",
+    "typescript": "^5.7.3",
+    "typescript-eslint": "^8.25.0"
   },
   "dependencies": {
-    "@ai-sdk/anthropic": "^1.0.6",
-    "glob": "^11.0.0",
-    "ts-pattern": "^5.6.0",
-    "zod": "^3.23.8"
+    "@ai-sdk/anthropic": "^1.1.11",
+    "glob": "^11.0.1",
+    "ts-pattern": "^5.6.2",
+    "zod": "^3.24.2"
   }
 }

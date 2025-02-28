@@ -64,8 +64,8 @@
     "@types/node": "^22.10.1",
     "@types/pako": "^2.0.3",
     "@types/vscode": "^1.97.0",
-    "tsup": "^8.3.5",
-    "typescript": "^5.7.2"
+    "tsup": "^8.4.0",
+    "typescript": "^5.7.3"
   },
   "files": [
     "src/**/*.ts",

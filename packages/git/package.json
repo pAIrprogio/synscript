@@ -47,13 +47,13 @@
   },
   "dependencies": {
     "@synstack/enhance": "workspace:*",
-    "execa": "^9.5.1",
+    "execa": "^9.5.2",
     "iter-tools-es": "^7.5.3"
   },
   "devDependencies": {
     "@types/node": "^22.10.1",
-    "tsup": "^8.3.5",
-    "typescript": "^5.7.2"
+    "tsup": "^8.4.0",
+    "typescript": "^5.7.3"
   },
   "files": [
     "src/**/*.ts",
