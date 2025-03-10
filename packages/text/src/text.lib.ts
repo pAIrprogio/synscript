@@ -51,10 +51,13 @@ export class Text {
 
         if (Array.isArray(value)) {
           wrappedValue = value
-            .filter((inner) => inner !== null || inner !== undefined)
+            .filter(
+              (inner) =>
+                inner !== null && inner !== undefined && inner !== false,
+            )
             .map(Text.wrapValue)
             .join(this._options.joinString);
-        } else {
+        } else if (value !== null && value !== undefined && value !== false) {
           wrappedValue = Text.wrapValue(value);
         }
         const nextString = template[i + 1];
@@ -80,8 +83,8 @@ export class Text {
     }).$ as Text.Return<T>;
   }
 
-  private static wrapValue(this: void, value: Text.Value.Base) {
-    if (value === null || value === undefined) return "";
+  private static wrapValue(this: void, value: Text.Value.Base): string {
+    if (value === null || value === undefined || value === false) return "";
     if (typeof value === "object") {
       if (!Object.hasOwn(value, "type")) {
         throw new Error(
@@ -138,7 +141,7 @@ export declare namespace Text {
     joinString?: string;
   };
 
-  export type OptionalString = string | undefined | null;
+  export type OptionalString = string | undefined | null | false;
 
   export type String<TExtraObject extends Text.ExtraObject.Base = never> =
     string & {
@@ -212,9 +215,18 @@ ${str(cause instanceof Error ? cause.message : (cause as string))
 }
 
 /**
+ * @deprecated
+ * Use the `&&` operator instead. `t` will filter out null, undefined, and false values.
+ * Conditions are prefered over `tIf` because with `tIf` the interpolated values are still executed even if the value is falsy and the condition is not met.
+ * `tIf` also doesn't support type narrowing to the interpolated values so this will trigger a type error:
+ * ```ts
+ * tIf(typeof value === "string")`${value}` // Likely type error as the type of value is not narrowed to a string
+ * ```
+ *
  * @param condition - The condition to check, can be:
  * - primitive values
  * - promise of a primitive value
+ *
  * @returns The result of the template string if the resolved value is true, otherwise an empty string
  *
  * @example

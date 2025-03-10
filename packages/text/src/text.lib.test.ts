@@ -68,9 +68,9 @@ describe("t", () => {
     assert.equal(text, "$\n  Hello\n  World");
   });
 
-  it("ignores null and undefined values", () => {
-    const text = Text.t`Hello ${null} ${undefined} hi`;
-    assert.equal(text, "Hello   hi");
+  it("ignores null, undefined, and false values", () => {
+    const text = Text.t`Hello ${null} ${undefined} ${false} hi`;
+    assert.equal(text, "Hello    hi");
   });
 
   it("handles functions", async () => {
@@ -103,6 +103,11 @@ Hello
     const text: string & { __extra: { type: "extra" } } =
       Text.t`Hello ${{ type: "extra" as const }} World`;
     assert.equal(text, 'Hello %STR_EXTRA%{"type":"extra"}%!STR_EXTRA% World');
+  });
+
+  it("excludes undefined, null, and false values from arrays", () => {
+    const text = Text.t`Hello ${[undefined, null, false, "World"]}`;
+    assert.equal(text, "Hello World");
   });
 
   it("allows string arrays", () => {
