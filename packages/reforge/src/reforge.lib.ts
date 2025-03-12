@@ -283,5 +283,34 @@ export const getPinnedFilesConfig = {
 
 /**
  * Retrieve the list of pinned files in the editor
+ * @returns The list of pinned files
  */
 export const getPinnedFiles = toolFactory(getPinnedFilesConfig);
+
+export const pinFilesConfig = {
+  name: "PIN_FILES",
+  requestSchema: z.object({
+    paths: z.array(z.string()),
+  }),
+  responseSchema: z.array(z.string()),
+};
+
+/**
+ * Pin a list of files in the editor
+ * @returns The list of pinned files
+ */
+export const pinFiles = toolFactory(pinFilesConfig);
+
+export const unpinFilesConfig = {
+  name: "UNPIN_FILES",
+  requestSchema: z.object({
+    paths: z.array(z.string()),
+  }),
+  responseSchema: z.array(z.string()),
+};
+
+/**
+ * Unpin a list of files in the editor
+ * @returns The list of pinned files
+ */
+export const unpinFiles = toolFactory(unpinFilesConfig);
