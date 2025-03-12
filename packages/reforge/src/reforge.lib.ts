@@ -274,3 +274,14 @@ export const getFocusedFileSelectionsConfig = {
 export const getFocusedFileSelections = toolFactory(
   getFocusedFileSelectionsConfig,
 );
+
+/**
+ * Retrieve the list of pinned files in the editor
+ */
+export const getPinnedFilesConfig = {
+  name: "GET_PINNED_FILES",
+  requestSchema: null,
+  responseSchema: z.array(z.string()),
+};
+
+export const getPinnedFiles = toolFactory(getPinnedFilesConfig);

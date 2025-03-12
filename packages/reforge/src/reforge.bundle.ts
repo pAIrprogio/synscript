@@ -2,6 +2,7 @@ export {
   getFocusedFile,
   getFocusedFileSelections,
   getOpenedFiles,
+  getPinnedFiles,
   notify,
   openFile,
   openFiles,
