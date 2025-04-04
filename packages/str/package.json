@@ -4,7 +4,7 @@
   "publishConfig": {
     "access": "public"
   },
-  "version": "1.2.5",
+  "version": "1.2.6",
   "description": "Advanced chainable string manipulation",
   "keywords": [
     "string",

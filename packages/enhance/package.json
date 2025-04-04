@@ -4,7 +4,7 @@
   "publishConfig": {
     "access": "public"
   },
-  "version": "1.1.6",
+  "version": "1.1.7",
   "description": "Type-safe object enhancement with proxy-based method extension",
   "keywords": [
     "synstack",
