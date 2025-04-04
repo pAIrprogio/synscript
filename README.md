@@ -8,20 +8,17 @@ Check out the [reforge](https://github.com/pAIrprogio/synscript/tree/main/reforg
 
 ## Quick Start
 
+Install these recommended packages:
+
 ```bash
-# Install the all-in-one package (recommended)
-npm install @synstack/synscript
-# or
-yarn add @synstack/synscript
-# or
-pnpm add @synstack/synscript
+npm install @synstack/llm @synstack/fs @synstack/text @synstack/fs-cache @synstack/xml
+
+yarn add @synstack/llm @synstack/fs @synstack/text @synstack/fs-cache @synstack/xml
+
+pnpm add @synstack/llm @synstack/fs @synstack/text @synstack/fs-cache @synstack/xml
 ```
 
 ## Packages
-
-### Bundle Package (Recommended)
-
-- [@synstack/synscript](./packages/synscript/README.md) - The all-in-one package that includes bundled exports from all other packages. Provides a complete stack for AI scripting and workflow automation.
 
 ### Core Packages
 
@@ -115,7 +112,6 @@ pnpm add @synstack/synscript
 ```mermaid
 graph TD
   %% Packages
-  synscript["@synstack/synscript"]
   enhance["@synstack/enhance"]
   fs["@synstack/fs"]
   fs_cache["@synstack/fs-cache"]
@@ -133,25 +129,6 @@ graph TD
   web["@synstack/web"]
   xml["@synstack/xml"]
   yaml["@synstack/yaml"]
-
-  %% Internal Dependencies
-  synscript --> enhance
-  synscript --> fs
-  synscript --> fs_cache
-  synscript --> git
-  synscript --> glob
-  synscript --> json
-  synscript --> llm
-  synscript --> markdown
-  synscript --> path
-  synscript --> pipe
-  synscript --> reforge
-  synscript --> resolved
-  synscript --> str
-  synscript --> text
-  synscript --> web
-  synscript --> xml
-  synscript --> yaml
 
   fs --> enhance
   fs --> git
