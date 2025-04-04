@@ -1,5 +1,5 @@
-import { FsCache } from "@synstack/fs-cache";
-import { experimental_wrapLanguageModel } from "ai";
+import type { FsCache } from "@synstack/fs-cache";
+import { wrapLanguageModel } from "ai";
 import type { Llm } from "./llm.types.ts";
 import { messageToText } from "./message.builder.ts";
 
@@ -7,7 +7,7 @@ import { messageToText } from "./message.builder.ts";
  * Wraps the model to add the provided last assistant message to the output
  */
 export const includeAssistantMessage = (model: Llm.Model) =>
-  experimental_wrapLanguageModel({
+  wrapLanguageModel({
     model,
     middleware: {
       wrapGenerate: async ({ doGenerate, params }) => {
@@ -59,7 +59,7 @@ export const includeAssistantMessage = (model: Llm.Model) =>
 export const cacheCalls =
   (cache: FsCache<FsCache.Options<[Llm.Model.Generate.Options]>>) =>
   (model: Llm.Model) => {
-    return experimental_wrapLanguageModel({
+    return wrapLanguageModel({
       model,
       middleware: {
         wrapGenerate: async ({ doGenerate, params }) => {
