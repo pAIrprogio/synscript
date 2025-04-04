@@ -1,6 +1,6 @@
 import YAML from "yaml";
-import { type ZodSchema } from "zod";
-import { type Stringable } from "../../shared/src/ts.utils.ts";
+import type { ZodSchema } from "zod";
+import type { Stringable } from "../../shared/src/ts.utils.ts";
 
 /**
  * Deserializes YAML to a TypeScript type

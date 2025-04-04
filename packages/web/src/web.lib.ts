@@ -1,6 +1,6 @@
 import { Readability } from "@mozilla/readability";
 import { parseHTML } from "linkedom";
-import { type ZodSchema } from "zod";
+import type { ZodSchema } from "zod";
 
 /**
  * Retrieves an URL as JSON

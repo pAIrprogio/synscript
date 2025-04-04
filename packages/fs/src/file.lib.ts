@@ -7,7 +7,7 @@ import { type Xml, xml } from "@synstack/xml";
 import { yaml } from "@synstack/yaml";
 import * as fsSync from "fs";
 import * as fs from "fs/promises";
-import { ZodSchema } from "zod";
+import type { ZodSchema } from "zod";
 import { type Stringable } from "../../shared/src/ts.utils.ts";
 import { FsDir } from "./dir.lib.ts";
 

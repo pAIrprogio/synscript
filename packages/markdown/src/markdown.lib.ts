@@ -1,6 +1,6 @@
 import { yaml } from "@synstack/yaml";
 import TurndownService from "turndown";
-import { ZodSchema } from "zod";
+import type { ZodSchema } from "zod";
 import { type Stringable } from "../../shared/src/ts.utils.ts";
 
 /**
