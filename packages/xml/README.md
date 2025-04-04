@@ -2,9 +2,6 @@
 
 Non-iso XML parser with text preservation
 
-> [!WARNING]
-> This package is included in the [@synstack/synscript](../synscript/README.md) package. It is not recommended to install both packages at the same time.
-
 ## What is it for?
 
 This package provides a simple XML parser that preserves the original text formatting and handles invalid XML gracefully:

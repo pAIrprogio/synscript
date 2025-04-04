@@ -4,9 +4,6 @@
 
 This package provides a strongly-typed, chainable, and immutable API for file system operations with support for multiple formats and advanced path manipulation.
 
-> [!WARNING]
-> This package is included in the [@synstack/synscript](../synscript/README.md) package. It is not recommended to install both packages at the same time.
-
 ## What is it for?
 
 Turn verbose file operations into chainable, immutable, and strongly-typed commands:

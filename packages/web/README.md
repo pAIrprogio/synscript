@@ -2,9 +2,6 @@
 
 Web utilities for fetching and parsing web content
 
-> [!WARNING]
-> This package is included in the [@synstack/synscript](../synscript/README.md) package. It is not recommended to install both packages at the same time.
-
 ## What is it for?
 
 This package provides utilities for fetching and parsing web content, including JSON data, plain text, and article extraction:

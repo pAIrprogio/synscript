@@ -1,72 +1,47 @@
 # @synstack/synscript
 
-Bundle package for Synstack libraries, your core stack for AI scripting and workflow automation.
+> [!WARNING] The `@synstack/synscript` which includes all the packages is being deprecated.
+>
+> We recommend installing individual packages instead.
 
-## Installation
+## Installations
 
-```bash
-npm install @synstack/synscript
-# or
-yarn add @synstack/synscript
-# or
-pnpm add @synstack/synscript
-```
-
-For LLM operations, and schema validation you need to install these peer dependencies:
+Core installation with most used packages:
 
 ```bash
-npm install zod ai @ai-sdk/${your-provider-name}
-# or
-yarn add zod ai @ai-sdk/${your-provider-name}
-# or
-pnpm add zod ai @ai-sdk/${your-provider-name}
+npm install @synstack/llm @synstack/fs @synstack/text @synstack/fs-cache @synstack/xml
+
+yarn add @synstack/llm @synstack/fs @synstack/text @synstack/fs-cache @synstack/xml
+
+pnpm add @synstack/llm @synstack/fs @synstack/text @synstack/fs-cache @synstack/xml
 ```
 
 ## Available Libraries
 
 ### Main libraries
 
-- [`llm`](../llm/README.md): Immutable, chainable, and type-safe wrapper of Vercel's AI SDK
-- [`dir`, `file`, `files`](../fs/README.md): File system operations with support for multiple formats
-- [`fsCache`](../fs-cache/README.md): Human-friendly file system caching
-- [`t`, `tIf`](../text/README.md): String templating utilities
-- [`web`](../web/README.md): Web utilities for scraping and fetching content
+- [`@synstack/llm`](../llm/README.md): Immutable, chainable, and type-safe wrapper of Vercel's AI SDK
+- [`@synstack/fs`](../fs/README.md): File system operations with support for multiple formats
+- [`@synstack/fs-cache`](../fs-cache/README.md): Human-friendly file system caching
+- [`@synstack/text`](../text/README.md): String templating utilities
+- [`@synstack/web`](../web/README.md): Web utilities for scraping and fetching content
 
 ### Core Utilities
 
-- [`enhance`](../enhance/README.md): Type-safe object enhancement with proxy-based method extension
-- [`pipe`](../pipe/README.md): Type-safe chainable operations with immutable transformations
-- [`resolved`](../resolved/README.md): Type-safe piping of synchronous or asynchronous values
+- [`@synstack/enhance`](../enhance/README.md): Type-safe object enhancement with proxy-based method extension
+- [`@synstack/pipe`](../pipe/README.md): Type-safe chainable operations with immutable transformations
+- [`@synstack/resolved`](../resolved/README.md): Type-safe piping of synchronous or asynchronous values
 
 ### Other File System Utilities
 
-- [`git`](../git/README.md): Git utilities for AI prompting and automation
-- [`glob`](../glob/README.md): Type-safe glob pattern matching and file filtering
-- [`path`](../path/README.md): Type-safe path manipulation utilities
+- [`@synstack/git`](../git/README.md): Git utilities for AI prompting and automation
+- [`@synstack/glob`](../glob/README.md): Type-safe glob pattern matching and file filtering
+- [`@synstack/path`](../path/README.md): Type-safe path manipulation utilities
 
 ### Content Processing
 
-- [`json`](../json/README.md): Schema-safe JSON serialization and deserialization
-- [`yaml`](../yaml/README.md): Type-safe YAML serialization and deserialization
-- [`xml`](../xml/README.md): Non-iso XML parser with text preservation
-- [`md`](../markdown/README.md): Type-safe markdown processing with YAML frontmatter
-- [`str`](../str/README.md): Advanced chainable string manipulation utilities
-
-## Usage Example
-
-```typescript
-import { dir, t, str } from "@synstack/synscript";
-
-// File operations
-const sourceDir = dir("./src");
-const files = await sourceDir.glob("**/*.ts");
-
-// String manipulation
-const content = str("hello-world").pascalCase().$; // "HelloWorld"
-
-// Text templating
-const text = await t`
-  Found ${files.length} TypeScript files:
-    ${files.map((f) => `- ${f.path}`)}
-`;
-```
+- [`@synstack/json`](../json/README.md): Schema-safe JSON serialization and deserialization
+- [`@synstack/yaml`](../yaml/README.md): Type-safe YAML serialization and deserialization
+- [`@synstack/xml`](../xml/README.md): Non-iso XML parser with text preservation
+- [`@synstack/markdown`](../markdown/README.md): Type-safe markdown processing with YAML frontmatter
+- [`@synstack/str`](../str/README.md): Advanced chainable string manipulation utilities

@@ -2,9 +2,6 @@
 
 Human-friendly file system caching
 
-> [!WARNING]
-> This package is included in the [@synstack/synscript](https://github.com/pAIrprogio/synscript) package. It is not recommended to install both packages at the same time.
-
 ## What is it for?
 
 Sometimes you need to cache expensive function results between program runs. This package makes it easy to cache function outputs to disk with type safety while keeping the file system clean and cache entries readable.

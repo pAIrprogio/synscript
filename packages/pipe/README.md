@@ -2,9 +2,6 @@
 
 Type-safe chainable operations with immutable transformations
 
-> [!WARNING]
-> This package is included in the [@synstack/synscript](https://github.com/pAIrprogio/synscript) package. It is not recommended to install both packages at the same time.
-
 > [!NOTE]
 > This package provides the foundation for creating chainable, immutable operations in TypeScript. It's used by other @synstack packages to implement type-safe method chaining.
 
@@ -89,7 +86,7 @@ import { pipe, Pipeable } from "@synstack/pipe";
 
 class Counter extends Pipeable<Counter, number> {
   private value: number;
-  
+
   constructor(value: number) {
     super();
     this.value = value;
@@ -109,12 +106,10 @@ class Counter extends Pipeable<Counter, number> {
 }
 
 // Transform using the instance (._)
-const withInstance = pipe(new Counter(1))
-  ._(counter => counter.add(2)).$; // 3
+const withInstance = pipe(new Counter(1))._((counter) => counter.add(2)).$; // 3
 
 // Transform using the value (._$)
-const withValue = pipe(new Counter(1))
-  ._$(value => value + 2).$; // 3
+const withValue = pipe(new Counter(1))._$((value) => value + 2).$; // 3
 ```
 
 ### Custom Pipeable Classes
@@ -145,9 +140,7 @@ class StringPipe extends Pipeable<StringPipe, string> {
   }
 }
 
-const result = pipe(new StringPipe("Hello"))
-  .append(" ")
-  .append("World").$;
+const result = pipe(new StringPipe("Hello")).append(" ").append("World").$;
 
 console.log(result); // "Hello World"
 ```

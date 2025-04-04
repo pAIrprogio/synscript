@@ -2,9 +2,6 @@
 
 Immutable, chainable, and type-safe wrapper of Vercel's AI SDK.
 
-> [!WARNING]
-> This package is included in the [@synstack/synscript](https://github.com/pAIrprogio/synscript) package. It is not recommended to install both packages at the same time.
-
 ## Installation
 
 ```bash

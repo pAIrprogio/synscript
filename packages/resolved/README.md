@@ -2,9 +2,6 @@
 
 Type-safe piping of synchronous or asynchronous values while preserving sync state
 
-> [!WARNING]
-> This package is included in the [@synstack/synscript](../synscript/README.md) package. It is not recommended to install both packages at the same time.
-
 > [!NOTE]
 > This package may be merged with the [@synstack/pipe](../pipe/README.md) package in the future.
 

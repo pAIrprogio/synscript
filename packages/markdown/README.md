@@ -2,9 +2,6 @@
 
 Type-safe markdown processing with YAML frontmatter support
 
-> [!WARNING]
-> This package is included in the [@synstack/synscript](https://github.com/pAIrprogio/synscript) package. It is not recommended to install both packages at the same time.
-
 ## What is it for?
 
 This package provides tools for:

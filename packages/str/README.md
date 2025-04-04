@@ -2,9 +2,6 @@
 
 Advanced chainable string manipulation utilities
 
-> [!WARNING]
-> This package is included in the [@synstack/synscript](../synscript/README.md) package. It is not recommended to install both packages at the same time.
-
 ## What is it for?
 
 When working with strings in TypeScript, you often need to chain multiple operations like trimming, splitting, case conversion, and indentation management. This package provides a fluent, chainable API for string manipulation with full type safety:

@@ -2,9 +2,6 @@
 
 Type-safe object enhancement with proxy-based method extension
 
-> [!WARNING]
-> This package is included in the [@synstack/synscript](https://github.com/pAIrprogio/synscript) package. It is not recommended to install both packages at the same time.
-
 ## What is it for?
 
 Sometimes you need to add functionality to existing objects without modifying their prototype or breaking equality checks. This package provides a safe way to enhance objects with new methods while maintaining type safety:

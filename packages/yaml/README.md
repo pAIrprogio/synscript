@@ -2,9 +2,6 @@
 
 Opiniated and type-safe YAML serialization and deserialization with Zod schema validation
 
-> [!WARNING]
-> This package is included in the [@synstack/synscript](../synscript/README.md) package. It is not recommended to install both packages at the same time.
-
 > [!NOTE]
 > This package is accessible through [@synstack/fs](../fs/README.md) for convenience.
 

@@ -2,9 +2,6 @@
 
 Git utilities for AI prompting and automation
 
-> [!WARNING]
-> This package is included in the [@synstack/synscript](https://github.com/pAIrprogio/synscript) package. It is not recommended to install both packages at the same time.
-
 > [!NOTE]
 > The `ls` function is available through [@synstack/fs](../fs/README.md) for convenience.
 

@@ -2,9 +2,6 @@
 
 Type-safe VSCode extension API for TS scripts
 
-> [!WARNING]  
-> This package is included in the [@synstack/synscript](../synscript/README.md) package. It is not recommended to install both packages at the same time.
-
 > [!NOTE]  
 > The reforge VSCode extension is currently in alpha.
 >

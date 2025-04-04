@@ -2,9 +2,6 @@
 
 Advanced path manipulation utilities
 
-> [!WARNING]
-> This package is included in the [@synstack/synscript](../synscript/README.md) package. It is not recommended to install both packages at the same time.
-
 ## What is it for?
 
 This package provides a strongly-typed interface for working with file system paths. It ensures type safety between absolute and relative paths while offering comprehensive utilities for path manipulation, extension handling, and MIME type detection:

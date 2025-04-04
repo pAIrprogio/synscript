@@ -2,9 +2,6 @@
 
 Schema-safe and type-safe JSON serialization and deserialization
 
-> [!WARNING]
-> This package is included in the [@synstack/synscript](https://github.com/pAIrprogio/synscript) package. It is not recommended to install both packages at the same time.
-
 > [!NOTE]
 > This package is accessible through [@synstack/fs](../fs/README.md) for convenience.
 
