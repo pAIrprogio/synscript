@@ -3,8 +3,8 @@ import type {
   CoreAssistantMessage,
   CoreMessage,
   CoreSystemMessage,
-  CoreTool,
-  CoreToolChoice,
+  Tool as CoreTool,
+  ToolChoice as CoreToolChoice,
   CoreToolMessage,
   CoreUserMessage,
   FilePart,
@@ -21,7 +21,7 @@ import type {
   ToolCallPart,
   ToolCallRepairFunction,
 } from "ai";
-import { z } from "zod";
+import type { ZodTypeAny } from "zod";
 
 type $Partial<T> = Partial<T>;
 
@@ -410,7 +410,7 @@ export declare namespace Llm {
    * The tool can also contain an optional execute function for the actual execution function of the tool.
    */
   export type Tool<
-    PARAMETERS extends z.ZodTypeAny = any,
+    PARAMETERS extends ZodTypeAny = any,
     RESULT = any,
   > = CoreTool<PARAMETERS, RESULT>;
 
