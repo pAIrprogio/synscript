@@ -8,7 +8,7 @@
       "reforge"
     ]
   },
-  "packageManager": "yarn@4.5.2",
+  "packageManager": "yarn@4.8.1+sha512.bc946f2a022d7a1a38adfc15b36a66a3807a67629789496c3714dd1703d2e6c6b1c69ff9ec3b43141ac7a1dd853b7685638eb0074300386a59c18df351ef8ff6",
   "author": {
     "name": "pAIrprog",
     "url": "https://pairprog.io"
@@ -29,14 +29,14 @@
     "package:sync": "./scripts/package-sync.ts"
   },
   "devDependencies": {
-    "@eslint/js": "^9.21.0",
+    "@eslint/js": "^9.23.0",
     "@types/eslint": "^9.6.1",
-    "eslint": "^9.21.0",
-    "lerna": "^8.2.0",
-    "prettier": "^3.5.2",
+    "eslint": "^9.23.0",
+    "lerna": "^8.2.1",
+    "prettier": "^3.5.3",
     "tsup": "^8.4.0",
-    "typescript": "^5.7.3",
-    "typescript-eslint": "^8.25.0"
+    "typescript": "^5.8.2",
+    "typescript-eslint": "^8.29.0"
   },
   "dependencies": {
     "glob": "^11.0.1"

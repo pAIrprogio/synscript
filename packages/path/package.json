@@ -47,13 +47,13 @@
   },
   "dependencies": {
     "@synstack/pipe": "workspace:*",
-    "mime-types": "^2.1.35"
+    "mime-types": "^3.0.1"
   },
   "devDependencies": {
     "@types/mime-types": "^2.1.4",
     "@types/node": "^22.10.1",
     "tsup": "^8.4.0",
-    "typescript": "^5.7.3"
+    "typescript": "^5.8.2"
   },
   "files": [
     "src/**/*.ts",

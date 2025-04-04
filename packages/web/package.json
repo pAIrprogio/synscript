@@ -46,13 +46,13 @@
     }
   },
   "dependencies": {
-    "@mozilla/readability": "^0.5.0",
+    "@mozilla/readability": "^0.6.0",
     "linkedom": "^0.18.9"
   },
   "devDependencies": {
     "@types/node": "^22.10.1",
     "tsup": "^8.4.0",
-    "typescript": "^5.7.3",
+    "typescript": "^5.8.2",
     "zod": "^3.24.2"
   },
   "peerDependencies": {
