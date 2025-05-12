@@ -248,9 +248,9 @@
     "@synstack/yaml": "workspace:*"
   },
   "devDependencies": {
-    "@types/node": "^22.10.1",
+    "@types/node": "^22.15.17",
     "tsup": "^8.4.0",
-    "typescript": "^5.8.2"
+    "typescript": "^5.8.3"
   },
   "peerDependencies": {
     "ai": "*",
