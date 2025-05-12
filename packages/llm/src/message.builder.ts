@@ -27,14 +27,11 @@ function mapFilePart(v: Llm.Message.Template.Part.File): Llm.Message.Part.File {
   };
 }
 
-export const userMsg = <
+export function userMsg<
   T extends
     Array<MessageTemplate.User.TemplateValue> = Array<MessageTemplate.User.TemplateValue>,
->(
-  template: TemplateStringsArray,
-  ...values: T
-) =>
-  pipe(t(template, ...values))
+>(template: TemplateStringsArray, ...values: T) {
+  return pipe(t(template, ...values))
     ._(tParse)
     ._((parts) =>
       parts.map(
@@ -53,14 +50,12 @@ export const userMsg = <
           content,
         }) satisfies Llm.Message.User,
     ).$;
+}
 
-export const assistantMsg = <
+export function assistantMsg<
   T extends
     Array<MessageTemplate.Assistant.TemplateValue> = Array<MessageTemplate.Assistant.TemplateValue>,
->(
-  template: TemplateStringsArray,
-  ...values: T
-) => {
+>(template: TemplateStringsArray, ...values: T) {
   return pipe(t(template, ...values))
     ._(tParse)
     ._((parts) =>
@@ -79,20 +74,17 @@ export const assistantMsg = <
           content,
         }) satisfies Llm.Message.Assistant,
     ).$;
-};
+}
 
-export const systemMsg = <
+export function systemMsg<
   T extends
     Array<MessageTemplate.System.TemplateValue> = Array<MessageTemplate.System.TemplateValue>,
->(
-  template: TemplateStringsArray,
-  ...values: T
-) => {
+>(template: TemplateStringsArray, ...values: T) {
   return pipe(t(template, ...values))._(
     (content) =>
       ({ role: "system" as const, content }) satisfies Llm.Message.System,
   ).$;
-};
+}
 
 export declare namespace MessageTemplate {
   export type Fn<TExtraValue extends Text.ExtraObject.Base = never> = (
