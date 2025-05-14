@@ -52,26 +52,19 @@ export class FsFile<
    * Create a new FsFile instance from a path, a list of paths to be resolved, or an existing FsFile instance.
    * The resulting path will be an absolute path.
    *
-   * @param paths - One or more path segments to join into a file path, or an existing FsFile instance
+   * @param paths - A path or an existing FsFile instance
    * @returns A new FsFile instance with UTF-8 encoding
    *
    * ```typescript
    * import { file } from "@synstack/fs";
    *
    * const relativeFile = file("./relative/path.txt");
-   * const joinedFile = file("/base/path", "subdir", "file.txt");
    * const existingFile = file(file("/path/to/existing.txt"));
    * ```
    */
-  public static from(this: void, file: FsFile): FsFile;
-  public static from(this: void, ...paths: Array<AnyPath>): FsFile;
-  public static from(this: void, ...args: [FsFile] | Array<AnyPath>) {
-    function isFile(paths: Array<AnyPath> | [FsFile]): paths is [FsFile] {
-      return paths.length === 1 && paths[0] instanceof FsFile;
-    }
-
-    if (isFile(args)) return args[0];
-    return new FsFile<"utf-8", undefined>(path.join(...args), "utf-8");
+  public static from(this: void, arg: FsFile | AnyPath) {
+    if (arg instanceof FsFile) return arg;
+    return new FsFile<"utf-8", undefined>(path.resolve(arg), "utf-8");
   }
 
   private constructor(path: AnyPath, encoding?: TEncoding, schema?: TSchema) {
@@ -370,14 +363,21 @@ export class FsFile<
    *
    * const tempFile = file("./temp.txt");
    * await tempFile.write.text("temporary content");
-   * await tempFile.rm(); // File is deleted
+   * await tempFile.remove(); // File is deleted
    * ```
    */
-  public async rm(): Promise<void> {
+  public async remove(): Promise<void> {
     await fs.rm(this._path, { recursive: true }).catch((e) => {
       if (e.code === "ENOENT") return;
       throw e;
     });
+  }
+
+  /**
+   * @deprecated Use {@link remove} instead.
+   */
+  public rm(): Promise<void> {
+    return this.remove();
   }
 
   /**
@@ -391,16 +391,47 @@ export class FsFile<
    *
    * const tempFile = file("./temp.txt");
    * tempFile.write.textSync("temporary content");
-   * tempFile.rmSync(); // File is deleted immediately
+   * tempFile.removeSync(); // File is deleted immediately
    * ```
    */
-  public rmSync(): void {
+  public removeSync(): void {
     try {
       fsSync.rmSync(this._path, { recursive: false });
     } catch (error: any) {
       if (error.code === "ENOENT") return;
       throw error;
     }
+  }
+
+  /**
+   * @deprecated Use {@link removeSync} instead.
+   */
+  public rmSync(): void {
+    this.removeSync();
+  }
+
+  /**
+   * Move the file to a new location.
+   *
+   * @param newPath - The new path for the file or an existing FsFile instance
+   * @returns A promise that resolves the new file
+   */
+  public async move(newPath: FsFile | AnyPath): Promise<FsFile> {
+    const newFile = FsFile.from(newPath);
+    await fs.rename(this._path, newFile.path);
+    return newFile;
+  }
+
+  /**
+   * Move the file to a new location synchronously.
+   *
+   * @param newPath - The new path for the file or an existing FsFile instance
+   * @returns The new file
+   */
+  public moveSync(newPath: FsFile | AnyPath): FsFile {
+    const newFile = FsFile.from(newPath);
+    fsSync.renameSync(this._path, newFile.path);
+    return newFile;
   }
 
   /**
@@ -1078,10 +1109,7 @@ class FsFileWrite<
  * import { file } from "@synstack/fs";
  *
  * const relativeFile = file("./relative/path.txt");
- * const joinedFile = file("/base/path", "subdir", "file.txt");
  * const existingFile = file(file("/path/to/existing.txt"));
  * ```
  */
 export const file = FsFile.from;
-
-file(file("test.txt"));

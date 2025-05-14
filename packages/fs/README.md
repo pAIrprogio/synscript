@@ -82,8 +82,12 @@ await myFile.exists(); // Promise<boolean>
 myFile.existsSync(); // boolean
 
 // Delete file
-await myFile.rm();
-myFile.rmSync();
+await myFile.remove();
+myFile.removeSync();
+
+// Move file
+await myFile.move("/new/path/file.txt");
+myFile.moveSync("/new/path/file.txt");
 
 // Get file metadata
 await myFile.creationDate(); // Promise<Date>
@@ -199,6 +203,10 @@ myDir.makeSync();
 // Remove directory
 await myDir.rm();
 myDir.rmSync();
+
+// Move directory
+await myDir.move("/new/path");
+myDir.moveSync("/new/path");
 ```
 
 #### Path Operations
@@ -210,7 +218,7 @@ myDir.name(); // "directory"
 
 // Navigate directories
 myDir.to("subdirectory"); // New FsDir instance
-myDir.file("file.txt"); // FsFile instance
+myDir.toFile("file.txt"); // New FsFile instance
 
 // Relative paths
 myDir.relativePathTo(otherDir); // Relative path from this directory to another directory

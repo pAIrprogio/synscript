@@ -88,7 +88,7 @@ export class FsDir extends Pipeable<FsDir> {
    * Create a new directory instance with the provided path(s).
    * Resolves relative paths to absolute paths.
    *
-   * @param args - One or more path segments to join into a directory path or an existing FsDir instance
+   * @param arg - A path or an existing FsDir instance
    * @returns A new FsDir instance with the resolved path
    *
    * ```typescript
@@ -98,26 +98,43 @@ export class FsDir extends Pipeable<FsDir> {
    * // Create from relative path
    * const srcDir = dir("./src");
    *
-   * // Create from multiple segments
-   * const configDir = dir("project", "config");
-   *
    * // Create from existing directory
    * const existingDir = dir(dir("/path/to/existing"));
    * ```
    */
-  public static cwd(this: void, dir: FsDir): FsDir;
-  public static cwd(this: void, ...paths: Array<AnyPath>): FsDir;
-  public static cwd(this: void, ...args: [FsDir] | Array<AnyPath>) {
-    function isDir(args: Array<AnyPath> | [FsDir]): args is [FsDir] {
-      return args.length === 1 && args[0] instanceof FsDir;
-    }
-    if (isDir(args)) return args[0];
-    return new FsDir(path.resolve(...args));
+  public static cwd(this: void, arg: FsDir | AnyPath): FsDir;
+  public static cwd(this: void, arg: FsDir | AnyPath) {
+    if (arg instanceof FsDir) return arg;
+    return new FsDir(path.resolve(arg));
   }
 
   /**
    * Create a new directory instance with a path relative to this directory.
    *
+   * @alias {@link to}
+   * @param relativePath - The relative path to append to the current directory
+   * @returns A new FsDir instance representing the combined path
+   *
+   * ```typescript
+   * const projectDir = dir("/path/to/project");
+   *
+   * // Navigate to subdirectories
+   * const srcDir = projectDir.toDir("src");
+   * const testDir = projectDir.toDir("tests");
+   *
+   * // Navigate up and down
+   * const siblingDir = srcDir.toDir("../other");
+   * ```
+   */
+  public toDir(relativePath: string) {
+    const newPath = path.join(this._path, relativePath);
+    return new FsDir(newPath);
+  }
+
+  /**
+   * Create a new directory instance with a path relative to this directory.
+   *
+   * @alias {@link toDir}
    * @param relativePath - The relative path to append to the current directory
    * @returns A new FsDir instance representing the combined path
    *
@@ -133,13 +150,42 @@ export class FsDir extends Pipeable<FsDir> {
    * ```
    */
   public to(relativePath: string) {
-    const newPath = path.join(this._path, relativePath);
-    return new FsDir(newPath);
+    return this.toDir(relativePath);
   }
 
   /**
    * Create a new file instance with a path relative to this directory.
    *
+   * @alias {@link file}
+   * @param relativePath - The relative path to the file from this directory
+   * @returns A new FsFile instance for the specified path
+   * @throws If an absolute path is provided
+   *
+   * ```typescript
+   * const srcDir = dir("./src");
+   *
+   * // Access files in the directory
+   * const configFile = srcDir.toFile("config.json");
+   * const deepFile = srcDir.toFile("components/Button.tsx");
+   *
+   * // Error: Cannot use absolute paths
+   * srcDir.toFile("/absolute/path"); // throws Error
+   * ```
+   */
+  public toFile(relativePath: string) {
+    if (path.isAbsolute(relativePath))
+      throw new Error(`
+Trying to access a dir file from an absolute paths:
+  - Folder path: ${this._path}
+  - File path: ${relativePath}
+`);
+    return FsFile.from(path.resolve(this._path, relativePath));
+  }
+
+  /**
+   * Create a new file instance with a path relative to this directory.
+   *
+   * @alias {@link toFile}
    * @param relativePath - The relative path to the file from this directory
    * @returns A new FsFile instance for the specified path
    * @throws If an absolute path is provided
@@ -156,13 +202,7 @@ export class FsDir extends Pipeable<FsDir> {
    * ```
    */
   public file(relativePath: string) {
-    if (path.isAbsolute(relativePath))
-      throw new Error(`
-Trying to access a dir file from an absolute paths:
-  - Folder path: ${this._path}
-  - File path: ${relativePath}
-`);
-    return FsFile.from(this._path, relativePath);
+    return this.toFile(relativePath);
   }
 
   /**
@@ -261,6 +301,30 @@ Trying to access a dir file from an absolute paths:
    */
   public makeSync(): void {
     fsSync.mkdirSync(this._path, { recursive: true });
+  }
+
+  /**
+   * Move the directory to a new location.
+   *
+   * @param newPath - The new path for the directory
+   * @returns A promise that resolves the new directory
+   */
+  public async move(newPath: FsDir | AnyPath): Promise<FsDir> {
+    const newDir = FsDir.cwd(newPath);
+    await fs.rename(this._path, newDir.path);
+    return newDir;
+  }
+
+  /**
+   * Move the directory to a new location synchronously.
+   *
+   * @param newPath - The new path for the directory
+   * @returns The new directory
+   */
+  public moveSync(newPath: FsDir | AnyPath): FsDir {
+    const newDir = FsDir.cwd(newPath);
+    fsSync.renameSync(this._path, newDir.path);
+    return newDir;
   }
 
   /**
@@ -373,7 +437,7 @@ Trying to access a dir file from an absolute paths:
  * Create a new directory instance with the provided path(s).
  * Resolves relative paths to absolute paths.
  *
- * @param args - One or more path segments to join into a directory path, or an existing FsDir instance
+ * @param args - A path, or an existing FsDir instance
  * @returns A new FsDir instance with the resolved path
  *
  * ```typescript
@@ -382,9 +446,6 @@ Trying to access a dir file from an absolute paths:
  *
  * // Create from relative path
  * const srcDir = dir("./src");
- *
- * // Create from multiple segments
- * const configDir = dir("project", "config");
  *
  * // Create from existing directory
  * const existingDir = dir(dir("/path/to/existing"));
