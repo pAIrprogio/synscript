@@ -231,9 +231,19 @@ myDir.relativePathFrom(otherDir); // Relative path from another directory to thi
 // Find files using glob patterns
 await myDir.glob("**/*.ts", "!**/*.test.ts"); // FsFileArray
 myDir.globSync(["**/*.ts", "!**/*.test.ts"]); // FsFileArray
+```
 
-// Find git-tracked files
-await myDir.gitLs(); // FsFileArray
+#### Git Operations
+
+```typescript
+// Get git tracked, modified, and untracked files
+await myDir.gitLs();
+```
+
+#### Command Execution
+
+```typescript
+await myDir.exec`echo "Hello, world!"`;
 ```
 
 ### File Array Operations (FsFileArray)

@@ -2,6 +2,7 @@ import { git } from "@synstack/git";
 import { glob } from "@synstack/glob";
 import { type AnyPath, path } from "@synstack/path";
 import { Pipeable } from "@synstack/pipe";
+import { type TemplateExpression } from "execa";
 import * as fsSync from "fs";
 import * as fs from "fs/promises";
 import { FsFile } from "./file.lib.ts";
@@ -430,6 +431,21 @@ Trying to access a dir file from an absolute paths:
    */
   public async gitLs() {
     return git.ls(this._path).then(filesFromDir(this));
+  }
+
+  /**
+   * Execute a command in the directory.
+   */
+  public async exec(
+    template: TemplateStringsArray,
+    ...args: Array<TemplateExpression>
+  ) {
+    const { execa } = await import("execa").catch(() => {
+      throw new Error(
+        "The `execa` package is not installed. Please install it first.",
+      );
+    });
+    return execa({ cwd: this.path })(template, ...args);
   }
 }
 

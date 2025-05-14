@@ -1334,9 +1334,12 @@ __metadata:
     "@types/mime-types": "npm:^2.1.4"
     "@types/node": "npm:^22.15.17"
     "@types/turndown": "npm:^5.0.5"
+    execa: "npm:^9.5.3"
     mime-types: "npm:^3.0.1"
     tsup: "npm:^8.4.0"
     typescript: "npm:^5.8.3"
+  peerDependencies:
+    execa: "*"
   languageName: unknown
   linkType: soft
 
