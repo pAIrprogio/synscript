@@ -3,7 +3,7 @@ import assert from "node:assert/strict";
 import { afterEach, describe, it } from "node:test";
 import { fsCache } from "./fs-cache.lib.ts";
 
-const TMP_DIR = dir(import.meta.dirname, ".tmp");
+const TMP_DIR = dir(import.meta.dirname).to("tmp");
 
 describe("FsCache", () => {
   afterEach(async () => {
