@@ -3,7 +3,7 @@ import { describe, it } from "node:test";
 import { z } from "zod";
 import { assertExtends, assertType } from "../../shared/src/ts.utils.ts";
 import * as md from "./markdown.lib.ts";
-import { minify } from "./markdown.lib.ts";
+import { beautify, minify } from "./markdown.lib.ts";
 
 describe("Markdown", () => {
   describe("fromHtml", () => {
@@ -135,6 +135,53 @@ This has __bold__, _italic_, and ~~strike~~ text.
 `;
       const minified = minify(input);
       assert.equal(minified, output);
+    });
+  });
+
+  describe("beautify", () => {
+    it("beautifies Markdown", () => {
+      const input = `---
+info: Test
+---
+
+Example Title
+=============
+
+Here’s a paragraph with **em** tags and an autolink: <http://example.com>.
+
+## Code Sample
+
+\`\`\`
+console.log("hi!");
+\`\`\`
+
+- Item one
+- Item two
+
+1. First ordered
+1. Second ordered
+`;
+      const output = `---
+info: Test
+---
+
+# Example Title
+
+Here’s a paragraph with __em__ tags and an autolink: [http://example.com](http://example.com).
+
+## Code Sample
+
+\`\`\`
+console.log("hi!");
+\`\`\`
+
+* Item one
+* Item two
+
+1. First ordered
+2. Second ordered
+`;
+      assert.equal(beautify(input), output);
     });
   });
 

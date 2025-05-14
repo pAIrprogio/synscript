@@ -1,29 +1,86 @@
 import { yaml } from "@synstack/yaml";
+import type { Options as StringifyOptions } from "mdast-util-to-markdown";
+import rehypeParse from "rehype-parse";
+import rehypeRemark from "rehype-remark";
 import remarkFrontmatter from "remark-frontmatter";
-import remarkGfm from "remark-gfm";
+import remarkGfm, { type Options as GfmOptions } from "remark-gfm";
 import remarkParse from "remark-parse";
 import remarkStringify from "remark-stringify";
-import TurndownService from "turndown";
 import { unified } from "unified";
 import type { ZodSchema } from "zod";
 import { type Stringable } from "../../shared/src/ts.utils.ts";
 
+const beautifiedConfig = {
+  gfm: {
+    firstLineBlank: true,
+    singleTilde: false,
+    tableCellPadding: true,
+    tablePipeAlign: true,
+  } satisfies GfmOptions,
+  stringify: {
+    bullet: "*",
+    bulletOther: "-",
+    bulletOrdered: ".",
+    listItemIndent: "one",
+    fence: "`",
+    fences: true,
+    rule: "-",
+    ruleRepetition: 3,
+    ruleSpaces: false,
+    closeAtx: false,
+    emphasis: "_",
+    strong: "_",
+    setext: false,
+    quote: '"',
+    resourceLink: true,
+    tightDefinitions: false,
+  } satisfies StringifyOptions,
+};
+
+const minifiedConfig = {
+  gfm: {
+    firstLineBlank: false,
+    singleTilde: false,
+    tableCellPadding: false,
+    tablePipeAlign: false,
+  } satisfies GfmOptions,
+  stringify: {
+    bullet: "*",
+    bulletOther: "-",
+    bulletOrdered: ".",
+    listItemIndent: "one",
+    fence: "`",
+    fences: true,
+    rule: "-",
+    ruleRepetition: 3,
+    ruleSpaces: false,
+    closeAtx: false,
+    emphasis: "_",
+    strong: "_",
+    setext: false,
+    quote: '"',
+    resourceLink: false,
+    tightDefinitions: true,
+  } satisfies StringifyOptions,
+};
+
 /**
  * Convert HTML to markdown
  * @param html - The HTML to convert
- * @returns The markdown
+ * @returns The markdown (minified for LLM processing)
  */
 export const fromHtml = (html: Stringable) => {
-  const turndown = new TurndownService({
-    headingStyle: "atx",
-    codeBlockStyle: "fenced",
-    bulletListMarker: "-",
-    fence: "```",
-    hr: "***",
-    linkStyle: "inlined",
-    strongDelimiter: "__",
-  });
-  return turndown.turndown(html.toString());
+  return (
+    unified()
+      .use(rehypeParse)
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
+      .use(rehypeRemark)
+      .use(remarkGfm, minifiedConfig.gfm)
+      .use(remarkStringify, minifiedConfig.stringify)
+      .processSync(html.toString())
+      .toString()
+      .trim()
+  );
 };
 
 const HEADER_REGEX = /^---\n([\s\S]*?)\n---\n/;
@@ -81,43 +138,39 @@ export const setBody = (text: string, body: string) => {
 };
 
 /**
- * Minify a markdown document
+ * Minify a markdown document for better LLM processing
  * @param text - The markdown document
  * @returns The minified markdown document
  */
 export const minify = (md: string) => {
   return unified()
     .use(remarkParse)
-    .use(remarkGfm, {
-      firstLineBlank: false,
-      singleTilde: false,
-      tableCellPadding: false,
-      tablePipeAlign: false,
-    })
+    .use(remarkGfm, minifiedConfig.gfm)
     .use(remarkFrontmatter, ["yaml"])
-    .use(remarkStringify, {
-      bullet: "*",
-      bulletOther: "-",
-      bulletOrdered: ".",
-      listItemIndent: "one",
-      fence: "`",
-      fences: true,
-      rule: "-",
-      ruleRepetition: 3,
-      ruleSpaces: false,
-      closeAtx: false,
-      emphasis: "_",
-      strong: "_",
-      setext: false,
-      quote: '"',
-      resourceLink: false,
-      tightDefinitions: true,
-    })
+    .use(remarkStringify, minifiedConfig.stringify)
+    .processSync(md)
+    .toString()
+    .trim();
+};
+
+/**
+ * Beautify a markdown document for better human readability
+ * @param md - The markdown document
+ * @returns The beautified markdown document
+ */
+export const beautify = (md: string) => {
+  return unified()
+    .use(remarkParse)
+    .use(remarkGfm, beautifiedConfig.gfm)
+    .use(remarkFrontmatter, ["yaml"])
+    .use(remarkStringify, beautifiedConfig.stringify)
     .processSync(md)
     .toString();
 };
 
-// Todo: add docs
+/**
+ * Markdown document instance
+ */
 export class MdDoc<
   TShape = never,
   TData extends TShape | undefined = never,
@@ -137,6 +190,12 @@ export class MdDoc<
     this._options = options ?? {};
   }
 
+  /**
+   * Create a new markdown document with options
+   * @param options
+   * @param options.schema - The zod schema to use for serialization/deserialization (optional)
+   * @returns A new markdown document instance
+   */
   public static withOptions<TShape = any>(
     this: void,
     options: { schema?: ZodSchema<TShape> },
@@ -148,6 +207,11 @@ export class MdDoc<
     );
   }
 
+  /**
+   * Create a new markdown document from a string
+   * @param text - The markdown document
+   * @returns The markdown document
+   */
   public static fromString<TShape = unknown>(this: void, text: string) {
     return new MdDoc<TShape, TShape, string>(
       getHeaderData(text) as TShape,
@@ -155,26 +219,52 @@ export class MdDoc<
     );
   }
 
+  /**
+   * Create a new markdown document from HTML
+   * @param html - The HTML to convert
+   * @returns The markdown document
+   */
   public static fromHtml<TShape = unknown>(this: void, html: string) {
     return new MdDoc<TShape, undefined, string>(undefined, fromHtml(html));
   }
 
+  /**
+   * Get the body of the markdown document
+   * @returns The body of the markdown document
+   */
   public get body(): string {
     return this._body ?? "";
   }
 
+  /**
+   * Get the data of the markdown document
+   * @returns The data of the markdown document
+   */
   public get data(): TData {
     return this._data;
   }
 
+  /**
+   * Get the header of the markdown document
+   * @returns The header of the markdown document
+   */
   public get header(): string {
     return this._data ? `---\n${yaml.serialize(this._data)}---\n` : "";
   }
 
+  /**
+   * Get the options of the markdown document
+   * @returns The options of the markdown document
+   */
   public get options(): { schema?: ZodSchema<TShape> } {
     return this._options;
   }
 
+  /**
+   * Create a new markdown document from a string
+   * @param text - The markdown document
+   * @returns A new markdown document
+   */
   public fromString(text: string) {
     const validatedData = getHeaderData<TShape>(text, {
       schema: this._options.schema,
@@ -186,10 +276,20 @@ export class MdDoc<
     );
   }
 
+  /**
+   * Create a new markdown document from HTML
+   * @param html - The HTML to convert
+   * @returns A new markdown document
+   */
   public fromHtml(html: string) {
     return new MdDoc(this._data, fromHtml(html), this._options);
   }
 
+  /**
+   * Set the data of the markdown document
+   * @param data - The data to set
+   * @returns A new markdown document
+   */
   public setData(data: TShape) {
     const validatedData = this._options.schema
       ? this._options.schema.parse(data)
@@ -197,18 +297,43 @@ export class MdDoc<
     return new MdDoc(validatedData, this._body, this._options);
   }
 
+  /**
+   * Set the body of the markdown document
+   * @param text - The body to set
+   * @returns A new markdown document
+   */
   public setBody(text: string) {
     return new MdDoc(this._data, text, this._options);
   }
 
+  /**
+   * Minify the markdown document for better LLM processing
+   * @returns A new markdown document
+   */
   public minify() {
-    return new MdDoc(this._data, minify(this.toString()), this._options);
+    return new MdDoc(this._data, minify(this.body), this._options);
   }
 
+  /**
+   * Beautify the markdown document for better human readability
+   * @returns A new markdown document
+   */
+  public beautify() {
+    return new MdDoc(this._data, beautify(this.body), this._options);
+  }
+
+  /**
+   * Get the markdown document as a string
+   * @returns The markdown document as a string
+   */
   public toMd() {
     return this.toString();
   }
 
+  /**
+   * Get the markdown document as a string
+   * @returns The markdown document as a string
+   */
   public toString() {
     return `${this.header}${this.body}`;
   }

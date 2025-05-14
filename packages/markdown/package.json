@@ -49,16 +49,16 @@
   },
   "dependencies": {
     "@synstack/yaml": "workspace:*",
+    "rehype-parse": "^9.0.1",
+    "rehype-remark": "^10.0.1",
     "remark-frontmatter": "^5.0.0",
     "remark-gfm": "^4.0.1",
     "remark-parse": "^11.0.0",
     "remark-stringify": "^11.0.0",
-    "turndown": "^7.2.0",
     "unified": "^11.0.5"
   },
   "devDependencies": {
     "@types/node": "^22.15.17",
-    "@types/turndown": "^5.0.5",
     "mdast-util-to-markdown": "^2.1.2",
     "tsup": "^8.4.0",
     "typescript": "^5.8.3",
