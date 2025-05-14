@@ -1,5 +1,10 @@
 import { yaml } from "@synstack/yaml";
+import remarkFrontmatter from "remark-frontmatter";
+import remarkGfm from "remark-gfm";
+import remarkParse from "remark-parse";
+import remarkStringify from "remark-stringify";
 import TurndownService from "turndown";
+import { unified } from "unified";
 import type { ZodSchema } from "zod";
 import { type Stringable } from "../../shared/src/ts.utils.ts";
 
@@ -73,6 +78,43 @@ export const getBody = (text: string) => {
 export const setBody = (text: string, body: string) => {
   const header = text.match(HEADER_REGEX)?.[0];
   return `${header ?? ""}${body}`;
+};
+
+/**
+ * Minify a markdown document
+ * @param text - The markdown document
+ * @returns The minified markdown document
+ */
+export const minify = (md: string) => {
+  return unified()
+    .use(remarkParse)
+    .use(remarkGfm, {
+      firstLineBlank: false,
+      singleTilde: false,
+      tableCellPadding: false,
+      tablePipeAlign: false,
+    })
+    .use(remarkFrontmatter, ["yaml"])
+    .use(remarkStringify, {
+      bullet: "*",
+      bulletOther: "-",
+      bulletOrdered: ".",
+      listItemIndent: "one",
+      fence: "`",
+      fences: true,
+      rule: "-",
+      ruleRepetition: 3,
+      ruleSpaces: false,
+      closeAtx: false,
+      emphasis: "_",
+      strong: "_",
+      setext: false,
+      quote: '"',
+      resourceLink: false,
+      tightDefinitions: true,
+    })
+    .processSync(md)
+    .toString();
 };
 
 // Todo: add docs
@@ -157,6 +199,10 @@ export class MdDoc<
 
   public setBody(text: string) {
     return new MdDoc(this._data, text, this._options);
+  }
+
+  public minify() {
+    return new MdDoc(this._data, minify(this.toString()), this._options);
   }
 
   public toMd() {

@@ -3,6 +3,7 @@ import { describe, it } from "node:test";
 import { z } from "zod";
 import { assertExtends, assertType } from "../../shared/src/ts.utils.ts";
 import * as md from "./markdown.lib.ts";
+import { minify } from "./markdown.lib.ts";
 
 describe("Markdown", () => {
   describe("fromHtml", () => {
@@ -65,6 +66,75 @@ describe("Markdown", () => {
       const newBody = "New Content";
       const result = md.setBody(text, newBody);
       assert.equal(result, "New Content");
+    });
+  });
+
+  describe("minify", () => {
+    it("minifies Markdown", () => {
+      const input = `---
+info: Test
+---
+
+Example Title
+=============
+
+Here’s a paragraph with <em>raw HTML</em> tags and an autolink: <http://example.com>.
+
+## Code Sample
+\`\`\`
+console.log("hi!");
+\`\`\`
+
+- Item one
+  continued here
+- Item two
+
+1. First ordered
+   more text
+1. Second ordered
+
+---
+
+| Col 1 | Col 2 |
+| ----- | ----- |
+| A     | B     |
+| C     | D     |
+
+This has **bold**, *italic*, and ~~strike~~ text.
+`;
+      const output = `---
+info: Test
+---
+
+# Example Title
+
+Here’s a paragraph with <em>raw HTML</em> tags and an autolink: <http://example.com>.
+
+## Code Sample
+
+\`\`\`
+console.log("hi!");
+\`\`\`
+
+* Item one
+  continued here
+* Item two
+
+1. First ordered
+   more text
+2. Second ordered
+
+---
+
+|Col 1|Col 2|
+|-|-|
+|A|B|
+|C|D|
+
+This has __bold__, _italic_, and ~~strike~~ text.
+`;
+      const minified = minify(input);
+      assert.equal(minified, output);
     });
   });
 
