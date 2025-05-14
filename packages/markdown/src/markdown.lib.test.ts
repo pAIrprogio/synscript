@@ -131,8 +131,7 @@ console.log("hi!");
 |A|B|
 |C|D|
 
-This has __bold__, _italic_, and ~~strike~~ text.
-`;
+This has __bold__, _italic_, and ~~strike~~ text.`;
       const minified = minify(input);
       assert.equal(minified, output);
     });
