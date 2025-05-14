@@ -102,3 +102,20 @@ const updated = doc
   .setData({ title: "New Title" })
   .setBody("# Updated content");
 ```
+
+### Markdown Formatting
+
+Format markdown content for different purposes:
+
+```typescript
+import { MdDoc } from "@synstack/markdown";
+
+const doc = MdDoc.fromString(`# Title
+Some content`);
+
+// Minify for LLM processing
+const minified = doc.minify().toMd();
+
+// Beautify for human readability
+const beautified = doc.beautify().toMd();
+```

@@ -324,6 +324,8 @@ export class MdDoc<
 
   /**
    * Get the markdown document as a string
+   *
+   * @alias {@link toString}
    * @returns The markdown document as a string
    */
   public toMd() {
