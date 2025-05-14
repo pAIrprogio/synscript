@@ -1,0 +1,14 @@
+---
+description: 
+globs: 
+alwaysApply: true
+---
+# Node setup
+Make sure your answers are aligned with the current setup:
+
+## Environment
+- node: v22
+- yarn: v4
+
+## package.json
+[package.json](mdc:package.json)
