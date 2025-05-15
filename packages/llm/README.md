@@ -38,7 +38,7 @@ const imageToLanguagePrompt = (imagePath: string) => [
     You are a helpful assistant that can identify the language of the text in the image.
   `,
   userMsg`
-    Here is the image: ${filePart.fromFile(imagePath)}
+    Here is the image: ${filePart.fromPath(imagePath)}
   `,
   assistantMsg`
     The language of the text in the image is
@@ -90,7 +90,7 @@ systemMsg`
 
 // User messages with support for text, images and files
 userMsg`
-  Here is the image: ${filePart.fromFile("./image.png")}
+  Here is the image: ${filePart.fromPath("./image.png")}
 `;
 
 // Assistant messages with support for text and tool calls
@@ -99,13 +99,42 @@ assistantMsg`
 `;
 ```
 
+### Advanced Message Configuration
+
+The package provides customization options for messages with provider-specific settings:
+
+```ts
+// User message with cache control
+const cachedUserMsg = userMsg.cached`
+  Here is the image: ${filePart.fromPath("./image.png")}
+`;
+
+// Custom provider options for user messages
+const customUserMsg = userMsgWithOptions({
+  providerOptions: { anthropic: { cacheControl: { type: "ephemeral" } } },
+  providerMetadata: { data: { tags: ["user"] } },
+})`Hello World`;
+
+// Custom provider options for assistant messages
+const customAssistantMsg = assistantMsgWithOptions({
+  providerOptions: { openai: { cacheControl: { type: "ephemeral" } } },
+  providerMetadata: { data: { tags: ["assistant"] } },
+})`Hello World`;
+
+// Custom provider options for system messages
+const customSystemMsg = systemMsgWithOptions({
+  providerOptions: { anthropic: { system_prompt_behavior: "default" } },
+  providerMetadata: { data: { tags: ["system"] } },
+})`Hello World`;
+```
+
 ### File Handling
 
 The `filePart` utility provides methods to handle files and images, and supports automatic mime-type detection:
 
 ```ts
-// Load from file system
-filePart.fromFile(path, mimeType?)
+// Load from file system path
+filePart.fromPath(path, mimeType?)
 
 // Load from base64 string
 filePart.fromBase64(base64, mimeType?)

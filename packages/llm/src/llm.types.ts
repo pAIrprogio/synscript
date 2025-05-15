@@ -128,7 +128,7 @@ export declare namespace Llm {
       export type Serializable = {
         role: "user";
         content: Array<Llm.Message.User.Part>;
-        experimental_providerMetadata?: ProviderMetadata;
+        experimental_providerMetadata?: Llm.Provider.Metadata;
       };
 
       /**
@@ -452,4 +452,16 @@ export declare namespace Llm {
     Key extends string = string,
     Tool extends Llm.Tool = Llm.Tool,
   > = Record<Key, Tool>;
+
+  export namespace Provider {
+    /**
+     * Additional provider-specific options.
+     */
+    export type Options = ProviderMetadata;
+
+    /**
+     * Additional provider-specific metadata.
+     */
+    export type Metadata = ProviderMetadata;
+  }
 }
