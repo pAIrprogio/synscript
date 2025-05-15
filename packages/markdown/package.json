@@ -58,7 +58,7 @@
     "unified": "^11.0.5"
   },
   "devDependencies": {
-    "@types/node": "^22.15.17",
+    "@types/node": "^22.15.18",
     "mdast-util-to-markdown": "^2.1.2",
     "tsup": "^8.4.0",
     "typescript": "^5.8.3",

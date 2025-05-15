@@ -61,7 +61,7 @@
     "pako": "^2.1.0"
   },
   "devDependencies": {
-    "@types/node": "^22.15.17",
+    "@types/node": "^22.15.18",
     "@types/pako": "^2.0.3",
     "@types/vscode": "^1.100.0",
     "tsup": "^8.4.0",

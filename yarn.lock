@@ -1300,7 +1300,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@synstack/enhance@workspace:packages/enhance"
   dependencies:
-    "@types/node": "npm:^22.15.17"
+    "@types/node": "npm:^22.15.18"
     "@types/turndown": "npm:^5.0.5"
     tsup: "npm:^8.4.0"
     typescript: "npm:^5.8.3"
@@ -1312,7 +1312,7 @@ __metadata:
   resolution: "@synstack/fs-cache@workspace:packages/fs-cache"
   dependencies:
     "@synstack/fs": "workspace:*"
-    "@types/node": "npm:^22.15.17"
+    "@types/node": "npm:^22.15.18"
     tsup: "npm:^8.4.0"
     typescript: "npm:^5.8.3"
   languageName: unknown
@@ -1332,7 +1332,7 @@ __metadata:
     "@synstack/xml": "workspace:*"
     "@synstack/yaml": "workspace:*"
     "@types/mime-types": "npm:^2.1.4"
-    "@types/node": "npm:^22.15.17"
+    "@types/node": "npm:^22.15.18"
     "@types/turndown": "npm:^5.0.5"
     execa: "npm:^9.5.3"
     mime-types: "npm:^3.0.1"
@@ -1348,7 +1348,7 @@ __metadata:
   resolution: "@synstack/git@workspace:packages/git"
   dependencies:
     "@synstack/enhance": "workspace:*"
-    "@types/node": "npm:^22.15.17"
+    "@types/node": "npm:^22.15.18"
     execa: "npm:^9.5.3"
     iter-tools-es: "npm:^7.5.3"
     tsup: "npm:^8.4.0"
@@ -1361,7 +1361,7 @@ __metadata:
   resolution: "@synstack/glob@workspace:packages/glob"
   dependencies:
     "@synstack/path": "workspace:*"
-    "@types/node": "npm:^22.15.17"
+    "@types/node": "npm:^22.15.18"
     glob: "npm:^11.0.2"
     minimatch: "npm:^10.0.1"
     tsup: "npm:^8.4.0"
@@ -1373,7 +1373,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@synstack/json@workspace:packages/json"
   dependencies:
-    "@types/node": "npm:^22.15.17"
+    "@types/node": "npm:^22.15.18"
     tsup: "npm:^8.4.0"
     typescript: "npm:^5.8.3"
     zod: "npm:^3.24.4"
@@ -1390,7 +1390,7 @@ __metadata:
     "@synstack/resolved": "workspace:*"
     "@synstack/text": "workspace:*"
     "@types/mime-types": "npm:^2.1.4"
-    "@types/node": "npm:^22.15.17"
+    "@types/node": "npm:^22.15.18"
     ai: "npm:^4.3.15"
     mime-types: "npm:^3.0.1"
     ts-pattern: "npm:^5.7.0"
@@ -1405,12 +1405,12 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@synstack/markdown@workspace:*, @synstack/markdown@workspace:packages/markdown":
+"@synstack/markdown@workspace:packages/markdown":
   version: 0.0.0-use.local
   resolution: "@synstack/markdown@workspace:packages/markdown"
   dependencies:
     "@synstack/yaml": "workspace:*"
-    "@types/node": "npm:^22.15.17"
+    "@types/node": "npm:^22.15.18"
     mdast-util-to-markdown: "npm:^2.1.2"
     rehype-parse: "npm:^9.0.1"
     rehype-remark: "npm:^10.0.1"
@@ -1433,7 +1433,7 @@ __metadata:
   dependencies:
     "@synstack/pipe": "workspace:*"
     "@types/mime-types": "npm:^2.1.4"
-    "@types/node": "npm:^22.15.17"
+    "@types/node": "npm:^22.15.18"
     mime-types: "npm:^3.0.1"
     tsup: "npm:^8.4.0"
     typescript: "npm:^5.8.3"
@@ -1445,18 +1445,18 @@ __metadata:
   resolution: "@synstack/pipe@workspace:packages/pipe"
   dependencies:
     "@synstack/enhance": "workspace:*"
-    "@types/node": "npm:^22.15.17"
+    "@types/node": "npm:^22.15.18"
     tsup: "npm:^8.4.0"
     typescript: "npm:^5.8.3"
   languageName: unknown
   linkType: soft
 
-"@synstack/reforge@workspace:*, @synstack/reforge@workspace:packages/reforge":
+"@synstack/reforge@workspace:packages/reforge":
   version: 0.0.0-use.local
   resolution: "@synstack/reforge@workspace:packages/reforge"
   dependencies:
     "@synstack/json": "workspace:*"
-    "@types/node": "npm:^22.15.17"
+    "@types/node": "npm:^22.15.18"
     "@types/pako": "npm:^2.0.3"
     "@types/vscode": "npm:^1.100.0"
     pako: "npm:^2.1.0"
@@ -1472,7 +1472,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@synstack/resolved@workspace:packages/resolved"
   dependencies:
-    "@types/node": "npm:^22.15.17"
+    "@types/node": "npm:^22.15.18"
     tsup: "npm:^8.4.0"
     typescript: "npm:^5.8.3"
   languageName: unknown
@@ -1482,7 +1482,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@synstack/shared@workspace:packages/shared"
   dependencies:
-    "@types/node": "npm:^22.15.17"
+    "@types/node": "npm:^22.15.18"
     tsup: "npm:^8.4.0"
     typescript: "npm:^5.8.3"
   languageName: unknown
@@ -1493,40 +1493,10 @@ __metadata:
   resolution: "@synstack/str@workspace:packages/str"
   dependencies:
     "@synstack/pipe": "workspace:*"
-    "@types/node": "npm:^22.15.17"
+    "@types/node": "npm:^22.15.18"
     change-case: "npm:^5.4.4"
     tsup: "npm:^8.4.0"
     typescript: "npm:^5.8.3"
-  languageName: unknown
-  linkType: soft
-
-"@synstack/synscript@workspace:*, @synstack/synscript@workspace:packages/synscript":
-  version: 0.0.0-use.local
-  resolution: "@synstack/synscript@workspace:packages/synscript"
-  dependencies:
-    "@synstack/enhance": "workspace:*"
-    "@synstack/fs": "workspace:*"
-    "@synstack/fs-cache": "workspace:*"
-    "@synstack/git": "workspace:*"
-    "@synstack/glob": "workspace:*"
-    "@synstack/json": "workspace:*"
-    "@synstack/llm": "workspace:*"
-    "@synstack/markdown": "workspace:*"
-    "@synstack/path": "workspace:*"
-    "@synstack/pipe": "workspace:*"
-    "@synstack/reforge": "workspace:*"
-    "@synstack/resolved": "workspace:*"
-    "@synstack/str": "workspace:*"
-    "@synstack/text": "workspace:*"
-    "@synstack/web": "workspace:*"
-    "@synstack/xml": "workspace:*"
-    "@synstack/yaml": "workspace:*"
-    "@types/node": "npm:^22.15.17"
-    tsup: "npm:^8.4.0"
-    typescript: "npm:^5.8.3"
-  peerDependencies:
-    ai: "*"
-    zod: "*"
   languageName: unknown
   linkType: soft
 
@@ -1537,18 +1507,18 @@ __metadata:
     "@synstack/json": "workspace:*"
     "@synstack/resolved": "workspace:*"
     "@synstack/str": "workspace:*"
-    "@types/node": "npm:^22.15.17"
+    "@types/node": "npm:^22.15.18"
     tsup: "npm:^8.4.0"
     typescript: "npm:^5.8.3"
   languageName: unknown
   linkType: soft
 
-"@synstack/web@workspace:*, @synstack/web@workspace:packages/web":
+"@synstack/web@workspace:packages/web":
   version: 0.0.0-use.local
   resolution: "@synstack/web@workspace:packages/web"
   dependencies:
     "@mozilla/readability": "npm:^0.6.0"
-    "@types/node": "npm:^22.15.17"
+    "@types/node": "npm:^22.15.18"
     linkedom: "npm:^0.18.10"
     tsup: "npm:^8.4.0"
     typescript: "npm:^5.8.3"
@@ -1562,7 +1532,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@synstack/xml@workspace:packages/xml"
   dependencies:
-    "@types/node": "npm:^22.15.17"
+    "@types/node": "npm:^22.15.18"
     immer: "npm:^10.1.1"
     tsup: "npm:^8.4.0"
     typescript: "npm:^5.8.3"
@@ -1573,10 +1543,10 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@synstack/yaml@workspace:packages/yaml"
   dependencies:
-    "@types/node": "npm:^22.15.17"
+    "@types/node": "npm:^22.15.18"
     tsup: "npm:^8.4.0"
     typescript: "npm:^5.8.3"
-    yaml: "npm:^2.7.1"
+    yaml: "npm:^2.8.0"
     zod: "npm:^3.24.4"
   peerDependencies:
     zod: "*"
@@ -1695,12 +1665,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/node@npm:^22.15.17":
-  version: 22.15.17
-  resolution: "@types/node@npm:22.15.17"
+"@types/node@npm:^22.15.18":
+  version: 22.15.18
+  resolution: "@types/node@npm:22.15.18"
   dependencies:
     undici-types: "npm:~6.21.0"
-  checksum: 10c0/fb92aa10b628683c5b965749f955bc2322485ecb0ea6c2f4cae5f2c7537a16834607e67083a9e9281faaae8d7dee9ada8d6a5c0de9a52c17d82912ef00c0fdd4
+  checksum: 10c0/e23178c568e2dc6b93b6aa3b8dfb45f9556e527918c947fe7406a4c92d2184c7396558912400c3b1b8d0fa952ec63819aca2b8e4d3545455fc6f1e9623e09ca6
   languageName: node
   linkType: hard
 
@@ -1739,81 +1709,81 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@typescript-eslint/eslint-plugin@npm:8.32.0":
-  version: 8.32.0
-  resolution: "@typescript-eslint/eslint-plugin@npm:8.32.0"
+"@typescript-eslint/eslint-plugin@npm:8.32.1":
+  version: 8.32.1
+  resolution: "@typescript-eslint/eslint-plugin@npm:8.32.1"
   dependencies:
     "@eslint-community/regexpp": "npm:^4.10.0"
-    "@typescript-eslint/scope-manager": "npm:8.32.0"
-    "@typescript-eslint/type-utils": "npm:8.32.0"
-    "@typescript-eslint/utils": "npm:8.32.0"
-    "@typescript-eslint/visitor-keys": "npm:8.32.0"
+    "@typescript-eslint/scope-manager": "npm:8.32.1"
+    "@typescript-eslint/type-utils": "npm:8.32.1"
+    "@typescript-eslint/utils": "npm:8.32.1"
+    "@typescript-eslint/visitor-keys": "npm:8.32.1"
     graphemer: "npm:^1.4.0"
-    ignore: "npm:^5.3.1"
+    ignore: "npm:^7.0.0"
     natural-compare: "npm:^1.4.0"
     ts-api-utils: "npm:^2.1.0"
   peerDependencies:
     "@typescript-eslint/parser": ^8.0.0 || ^8.0.0-alpha.0
     eslint: ^8.57.0 || ^9.0.0
     typescript: ">=4.8.4 <5.9.0"
-  checksum: 10c0/db3d151386d7f086a2289ff21c12bff6d2c9e1e1fab7e20be627927604621618cfcfbe3289a1acf7ed7c0e465b64a696f02f3a95eac0aaafd1fe9d5431efe7b5
+  checksum: 10c0/29dbafc1f02e1167e6d1e92908de6bf7df1cc1fc9ae1de3f4d4abf5d2b537be16b173bcd05770270529eb2fd17a3ac63c2f40d308f7fbbf6d6f286ba564afd64
   languageName: node
   linkType: hard
 
-"@typescript-eslint/parser@npm:8.32.0":
-  version: 8.32.0
-  resolution: "@typescript-eslint/parser@npm:8.32.0"
+"@typescript-eslint/parser@npm:8.32.1":
+  version: 8.32.1
+  resolution: "@typescript-eslint/parser@npm:8.32.1"
   dependencies:
-    "@typescript-eslint/scope-manager": "npm:8.32.0"
-    "@typescript-eslint/types": "npm:8.32.0"
-    "@typescript-eslint/typescript-estree": "npm:8.32.0"
-    "@typescript-eslint/visitor-keys": "npm:8.32.0"
+    "@typescript-eslint/scope-manager": "npm:8.32.1"
+    "@typescript-eslint/types": "npm:8.32.1"
+    "@typescript-eslint/typescript-estree": "npm:8.32.1"
+    "@typescript-eslint/visitor-keys": "npm:8.32.1"
     debug: "npm:^4.3.4"
   peerDependencies:
     eslint: ^8.57.0 || ^9.0.0
     typescript: ">=4.8.4 <5.9.0"
-  checksum: 10c0/357a30a853102b1d09a064451f0e66610d41b86f0f4f7bf8b3ce96180e8c58acb0ed24b9f5bba970f7d8d5e94e98c583f2a821135002e3037b0dbce249563926
+  checksum: 10c0/01095f5b6e0a2e0631623be3f44be0f2960ceb24de33b64cb790e24a1468018d2b4d6874d1fa08a4928c2a02f208dd66cbc49735c7e8b54d564e420daabf84d1
   languageName: node
   linkType: hard
 
-"@typescript-eslint/scope-manager@npm:8.32.0":
-  version: 8.32.0
-  resolution: "@typescript-eslint/scope-manager@npm:8.32.0"
+"@typescript-eslint/scope-manager@npm:8.32.1":
+  version: 8.32.1
+  resolution: "@typescript-eslint/scope-manager@npm:8.32.1"
   dependencies:
-    "@typescript-eslint/types": "npm:8.32.0"
-    "@typescript-eslint/visitor-keys": "npm:8.32.0"
-  checksum: 10c0/9149d4eebfc7f096a3401a4865e0e552231c91cee362fe3a59c31cf2f0b6b325619f534aed41688c3702867cf86b12454e00055d09e7f229c92083e28e97baac
+    "@typescript-eslint/types": "npm:8.32.1"
+    "@typescript-eslint/visitor-keys": "npm:8.32.1"
+  checksum: 10c0/d2cb1f7736388972137d6e510b2beae4bac033fcab274e04de90ebba3ce466c71fe47f1795357e032e4a6c8b2162016b51b58210916c37212242c82d35352e9f
   languageName: node
   linkType: hard
 
-"@typescript-eslint/type-utils@npm:8.32.0":
-  version: 8.32.0
-  resolution: "@typescript-eslint/type-utils@npm:8.32.0"
+"@typescript-eslint/type-utils@npm:8.32.1":
+  version: 8.32.1
+  resolution: "@typescript-eslint/type-utils@npm:8.32.1"
   dependencies:
-    "@typescript-eslint/typescript-estree": "npm:8.32.0"
-    "@typescript-eslint/utils": "npm:8.32.0"
+    "@typescript-eslint/typescript-estree": "npm:8.32.1"
+    "@typescript-eslint/utils": "npm:8.32.1"
     debug: "npm:^4.3.4"
     ts-api-utils: "npm:^2.1.0"
   peerDependencies:
     eslint: ^8.57.0 || ^9.0.0
     typescript: ">=4.8.4 <5.9.0"
-  checksum: 10c0/3aec7fbe77d8dae698f75d55d6bed537e7dfa3ed069fbcae456dcf5580c16746ef3e7020522223ca560a75842183fbb8e7ff309e872035d14bf98eb8fae454b4
+  checksum: 10c0/f10186340ce194681804d9a57feb6d8d6c3adbd059c70df58f4656b0d9efd412fb0c2d80c182f9db83bad1a301754e0c24fe26f3354bef3a1795ab9c835cb763
   languageName: node
   linkType: hard
 
-"@typescript-eslint/types@npm:8.32.0":
-  version: 8.32.0
-  resolution: "@typescript-eslint/types@npm:8.32.0"
-  checksum: 10c0/86cc1e365bc12b8baf539e8e2d280b068a7d4a4220f5834fe4de182827a971200408a1ad20f9679af4c4bcdafea03dd66319fe7f1d060ce4b5abbf2962ea3062
+"@typescript-eslint/types@npm:8.32.1":
+  version: 8.32.1
+  resolution: "@typescript-eslint/types@npm:8.32.1"
+  checksum: 10c0/86f59b29c12e7e8abe45a1659b6fae5e7b0cfaf09ab86dd596ed9d468aa61082bbccd509d25f769b197fbfdf872bbef0b323a2ded6ceaca351f7c679f1ba3bd3
   languageName: node
   linkType: hard
 
-"@typescript-eslint/typescript-estree@npm:8.32.0":
-  version: 8.32.0
-  resolution: "@typescript-eslint/typescript-estree@npm:8.32.0"
+"@typescript-eslint/typescript-estree@npm:8.32.1":
+  version: 8.32.1
+  resolution: "@typescript-eslint/typescript-estree@npm:8.32.1"
   dependencies:
-    "@typescript-eslint/types": "npm:8.32.0"
-    "@typescript-eslint/visitor-keys": "npm:8.32.0"
+    "@typescript-eslint/types": "npm:8.32.1"
+    "@typescript-eslint/visitor-keys": "npm:8.32.1"
     debug: "npm:^4.3.4"
     fast-glob: "npm:^3.3.2"
     is-glob: "npm:^4.0.3"
@@ -1822,32 +1792,32 @@ __metadata:
     ts-api-utils: "npm:^2.1.0"
   peerDependencies:
     typescript: ">=4.8.4 <5.9.0"
-  checksum: 10c0/c366a457b544c52cb26ffe3e07ed9d3c6eea9fa8a181c2fdba9a0d2076e5d3198dedfb8510038b0791bd338773d8c8d2af048b7c69999d3fd8540ef790dbc720
+  checksum: 10c0/b5ae0d91ef1b46c9f3852741e26b7a14c28bb58ee8a283b9530ac484332ca58a7216b9d22eda23c5449b5fd69c6e4601ef3ebbd68e746816ae78269036c08cda
   languageName: node
   linkType: hard
 
-"@typescript-eslint/utils@npm:8.32.0":
-  version: 8.32.0
-  resolution: "@typescript-eslint/utils@npm:8.32.0"
+"@typescript-eslint/utils@npm:8.32.1":
+  version: 8.32.1
+  resolution: "@typescript-eslint/utils@npm:8.32.1"
   dependencies:
     "@eslint-community/eslint-utils": "npm:^4.7.0"
-    "@typescript-eslint/scope-manager": "npm:8.32.0"
-    "@typescript-eslint/types": "npm:8.32.0"
-    "@typescript-eslint/typescript-estree": "npm:8.32.0"
+    "@typescript-eslint/scope-manager": "npm:8.32.1"
+    "@typescript-eslint/types": "npm:8.32.1"
+    "@typescript-eslint/typescript-estree": "npm:8.32.1"
   peerDependencies:
     eslint: ^8.57.0 || ^9.0.0
     typescript: ">=4.8.4 <5.9.0"
-  checksum: 10c0/b5b65555b98c8fc92ec016ce2329f644b4d09def28c36422ce77aad9eda1b4dae009bf97b684357e97dd15de66dddba7d8d86e426e11123dae80f7ca2b4f9bd4
+  checksum: 10c0/a2b90c0417cd3a33c6e22f9cc28c356f251bb8928ef1d25e057feda007d522d281bdc37a9a0d05b70312f00a7b3f350ca06e724867025ea85bba5a4c766732e7
   languageName: node
   linkType: hard
 
-"@typescript-eslint/visitor-keys@npm:8.32.0":
-  version: 8.32.0
-  resolution: "@typescript-eslint/visitor-keys@npm:8.32.0"
+"@typescript-eslint/visitor-keys@npm:8.32.1":
+  version: 8.32.1
+  resolution: "@typescript-eslint/visitor-keys@npm:8.32.1"
   dependencies:
-    "@typescript-eslint/types": "npm:8.32.0"
+    "@typescript-eslint/types": "npm:8.32.1"
     eslint-visitor-keys: "npm:^4.2.0"
-  checksum: 10c0/f2e5254d9b1d00cd6360e27240ad72fbab7bcbaed46944943ff077e12fe4883790571f3734f8cb12c3e278bfd7bc4f8f7192ed899f341c282269a9dd16f0cba0
+  checksum: 10c0/9c05053dfd048f681eb96e09ceefa8841a617b8b5950eea05e0844b38fe3510a284eb936324caa899c3ceb4bc23efe56ac01437fab378ac1beeb1c6c00404978
   languageName: node
   linkType: hard
 
@@ -4590,10 +4560,17 @@ __metadata:
   languageName: node
   linkType: hard
 
-"ignore@npm:^5.0.4, ignore@npm:^5.2.0, ignore@npm:^5.3.1":
+"ignore@npm:^5.0.4, ignore@npm:^5.2.0":
   version: 5.3.2
   resolution: "ignore@npm:5.3.2"
   checksum: 10c0/f9f652c957983634ded1e7f02da3b559a0d4cc210fca3792cb67f1b153623c9c42efdc1c4121af171e295444459fc4a9201101fb041b1104a3c000bccb188337
+  languageName: node
+  linkType: hard
+
+"ignore@npm:^7.0.0":
+  version: 7.0.4
+  resolution: "ignore@npm:7.0.4"
+  checksum: 10c0/90e1f69ce352b9555caecd9cbfd07abe7626d312a6f90efbbb52c7edca6ea8df065d66303863b30154ab1502afb2da8bc59d5b04e1719a52ef75bbf675c488eb
   languageName: node
   linkType: hard
 
@@ -7865,8 +7842,13 @@ __metadata:
   resolution: "self-reforge@workspace:reforge"
   dependencies:
     "@ai-sdk/anthropic": "npm:^1.2.11"
-    "@synstack/synscript": "workspace:*"
-    "@types/node": "npm:^22.15.17"
+    "@synstack/fs-cache": "workspace:*"
+    "@synstack/llm": "workspace:*"
+    "@synstack/resolved": "workspace:*"
+    "@synstack/str": "workspace:*"
+    "@synstack/text": "workspace:*"
+    "@synstack/xml": "workspace:*"
+    "@types/node": "npm:^22.15.18"
     ai: "npm:^4.3.15"
     ts-pattern: "npm:^5.7.0"
     tsup: "npm:^8.4.0"
@@ -8372,7 +8354,7 @@ __metadata:
     prettier: "npm:^3.5.3"
     tsup: "npm:^8.4.0"
     typescript: "npm:^5.8.3"
-    typescript-eslint: "npm:^8.32.0"
+    typescript-eslint: "npm:^8.32.1"
   languageName: unknown
   linkType: soft
 
@@ -8739,17 +8721,17 @@ __metadata:
   languageName: node
   linkType: hard
 
-"typescript-eslint@npm:^8.32.0":
-  version: 8.32.0
-  resolution: "typescript-eslint@npm:8.32.0"
+"typescript-eslint@npm:^8.32.1":
+  version: 8.32.1
+  resolution: "typescript-eslint@npm:8.32.1"
   dependencies:
-    "@typescript-eslint/eslint-plugin": "npm:8.32.0"
-    "@typescript-eslint/parser": "npm:8.32.0"
-    "@typescript-eslint/utils": "npm:8.32.0"
+    "@typescript-eslint/eslint-plugin": "npm:8.32.1"
+    "@typescript-eslint/parser": "npm:8.32.1"
+    "@typescript-eslint/utils": "npm:8.32.1"
   peerDependencies:
     eslint: ^8.57.0 || ^9.0.0
     typescript: ">=4.8.4 <5.9.0"
-  checksum: 10c0/f74c2a3defec95f5f6d0887a9c57ad4f38d62fabe4e4a5a83bf6e198832efb6d706d08c89002f7765c3438e41f4c71d4a4694918056aa3a50b7b786569298fe4
+  checksum: 10c0/15602916b582b86c8b4371e99d5721c92af7ae56f9b49cd7971d2a49f11bf0bd64dd8d2c0e2b3ca87b2f3a6fd14966738121f3f8299de50c6109b9f245397f3b
   languageName: node
   linkType: hard
 
@@ -9240,12 +9222,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"yaml@npm:^2.7.1":
-  version: 2.7.1
-  resolution: "yaml@npm:2.7.1"
+"yaml@npm:^2.8.0":
+  version: 2.8.0
+  resolution: "yaml@npm:2.8.0"
   bin:
     yaml: bin.mjs
-  checksum: 10c0/ee2126398ab7d1fdde566b4013b68e36930b9e6d8e68b6db356875c99614c10d678b6f45597a145ff6d63814961221fc305bf9242af8bf7450177f8a68537590
+  checksum: 10c0/f6f7310cf7264a8107e72c1376f4de37389945d2fb4656f8060eca83f01d2d703f9d1b925dd8f39852a57034fafefde6225409ddd9f22aebfda16c6141b71858
   languageName: node
   linkType: hard
 

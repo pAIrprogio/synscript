@@ -64,7 +64,7 @@
   },
   "devDependencies": {
     "@types/mime-types": "^2.1.4",
-    "@types/node": "^22.15.17",
+    "@types/node": "^22.15.18",
     "@types/turndown": "^5.0.5",
     "execa": "^9.5.3",
     "tsup": "^8.4.0",
