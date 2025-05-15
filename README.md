@@ -82,6 +82,10 @@ pnpm add @synstack/llm @synstack/fs @synstack/text @synstack/fs-cache @synstack/
   - Zod schema validation
 
 - [@synstack/yaml](./packages/yaml/README.md) - Type-safe YAML processing
+
+  - Type-safe YAML deserialization
+  - Zod schema validation
+
 - [@synstack/xml](./packages/xml/README.md) - Non-ISO XML parser with text preservation
 
   - Handles invalid XML gracefully
