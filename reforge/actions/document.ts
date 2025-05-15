@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-unsafe-argument */
-import { tIf } from "@synstack/synscript";
-import { assistantMsg, systemMsg, userMsg } from "@synstack/synscript/llm";
+import { assistantMsg, systemMsg, userMsg } from "@synstack/llm";
+import { t } from "@synstack/text";
 import { fileAgent } from "../agents/file.agent.ts";
 import { fileToPrompt } from "../prompt-components/file.component.ts";
 import { getRuntimeContext } from "../runtime/context.runtime.ts";
@@ -21,10 +21,13 @@ async function main() {
       ## File to document
       ${fileToPrompt(focusedFile)}
 
-      ${tIf(openedFiles.length > 1)`
-        ## Sample files
-        ${openedFiles.map((f) => fileToPrompt(f))}
-      `}
+      ${
+        openedFiles.length > 1 &&
+        t`
+          ## Sample files
+          ${openedFiles.map((f) => fileToPrompt(f))}
+        `
+      }
 
       # Instructions
       - Use the provided sample files to understand the context of the file.

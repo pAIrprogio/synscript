@@ -1,5 +1,5 @@
-import { reforge } from "@synstack/synscript";
-import { systemMsg, userMsg } from "@synstack/synscript/llm";
+import { systemMsg, userMsg } from "@synstack/llm";
+import { reforge } from "@synstack/reforge";
 import { getRuntimeContext } from "../runtime/context.runtime.ts";
 
 async function main() {

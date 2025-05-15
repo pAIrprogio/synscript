@@ -1,7 +1,7 @@
 import { createAnthropic } from "@ai-sdk/anthropic";
-import { fsCache } from "@synstack/synscript";
-import { completion } from "@synstack/synscript/llm";
-import { includeAssistantMessage } from "@synstack/synscript/llm/middleware";
+import { fsCache } from "@synstack/fs-cache";
+import { completion } from "@synstack/llm";
+import { includeAssistantMessage } from "@synstack/llm/middleware";
 import { reforgeDir } from "./workspace.runtime.ts";
 
 const anthropic = createAnthropic({
@@ -16,6 +16,6 @@ export const baseCompletion = completion
   .maxTokens(8000)
   .temperature(0.5)
   .middlewares([includeAssistantMessage])
-  .model(anthropic("claude-3-5-sonnet-latest"))
+  .model(anthropic("claude-3-7-sonnet-20250219"))
   .maxSteps(3)
   .maxRetries(2);

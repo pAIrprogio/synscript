@@ -1,6 +1,7 @@
 /* eslint-disable @typescript-eslint/no-unsafe-argument */
-import { reforge, tIf } from "@synstack/synscript";
-import { assistantMsg, systemMsg, userMsg } from "@synstack/synscript/llm";
+import { assistantMsg, systemMsg, userMsg } from "@synstack/llm";
+import { reforge } from "@synstack/reforge";
+import { t } from "@synstack/text";
 import { fileAgent } from "../../agents/file.agent.ts";
 import { fileToPrompt } from "../../prompt-components/file.component.ts";
 import { rootDir } from "../../runtime/workspace.runtime.ts";
@@ -24,7 +25,7 @@ export async function readmeAgent(context: PackageContext) {
       Write the README.md file for one of the packages of a monorepo workspace:
       - Use the provided sample source files to understand the context of the current package and other README.md files to as a reference of the expected output.
       - When <instructions/> tags are present in the current README.md file, take them into account when updating it.
-      - If the current README.md is missing elements from the API, add them.
+      - Check for any missing feature or removed features in the current README.md file and update it accordingly.
       - Omit documentation about exported types.
     `,
     userMsg`
@@ -42,13 +43,16 @@ export async function readmeAgent(context: PackageContext) {
       ## README.md files
       ${readmeFiles.map((f) => fileToPrompt(f))}
 
-      ${tIf(extraInstructions)`
-        # Extra instructions
-        ${extraInstructions}
-      `}
+      ${
+        extraInstructions &&
+        t`
+          # Extra instructions
+          ${extraInstructions}
+        `
+      }
 
       # Expected output
-      Update the README.md file for ${context.packageName}
+      The updated README.md file for ${context.packageName} in a <file/> tag.
     `,
     assistantMsg`
       <file path="${context.focusedFile.relativePathFrom(rootDir)}">

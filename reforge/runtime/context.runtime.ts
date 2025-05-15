@@ -1,5 +1,5 @@
-import { file, files, reforge } from "@synstack/synscript";
-import { FsFile, type FsFileArray } from "@synstack/synscript/fs";
+import { FsFile, file, files, type FsFileArray } from "@synstack/fs";
+import { reforge } from "@synstack/reforge";
 
 export async function getRuntimeContext() {
   const [focusedFilePath, openedFilesPaths] = await Promise.all([

@@ -1,7 +1,8 @@
-import { reforge, str, xml } from "@synstack/synscript";
-import { type Llm } from "@synstack/synscript/llm";
-import { type Resolvable } from "@synstack/synscript/resolved";
-import { type Xml } from "@synstack/synscript/xml";
+import { type Llm } from "@synstack/llm";
+import { reforge } from "@synstack/reforge";
+import { type Resolvable } from "@synstack/resolved";
+import { str } from "@synstack/str";
+import { xml, type Xml } from "@synstack/xml";
 import type { FsFile } from "../../packages/fs/src/file.lib.ts";
 import { baseCompletion } from "../runtime/completion.runtime.ts";
 import { type BaseContext } from "../runtime/context.runtime.ts";
@@ -18,6 +19,7 @@ export async function fileAgent(prompt: any, context?: any) {
   const messages = typeof prompt === "function" ? prompt(context) : prompt;
   // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
   const res = await baseCompletion.messages(messages).generateText();
+  console.log("===Response===\n", res.text);
   await writeResponseToFiles(res.text);
 }
 

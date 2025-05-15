@@ -1,5 +1,5 @@
-import { t, tIf } from "@synstack/synscript";
-import { FsDir, FsFile } from "@synstack/synscript/fs";
+import type { FsDir, FsFile } from "@synstack/fs";
+import { t } from "@synstack/text";
 
 export async function fileToPrompt(
   file: FsFile,
@@ -12,7 +12,7 @@ export async function fileToPrompt(
   if (!content) return "";
 
   return t`
-    <file path="${path}"${tIf(source)` source="${source}"`}>
+    <file path="${path}"${source && t` source="${source}"`}>
       ${content}
     </file>
   `;
