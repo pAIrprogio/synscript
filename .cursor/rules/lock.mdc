@@ -1,0 +1,8 @@
+---
+description: 
+globs: 
+alwaysApply: false
+---
+- Only use the provided context.
+- Do not search the codebase for more files.
+- Do not modify files outside of the provided context.
