@@ -5,6 +5,27 @@ import { messageToText } from "./message.builder.ts";
 
 /**
  * Wraps the model to add the provided last assistant message to the output
+ *
+ * By default, the last assistant message is not included in the output.
+ * This middleware is useful when you want to restrict the start of the assistant's response.
+ *
+ * @example
+ * ```ts
+ * import { userMsg, assistantMsg } from "@synstack/llm";
+ * import { includeAssistantMessage } from "@synstack/llm/middleware";
+ * import { baseCompletion } from "../runtime/completion.runtime.ts";
+ *
+ * const output = baseCompletion
+ *  .middlewares([includeAssistantMessage])
+ *  .messages([
+ *    userMsg`Write me the code for a function that returns the sum of two numbers.`,
+ *    assistantMsg`
+ *      \`\`\`ts
+ *      function sum(a, b) {
+ *    `,
+ *  ])
+ *  .generateText();
+ * ```
  */
 export const includeAssistantMessage = (model: Llm.Model) =>
   wrapLanguageModel({
@@ -56,6 +77,27 @@ export const includeAssistantMessage = (model: Llm.Model) =>
     },
   });
 
+/**
+ * Caches the results of the model using a cache engine instance.
+ * - Uses the entire prompt as the cache to check for cache hit.
+ * - Allows caching responses for the same prompt locally.
+ *
+ * @example
+ * ```ts
+ * import { fsCache } from "@synstack/fs-cache";
+ * import { completion } from "@synstack/llm";
+ * import { cacheCalls } from "@synstack/llm/middleware";
+ * import { baseCompletion } from "../runtime/completion.runtime.ts";
+ *
+ * const cache = fsCache(dir("./cache"));
+ *
+ * // This will re-execute if any part of the prompt changed
+ * // Cache will be located in ./cache/my-prompt-name.json
+ * const cachedOutput = baseCompletion
+ *  .prependMiddlewares([cacheCalls(cache.key(["my-prompt-name"]))])
+ *  .generateText();
+ * ```
+ */
 export const cacheCalls =
   (cache: FsCache<FsCache.Options<[Llm.Model.Generate.Options]>>) =>
   (model: Llm.Model) => {

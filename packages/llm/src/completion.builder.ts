@@ -433,4 +433,58 @@ interface ObjectOptions<T> {
   description?: string;
 }
 
+/**
+ * Create a new completion builder instance for configuring LLM completions.
+ *
+ * The completion builder provides a type-safe API to configure LLM completions with various options:
+ * - Model configuration (model, maxTokens, temperature, etc.)
+ * - Flow control (maxSteps, maxRetries, stopSequences, etc.)
+ * - Generation methods (generateText, streamText, generateObject, streamObject)
+ *
+ * @example
+ * ```ts
+ * import { completion, systemMsg, userMsg, assistantMsg } from "@synstack/llm";
+ * import { openai } from "@ai-sdk/openai";
+ * import { z } from "zod";
+ *
+ * // Basic completion with model configuration
+ * const baseCompletion = completion
+ *   .model(openai("gpt-4"))
+ *   .maxTokens(20)
+ *   .temperature(0.8);
+ *
+ * // Example with tools and messages
+ * const agent = baseCompletion
+ *   .tools({
+ *     search: {
+ *       description: "Search for information",
+ *       parameters: z.object({
+ *         query: z.string()
+ *       })
+ *     },
+ *     getWeather: {
+ *       description: "Get weather for a location",
+ *       parameters: z.object({
+ *         location: z.string(),
+ *         unit: z.enum(["celsius", "fahrenheit"])
+ *       })
+ *     }
+ *   })
+ *   .activeTools(["search", "getWeather"])
+ *   .toolChoice("auto")
+ *   .prompt([
+ *     systemMsg`
+ *       You are a helpful assistant that can search for information
+ *       and get weather data.
+ *     `,
+ *     userMsg`
+ *       What's the weather like in Paris?
+ *     `,
+ *     assistantMsg`
+ *       Let me check the weather for you.
+ *     `,
+ *   ])
+ *   .generateText();
+ * ```
+ */
 export const completion: CompletionBuilder<{}> = CompletionBuilder.new;
