@@ -128,7 +128,7 @@ export declare namespace Llm {
       export type Serializable = {
         role: "user";
         content: Array<Llm.Message.User.Part>;
-        experimental_providerMetadata?: Llm.Provider.Metadata;
+        providerOptions?: Llm.Provider.Options;
       };
 
       /**
@@ -164,7 +164,7 @@ export declare namespace Llm {
       export type Serializable = {
         role: "assistant";
         content: Array<Llm.Message.Assistant.Part>;
-        experimental_providerMetadata?: ProviderMetadata;
+        providerOptions?: Llm.Provider.Options;
       };
 
       export namespace Template {
@@ -329,11 +329,9 @@ export declare namespace Llm {
     experimental_telemetry?: any; // TODO: type
 
     /**
-     * Additional provider-specific metadata. They are passed through
-     * to the provider from the AI SDK and enable provider-specific
-     * functionality that can be fully encapsulated in the provider.
+     * Additional provider-specific options.
      */
-    experimental_providerMetadata?: any; // TODO: type
+    providerOptions?: Llm.Provider.Options;
 
     /**
      * Limits the tools that are available for the model to call without
@@ -456,12 +454,10 @@ export declare namespace Llm {
   export namespace Provider {
     /**
      * Additional provider-specific options.
+     *
+     * They are passed through to the provider from the AI SDK and enable
+     * provider-specific functionality that can be fully encapsulated in the provider.
      */
     export type Options = ProviderMetadata;
-
-    /**
-     * Additional provider-specific metadata.
-     */
-    export type Metadata = ProviderMetadata;
   }
 }

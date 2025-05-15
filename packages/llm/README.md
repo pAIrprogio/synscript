@@ -112,19 +112,16 @@ const cachedUserMsg = userMsg.cached`
 // Custom provider options for user messages
 const customUserMsg = userMsgWithOptions({
   providerOptions: { anthropic: { cacheControl: { type: "ephemeral" } } },
-  providerMetadata: { data: { tags: ["user"] } },
 })`Hello World`;
 
 // Custom provider options for assistant messages
 const customAssistantMsg = assistantMsgWithOptions({
   providerOptions: { openai: { cacheControl: { type: "ephemeral" } } },
-  providerMetadata: { data: { tags: ["assistant"] } },
 })`Hello World`;
 
 // Custom provider options for system messages
 const customSystemMsg = systemMsgWithOptions({
   providerOptions: { anthropic: { system_prompt_behavior: "default" } },
-  providerMetadata: { data: { tags: ["system"] } },
 })`Hello World`;
 ```
 

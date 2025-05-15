@@ -299,13 +299,10 @@ export class CompletionBuilder<OPTIONS extends Llm.Completion.Partial> {
   }
 
   /**
-   * Additional provider-specific metadata. They are passed through
-   * to the provider from the AI SDK and enable provider-specific
-   * functionality that can be fully encapsulated in the provider.
-   * @experimental
+   * Set provider-specific options.
    */
-  public providerMetadata(providerMetadata: any) {
-    return this.merge({ experimental_providerMetadata: providerMetadata });
+  public providerOptions(providerOptions: Llm.Provider.Options) {
+    return this.merge({ providerOptions: providerOptions });
   }
 
   // public output(output: "object" | "array" | "no-schema") {

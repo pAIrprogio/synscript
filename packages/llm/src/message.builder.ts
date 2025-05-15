@@ -43,11 +43,10 @@ function mapFilePart(v: Llm.Message.Template.Part.File): Llm.Message.Part.File {
 }
 
 /**
- * Creates a user message with custom provider options and metadata.
+ * Creates a user message with custom provider options.
  *
  * @param options Configuration options for the message
  * @param options.providerOptions Provider-specific options
- * @param options.providerMetadata Provider-specific metadata
  * @returns A template string function that builds user messages with the specified options
  *
  * @example
@@ -66,7 +65,6 @@ function mapFilePart(v: Llm.Message.Template.Part.File): Llm.Message.Part.File {
  */
 export function userMsgWithOptions(options: {
   providerOptions?: Llm.Provider.Options;
-  providerMetadata?: Llm.Provider.Metadata;
 }) {
   return function userMsg<
     T extends
@@ -90,7 +88,6 @@ export function userMsgWithOptions(options: {
             role: "user" as const,
             content,
             providerOptions: options.providerOptions,
-            experimental_providerMetadata: options.providerMetadata,
           }) satisfies Llm.Message.User,
       ).$;
   };
@@ -165,11 +162,10 @@ userMsg.cached = userMsgWithOptions({
 });
 
 /**
- * Creates an assistant message builder with custom provider options and metadata.
+ * Creates an assistant message builder with custom provider options.
  *
  * @param options Configuration options for the message
  * @param options.providerOptions Provider-specific options
- * @param options.providerMetadata Provider-specific metadata
  * @returns A template string function that builds assistant messages with the specified options
  *
  * @example
@@ -188,7 +184,6 @@ userMsg.cached = userMsgWithOptions({
  */
 export function assistantMsgWithOptions(options: {
   providerOptions?: Llm.Provider.Options;
-  providerMetadata?: Llm.Provider.Metadata;
 }) {
   return function assistantMsg<
     T extends
@@ -213,7 +208,6 @@ export function assistantMsgWithOptions(options: {
             role: "assistant" as const,
             content,
             providerOptions: options.providerOptions,
-            experimental_providerMetadata: options.providerMetadata,
           }) satisfies Llm.Message.Assistant,
       ).$;
   };
