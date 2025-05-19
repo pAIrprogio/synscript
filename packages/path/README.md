@@ -99,6 +99,8 @@ path.removeRelativeIndicator("./file.txt"); // "file.txt"
 // Add or ensure extensions
 path.addMissingExtension("/path/to/file", "txt"); // "/path/to/file.txt"
 path.ensureFileExtension("/path/to/file", ".txt"); // "/path/to/file.txt"
+// extension can be provided without leading dot
+path.ensureFileExtension("/path/to/file", "txt"); // "/path/to/file.txt"
 
 // Get file information
 path.filename("/path/to/file.txt"); // "file.txt"
