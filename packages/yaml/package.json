@@ -5,7 +5,7 @@
     "access": "public"
   },
   "version": "1.1.9",
-  "description": "Schema-safe and opiniated YAML serialization and deserialization",
+  "description": "Schema-safe and opinionated YAML serialization and deserialization",
   "keywords": [
     "yaml",
     "typescript",
