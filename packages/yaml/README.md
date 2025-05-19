@@ -1,6 +1,6 @@
 # @synstack/yaml
 
-Opiniated and type-safe YAML serialization and deserialization with Zod schema validation
+Opinionated and type-safe YAML serialization and deserialization with Zod schema validation
 
 > [!NOTE]
 > This package is accessible through [@synstack/fs](../fs/README.md) for convenience.
