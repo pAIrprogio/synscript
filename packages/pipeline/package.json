@@ -1,0 +1,57 @@
+{
+  "name": "@synstack/pipeline",
+  "type": "module",
+  "publishConfig": {
+    "access": "public"
+  },
+  "version": "1.0.0",
+  "description": "Composable function pipelines with type safety",
+  "keywords": [
+    "pipeline",
+    "functional",
+    "compose",
+    "typescript"
+  ],
+  "author": {
+    "name": "pAIrprog",
+    "url": "https://pairprog.io"
+  },
+  "homepage": "https://github.com/pAIrprogio/synscript/tree/main/packages/pipeline",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/pAIrprogio/synscript.git",
+    "directory": "packages/pipeline"
+  },
+  "license": "Apache-2.0",
+  "scripts": {
+    "build": "tsup",
+    "build:watch": "tsup --watch",
+    "test:types": "tsc --noEmit",
+    "test:unit": "node --experimental-strip-types --experimental-test-snapshots --no-warnings --test src/**/*.test.ts",
+    "test:unit:watch": "node --experimental-strip-types --experimental-test-snapshots --no-warnings --watch --test --watch src/**/*.test.ts",
+    "test": "yarn test:types && yarn test:unit",
+    "prepare": "yarn test && yarn build"
+  },
+  "exports": {
+    ".": {
+      "import": {
+        "types": "./dist/pipeline.index.d.ts",
+        "default": "./dist/pipeline.index.js"
+      },
+      "require": {
+        "types": "./dist/pipeline.index.d.cts",
+        "default": "./dist/pipeline.index.cjs"
+      }
+    }
+  },
+  "devDependencies": {
+    "@types/node": "^22.15.18",
+    "tsup": "^8.4.0",
+    "typescript": "^5.8.3"
+  },
+  "files": [
+    "src/**/*.ts",
+    "!src/**/*.test.ts",
+    "dist/**/*"
+  ]
+}
