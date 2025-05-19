@@ -135,10 +135,10 @@ export const cacheCalls =
             } satisfies Llm.Model.Stream.Return;
           }
 
-          // We need to collect the parts and then set the cache
+          // Collect stream parts for caching
           const res = await doStream();
           const collector: Array<Llm.Model.Stream.Part> = [];
-          res.stream.pipeThrough(
+          const piped = res.stream.pipeThrough(
             new TransformStream<Llm.Model.Stream.Part, Llm.Model.Stream.Part>({
               transform(chunk, controller) {
                 collector.push(chunk);
@@ -150,7 +150,10 @@ export const cacheCalls =
             ...res,
             stream: collector,
           });
-          return res;
+          return {
+            ...res,
+            stream: piped,
+          };
         },
       },
     });
