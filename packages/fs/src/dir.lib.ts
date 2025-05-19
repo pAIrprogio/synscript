@@ -450,10 +450,10 @@ Trying to access a dir file from an absolute paths:
 }
 
 /**
- * Create a new directory instance with the provided path(s).
+ * Create a new directory instance with the provided path.
  * Resolves relative paths to absolute paths.
  *
- * @param args - A path, or an existing FsDir instance
+ * @param arg - A path or an existing FsDir instance
  * @returns A new FsDir instance with the resolved path
  *
  * ```typescript
