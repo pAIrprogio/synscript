@@ -205,8 +205,11 @@ export function ensureFileExtension(
   extension: string,
 ): AnyPath;
 export function ensureFileExtension(filePath: AnyPath, extension: string) {
-  if (filePath.endsWith(extension)) return filePath;
-  return `${filePath}.${extension}`;
+  const normalizedExt = extension.startsWith(".")
+    ? extension
+    : `.${extension}`;
+  if (filePath.endsWith(normalizedExt)) return filePath;
+  return `${filePath}${normalizedExt}`;
 }
 
 /**
