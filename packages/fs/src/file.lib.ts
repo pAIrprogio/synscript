@@ -42,7 +42,7 @@ export interface Base64Data {
  */
 export class FsFile<
   TEncoding extends TextEncoding = "utf-8",
-  TSchema extends Zod.Schema | undefined = undefined,
+  TSchema extends ZodSchema | undefined = undefined,
 > extends Pipeable<FsFile<TEncoding, TSchema>, AnyPath> {
   private readonly _path: AnyPath;
   private readonly _encoding: TEncoding;
@@ -559,7 +559,7 @@ export class FsFile<
 
 class FsFileRead<
   TEncoding extends TextEncoding = "utf-8",
-  TSchema extends Zod.Schema | undefined = undefined,
+  TSchema extends ZodSchema | undefined = undefined,
 > {
   private readonly _path: AnyPath;
   private readonly _encoding: TEncoding;
@@ -665,7 +665,7 @@ class FsFileRead<
    * ```
    */
   public json<T = unknown>(): Promise<
-    TSchema extends Zod.Schema<infer O> ? O : T
+    TSchema extends ZodSchema<infer O> ? O : T
   > {
     return this.text().then((t) =>
       json.deserialize(t, { schema: this._schema }),
@@ -687,7 +687,7 @@ class FsFileRead<
    *   .read.jsonSync<Config>();
    * ```
    */
-  public jsonSync<T = unknown>(): TSchema extends Zod.Schema<infer O> ? O : T {
+  public jsonSync<T = unknown>(): TSchema extends ZodSchema<infer O> ? O : T {
     return json.deserialize<T>(this.textSync(), {
       schema: this._schema,
     }) as any;
@@ -714,7 +714,7 @@ class FsFileRead<
    * ```
    */
   public yaml<T = unknown>(): Promise<
-    TSchema extends Zod.Schema<infer O> ? O : T
+    TSchema extends ZodSchema<infer O> ? O : T
   > {
     return this.text().then((t) =>
       yaml.deserialize<T>(t, { schema: this._schema }),
@@ -737,7 +737,7 @@ class FsFileRead<
    *   .read.yamlSync<Config>();
    * ```
    */
-  public yamlSync<T = unknown>(): TSchema extends Zod.Schema<infer O> ? O : T {
+  public yamlSync<T = unknown>(): TSchema extends ZodSchema<infer O> ? O : T {
     return yaml.deserialize<T>(this.textSync(), {
       schema: this._schema,
     }) as any;
@@ -901,7 +901,7 @@ class FsFileRead<
 // Todo: Passing absolute paths will break the cache, find a way to fix this
 class FsFileWrite<
   TEncoding extends TextEncoding,
-  TSchema extends Zod.Schema | undefined = undefined,
+  TSchema extends ZodSchema | undefined = undefined,
 > {
   private readonly _path: AnyPath;
   private readonly _encoding: TEncoding;
@@ -974,7 +974,7 @@ class FsFileWrite<
    * @throws If schema validation fails or if the write operation fails
    */
   public async json<T>(
-    data: TSchema extends Zod.Schema<infer O> ? O : T,
+    data: TSchema extends ZodSchema<infer O> ? O : T,
   ): Promise<void> {
     return this.text(json.serialize(data, { schema: this._schema }));
   }
@@ -992,7 +992,7 @@ class FsFileWrite<
    * @throws If schema validation fails or if the write operation fails
    */
   public async prettyJson<T>(
-    data: TSchema extends Zod.Schema<infer O> ? O : T,
+    data: TSchema extends ZodSchema<infer O> ? O : T,
   ): Promise<void> {
     return this.text(
       json.serialize(data, { schema: this._schema, pretty: true }) + "\n",
@@ -1009,7 +1009,7 @@ class FsFileWrite<
    * @synchronous
    * @throws If schema validation fails or if the write operation fails
    */
-  public jsonSync<T>(data: TSchema extends Zod.Schema<infer O> ? O : T): void {
+  public jsonSync<T>(data: TSchema extends ZodSchema<infer O> ? O : T): void {
     return this.textSync(json.serialize(data, { schema: this._schema }));
   }
 
@@ -1024,7 +1024,7 @@ class FsFileWrite<
    * @throws If schema validation fails or if the write operation fails
    */
   public prettyJsonSync<T = unknown>(
-    data: TSchema extends Zod.Schema<infer O> ? O : T,
+    data: TSchema extends ZodSchema<infer O> ? O : T,
   ): void {
     return this.textSync(
       json.serialize(data, { schema: this._schema, pretty: true }) + "\n",
@@ -1042,7 +1042,7 @@ class FsFileWrite<
    * @throws If schema validation fails or if the write operation fails
    */
   public async yaml<T = unknown>(
-    data: TSchema extends Zod.Schema<infer O> ? O : T,
+    data: TSchema extends ZodSchema<infer O> ? O : T,
   ): Promise<void> {
     return this.text(yaml.serialize(data, { schema: this._schema }));
   }
@@ -1058,7 +1058,7 @@ class FsFileWrite<
    * @throws If schema validation fails or if the write operation fails
    */
   public yamlSync<T = unknown>(
-    data: TSchema extends Zod.Schema<infer O> ? O : T,
+    data: TSchema extends ZodSchema<infer O> ? O : T,
   ): void {
     return this.textSync(yaml.serialize(data, { schema: this._schema }));
   }
