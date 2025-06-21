@@ -25,6 +25,15 @@ describe("Markdown", () => {
       assertType<{ title: string; count: number } | undefined>(data);
       assert.deepEqual(data, { title: "Test", count: 5 });
     });
+    it("extracts and parses header data even when no trailing newline", () => {
+      const text = "---\ntitle: Test\ncount: 5\n---";
+      const schema = z.object({ title: z.string(), count: z.number() });
+      const data = md.getHeaderData<{ title: string; count: number }>(text, {
+        schema,
+      });
+      assertType<{ title: string; count: number } | undefined>(data);
+      assert.deepEqual(data, { title: "Test", count: 5 });
+    });
     it("returns undefined if header data is not present", () => {
       const text = "Content";
       const data = md.getHeaderData(text);
