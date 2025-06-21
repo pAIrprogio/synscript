@@ -1,5 +1,6 @@
 import { glob } from "@synstack/glob";
 import { json } from "@synstack/json";
+import { MdDoc } from "@synstack/markdown";
 import { type AnyPath, path } from "@synstack/path";
 import { Pipeable } from "@synstack/pipe";
 import { str } from "@synstack/str";
@@ -896,6 +897,37 @@ class FsFileRead<
       mimeType: defaultMimeType,
     } satisfies Base64Data;
   }
+
+  /**
+   * Read the file contents and parse them as a markdown document.
+   * If a schema is provided, the header data will be validated before returning.
+   *
+   * @returns A promise that resolves to the markdown document
+   * @throws If the file doesn't exist, cannot be read, or contains invalid markdown
+   * @throws If schema validation fails when a schema is provided
+   */
+  public md() {
+    return this.text().then((t) =>
+      MdDoc.withOptions({
+        schema: this._schema,
+      }).fromString(t),
+    );
+  }
+
+  /**
+   * Read the file contents and parse them as a markdown document synchronously.
+   * If a schema is provided, the header data will be validated before returning.
+   *
+   * @synchronous
+   * @returns The markdown document
+   * @throws If the file doesn't exist, cannot be read, or contains invalid markdown
+   * @throws If schema validation fails when a schema is provided
+   */
+  public mdSync() {
+    return MdDoc.withOptions({
+      schema: this._schema,
+    }).fromString(this.textSync());
+  }
 }
 
 // Todo: Passing absolute paths will break the cache, find a way to fix this
@@ -1038,7 +1070,6 @@ class FsFileWrite<
    *
    * @typeParam T - The type of data being written
    * @param data - The data to write, must be YAML-serializable
-   * @returns A promise that resolves when the write operation is complete
    * @throws If schema validation fails or if the write operation fails
    */
   public async yaml<T = unknown>(
@@ -1069,7 +1100,6 @@ class FsFileWrite<
    * Respects the write mode (overwrite/preserve) setting.
    *
    * @param data - The base64-encoded string to write
-   * @returns A promise that resolves when the write operation is complete
    * @throws If the write operation fails or if parent directory creation fails
    */
   public async base64(data: Stringable): Promise<void> {
@@ -1095,6 +1125,31 @@ class FsFileWrite<
     const dirname = path.dirname(this._path);
     fsSync.mkdirSync(dirname, { recursive: true });
     return fsSync.writeFileSync(this._path, data.toString(), "base64");
+  }
+
+  /**
+   * Write a markdown document to a file asynchronously.
+   * The markdown document will be serialized using MdDoc.toMd.
+   * If a schema is provided, the data will be validated before writing.
+   *
+   * @param data - The markdown document to write
+   * @throws If schema validation fails or if the write operation fails
+   */
+  public md(data: MdDoc) {
+    return this.text(data.toMd());
+  }
+
+  /**
+   * Write a markdown document to a file synchronously.
+   * The markdown document will be serialized using MdDoc.toMd.
+   * If a schema is provided, the data will be validated before writing.
+   *
+   * @param data - The markdown document to write
+   * @throws If schema validation fails or if the write operation fails
+   * @synchronous
+   */
+  public mdSync(data: MdDoc) {
+    return this.textSync(data.toMd());
   }
 }
 

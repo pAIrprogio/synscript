@@ -1326,6 +1326,7 @@ __metadata:
     "@synstack/git": "workspace:*"
     "@synstack/glob": "workspace:*"
     "@synstack/json": "workspace:*"
+    "@synstack/markdown": "workspace:*"
     "@synstack/path": "workspace:*"
     "@synstack/pipe": "workspace:*"
     "@synstack/str": "workspace:*"
@@ -1405,7 +1406,7 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@synstack/markdown@workspace:packages/markdown":
+"@synstack/markdown@workspace:*, @synstack/markdown@workspace:packages/markdown":
   version: 0.0.0-use.local
   resolution: "@synstack/markdown@workspace:packages/markdown"
   dependencies:
