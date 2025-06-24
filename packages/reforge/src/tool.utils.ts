@@ -1,15 +1,15 @@
 import { json } from "@synstack/json";
 import * as net from "net";
 import pako from "pako";
-import { z } from "zod";
+import { z } from "zod/v4";
 
 export const RESPONSE_SUFFIX = "_RESPONSE";
 
-const memoize = <TArgs extends Array<any>, TValue>(
-  fn: (...args: TArgs) => TValue,
+const memoize = <ARGS extends Array<any>, VALUE>(
+  fn: (...args: ARGS) => VALUE,
 ) => {
-  let cache: { data: TValue } | undefined = undefined;
-  return (...args: TArgs) => {
+  let cache: { data: VALUE } | undefined = undefined;
+  return (...args: ARGS) => {
     if (cache === undefined) cache = { data: fn(...args) };
     return cache.data;
   };
@@ -34,21 +34,21 @@ export const getIpcClient = memoize(() => {
 });
 
 export interface ToolConfig<
-  TName extends string,
-  TRequestSchema extends z.ZodSchema | null,
-  TResponseSchema extends z.ZodSchema = any,
+  NAME extends string,
+  REQUEST_SCHEMA extends z.ZodType | null,
+  RESPONSE_SCHEMA extends z.ZodType = z.ZodAny,
 > {
-  name: TName;
-  requestSchema: TRequestSchema;
-  responseSchema: TResponseSchema;
+  name: NAME;
+  requestSchema: REQUEST_SCHEMA;
+  responseSchema: RESPONSE_SCHEMA;
 }
 
 export type ToolFn<
-  TRequestSchema extends z.ZodSchema | null,
-  TResponseSchema extends z.ZodSchema,
-> = TRequestSchema extends z.ZodSchema
-  ? (data: z.input<TRequestSchema>) => Promise<z.output<TResponseSchema>>
-  : () => Promise<z.output<TResponseSchema>>;
+  REQUEST_SCHEMA extends z.ZodType | null,
+  RESPONSE_SCHEMA extends z.ZodType = z.ZodTypeAny,
+> = REQUEST_SCHEMA extends z.ZodType
+  ? (data: z.input<REQUEST_SCHEMA>) => Promise<z.output<RESPONSE_SCHEMA>>
+  : () => Promise<z.output<RESPONSE_SCHEMA>>;
 
 export const baseResponseSchema = z.object({
   type: z.string(),
@@ -57,24 +57,24 @@ export const baseResponseSchema = z.object({
 });
 
 export const toolFactory = <
-  TName extends string,
-  TRequestSchema extends z.ZodSchema | null,
-  TResponseSchema extends z.ZodSchema,
+  NAME extends string,
+  REQUEST_SCHEMA extends z.ZodType | null,
+  RESPONSE_SCHEMA extends z.ZodType = z.ZodAny,
 >(
-  toolConfig: ToolConfig<TName, TRequestSchema, TResponseSchema>,
-): ToolFn<TRequestSchema, TResponseSchema> => {
+  toolConfig: ToolConfig<NAME, REQUEST_SCHEMA, RESPONSE_SCHEMA>,
+): ToolFn<REQUEST_SCHEMA, RESPONSE_SCHEMA> => {
   const responseName = `${toolConfig.name}${RESPONSE_SUFFIX}` as const;
   const responseSchema = z.discriminatedUnion("status", [
     z.object({
+      status: z.literal("ok"),
       type: z.literal(responseName),
       id: z.string(),
-      status: z.literal("ok"),
       data: toolConfig.responseSchema,
     }),
     z.object({
+      status: z.literal("error"),
       type: z.literal(responseName),
       id: z.string(),
-      status: z.literal("error"),
       data: z.string(),
     }),
   ]);
@@ -84,7 +84,7 @@ export const toolFactory = <
       : undefined;
     const client = await getIpcClient();
     const id = crypto.randomUUID();
-    return new Promise<z.output<TResponseSchema>>((resolve, reject) => {
+    return new Promise<z.output<RESPONSE_SCHEMA>>((resolve, reject) => {
       const errorHandler = (error: Error) => {
         client.removeListener("error", errorHandler);
         client.removeListener("data", responseHandler);
@@ -100,8 +100,12 @@ export const toolFactory = <
           const parsedResponse = responseSchema.parse(resData);
           client.removeListener("error", errorHandler);
           client.removeListener("data", responseHandler);
+          // @ts-expect-error - TODO: fix this
+          // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
           if (parsedResponse.status === "ok") resolve(parsedResponse.data);
-          else reject(new Error(parsedResponse.status));
+          // @ts-expect-error - TODO: fix this
+          // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
+          else reject(new Error(parsedResponse.data));
         }
       };
 
@@ -119,5 +123,5 @@ export const toolFactory = <
     });
   };
 
-  return exec as ToolFn<TRequestSchema, TResponseSchema>;
+  return exec as ToolFn<REQUEST_SCHEMA, RESPONSE_SCHEMA>;
 };

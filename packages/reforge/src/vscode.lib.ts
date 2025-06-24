@@ -1,4 +1,4 @@
-import { z } from "zod";
+import { z } from "zod/v4";
 import { toolFactory } from "./tool.utils.ts";
 
 /**
@@ -131,7 +131,7 @@ export const executeCommandConfig = {
               z.string(),
               z.number(),
               z.boolean(),
-              z.record(z.any()),
+              z.record(z.string(), z.any()),
               z.array(z.any()),
             ]),
           }),

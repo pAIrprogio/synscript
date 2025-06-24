@@ -1,4 +1,4 @@
-import { z } from "zod";
+import { z } from "zod/v4";
 import { toolFactory } from "./tool.utils.ts";
 
 export const getFocusedFileConfig = {
@@ -169,6 +169,8 @@ const openFileRequest = z
       .optional(),
   })
   .default({
+    force: false,
+    preview: false,
     column: "active",
   });
 
