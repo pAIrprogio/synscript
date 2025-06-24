@@ -70,17 +70,14 @@ const minifiedConfig = {
  * @returns The markdown (minified for LLM processing)
  */
 export const fromHtml = (html: Stringable) => {
-  return (
-    unified()
-      .use(rehypeParse)
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
-      .use(rehypeRemark)
-      .use(remarkGfm, minifiedConfig.gfm)
-      .use(remarkStringify, minifiedConfig.stringify)
-      .processSync(html.toString())
-      .toString()
-      .trim()
-  );
+  return unified()
+    .use(rehypeParse)
+    .use(rehypeRemark)
+    .use(remarkGfm, minifiedConfig.gfm)
+    .use(remarkStringify, minifiedConfig.stringify)
+    .processSync(html.toString())
+    .toString()
+    .trim();
 };
 
 const HEADER_REGEX = /^---\n([\s\S]*?)\n---\n?/;
