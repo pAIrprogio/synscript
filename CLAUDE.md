@@ -7,43 +7,43 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 ### Building and Development
 ```bash
 # Build all packages
-yarn build
+pnpm build
 
 # Watch mode for development (rebuilds on changes)
-yarn build:watch
+pnpm build:watch
 
 # Build a specific package
-cd packages/<package-name> && yarn build
+cd packages/<package-name> && pnpm build
 ```
 
 ### Testing
 ```bash
 # Run all tests (unit, lint, types)
-yarn test
+pnpm test
 
 # Run unit tests only
-yarn test:unit
+pnpm test:unit
 
 # Run linting
-yarn test:lint
+pnpm test:lint
 
 # Type checking
-yarn test:types
+pnpm test:types
 
 # Watch mode for unit tests
-yarn test:unit:watch
+pnpm test:unit:watch
 
 # Run tests for a specific package
-cd packages/<package-name> && yarn test
+cd packages/<package-name> && pnpm test
 ```
 
 ### Publishing
 ```bash
 # Publish all packages (uses Lerna)
-yarn publish-all
+pnpm publish-all
 
 # Sync package configurations before publishing
-yarn package:sync
+pnpm package:sync
 ```
 
 ## Architecture Overview
@@ -94,5 +94,7 @@ When implementing new features:
 - The project uses experimental Node.js features. Ensure Node.js 20+ is installed.
 - Dual module support: Packages export both ESM and CommonJS formats.
 - The `reforge` directory contains self-referential examples showing how Synstack builds itself.
-- When modifying build configurations, run `yarn package:sync` to update all packages.
+- When modifying build configurations, run `pnpm package:sync` to update all packages.
 - Type imports should use `import type` syntax for better tree-shaking.
+- The project uses pnpm workspaces with the `workspace:^` protocol for internal dependencies.
+- Packages are pre-built before publishing - no `prepare` scripts run during consumer installs.
