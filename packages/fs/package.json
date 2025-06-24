@@ -35,8 +35,8 @@
     "test:types": "tsc --noEmit",
     "test:unit": "node --experimental-strip-types --experimental-test-snapshots --no-warnings --test src/**/*.test.ts",
     "test:unit:watch": "node --experimental-strip-types --experimental-test-snapshots --no-warnings --watch --test --watch src/**/*.test.ts",
-    "test": "yarn test:types && yarn test:unit",
-    "prepare": "yarn test && yarn build"
+    "test": "pnpm test:types && pnpm test:unit",
+    "prepare": "pnpm build"
   },
   "exports": {
     ".": {
@@ -51,16 +51,16 @@
     }
   },
   "dependencies": {
-    "@synstack/enhance": "workspace:*",
-    "@synstack/git": "workspace:*",
-    "@synstack/glob": "workspace:*",
-    "@synstack/json": "workspace:*",
-    "@synstack/markdown": "workspace:*",
-    "@synstack/path": "workspace:*",
-    "@synstack/pipe": "workspace:*",
-    "@synstack/str": "workspace:*",
-    "@synstack/xml": "workspace:*",
-    "@synstack/yaml": "workspace:*",
+    "@synstack/enhance": "workspace:^",
+    "@synstack/git": "workspace:^",
+    "@synstack/glob": "workspace:^",
+    "@synstack/json": "workspace:^",
+    "@synstack/markdown": "workspace:^",
+    "@synstack/path": "workspace:^",
+    "@synstack/pipe": "workspace:^",
+    "@synstack/str": "workspace:^",
+    "@synstack/xml": "workspace:^",
+    "@synstack/yaml": "workspace:^",
     "mime-types": "^3.0.1"
   },
   "devDependencies": {
@@ -69,15 +69,17 @@
     "@types/turndown": "^5.0.5",
     "execa": "^9.6.0",
     "tsup": "^8.5.0",
-    "typescript": "^5.8.3"
+    "typescript": "^5.8.3",
+    "zod": "^3.25.67"
+  },
+  "peerDependencies": {
+    "execa": "*",
+    "zod": "^3.25.0"
   },
   "files": [
     "src/**/*.ts",
     "!src/**/*.test.ts",
     "dist/**/*"
   ],
-  "gitHead": "ed339f5b4ef3a70b7371313234250b1e7445ef69",
-  "peerDependencies": {
-    "execa": "*"
-  }
+  "gitHead": "ed339f5b4ef3a70b7371313234250b1e7445ef69"
 }

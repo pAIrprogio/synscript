@@ -30,8 +30,8 @@
     "test:types": "tsc --noEmit",
     "test:unit": "node --experimental-strip-types --experimental-test-snapshots --no-warnings --test src/**/*.test.ts",
     "test:unit:watch": "node --experimental-strip-types --experimental-test-snapshots --no-warnings --watch --test --watch src/**/*.test.ts",
-    "test": "yarn test:types && yarn test:unit",
-    "prepare": "yarn test && yarn build"
+    "test": "pnpm test:types && pnpm test:unit",
+    "prepare": "pnpm build"
   },
   "exports": {
     ".": {
@@ -46,7 +46,7 @@
     }
   },
   "dependencies": {
-    "@synstack/pipe": "workspace:*",
+    "@synstack/pipe": "workspace:^",
     "change-case": "^5.4.4"
   },
   "devDependencies": {

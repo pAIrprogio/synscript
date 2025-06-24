@@ -6,7 +6,7 @@
     "test:types": "tsc --noEmit",
     "test:unit": "node --experimental-strip-types --test src/**/*.test.ts",
     "test:unit:watch": "node --experimental-strip-types --test --watch src/**/*.test.ts",
-    "test": "yarn test:types && yarn test:unit"
+    "test": "pnpm test:types && pnpm test:unit"
   },
   "devDependencies": {
     "@types/node": "^22.15.32",

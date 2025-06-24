@@ -32,8 +32,8 @@
     "test:types": "tsc --noEmit",
     "test:unit": "node --experimental-strip-types --experimental-test-snapshots --no-warnings --test src/**/*.test.ts",
     "test:unit:watch": "node --experimental-strip-types --experimental-test-snapshots --no-warnings --watch --test --watch src/**/*.test.ts",
-    "test": "yarn test:types && yarn test:unit",
-    "prepare": "yarn test && yarn build"
+    "test": "pnpm test:types && pnpm test:unit",
+    "prepare": "pnpm build"
   },
   "exports": {
     ".": {
@@ -48,7 +48,7 @@
     }
   },
   "dependencies": {
-    "@synstack/path": "workspace:*",
+    "@synstack/path": "workspace:^",
     "glob": "^11.0.3",
     "minimatch": "^10.0.3"
   },

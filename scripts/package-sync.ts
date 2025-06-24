@@ -47,7 +47,7 @@ await Promise.all(
       license: "Apache-2.0",
       scripts: {
         ...packageJson.scripts,
-        prepare: "yarn test && yarn build",
+        prepare: "pnpm build",
         build: "tsup",
         "build:watch": "tsup --watch",
         "test:types": "tsc --noEmit",
@@ -55,7 +55,7 @@ await Promise.all(
           "node --experimental-strip-types --experimental-test-snapshots --no-warnings --test src/**/*.test.ts",
         "test:unit:watch":
           "node --experimental-strip-types --experimental-test-snapshots --no-warnings --watch --test --watch src/**/*.test.ts",
-        test: "yarn test:types && yarn test:unit",
+        test: "pnpm test:types && pnpm test:unit",
       },
       exports: orderKeys({
         ...packageJson.exports,
@@ -75,9 +75,9 @@ await Promise.all(
       } as {}),
       devDependencies: orderKeys({
         ...packageJson.devDependencies,
-        "@types/node": "^22.10.1",
-        tsup: "^8.3.5",
-        typescript: "^5.7.2",
+        "@types/node": "^22.15.32",
+        tsup: "^8.5.0",
+        typescript: "^5.8.3",
       } as {}),
       peerDependencies: orderKeys({
         ...packageJson.peerDependencies,

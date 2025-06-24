@@ -8,7 +8,7 @@
       "reforge"
     ]
   },
-  "packageManager": "yarn@4.8.1+sha512.bc946f2a022d7a1a38adfc15b36a66a3807a67629789496c3714dd1703d2e6c6b1c69ff9ec3b43141ac7a1dd853b7685638eb0074300386a59c18df351ef8ff6",
+  "packageManager": "pnpm@10.12.3+sha512.467df2c586056165580ad6dfb54ceaad94c5a30f80893ebdec5a44c5aa73c205ae4a5bb9d5ed6bb84ea7c249ece786642bbb49d06a307df218d03da41c317417",
   "author": {
     "name": "pAIrprog",
     "url": "https://pairprog.io"
@@ -20,11 +20,11 @@
   },
   "license": "Apache-2.0",
   "scripts": {
-    "build": "yarn workspaces foreach --parallel --all --topological-dev --verbose run build",
-    "test:unit": "yarn workspaces foreach --parallel --all --verbose run test:unit",
-    "test:lint": "yarn eslint . --cache",
-    "test:types": "yarn workspaces foreach --parallel --all --interlaced --verbose run test:types",
-    "build:watch": "yarn workspaces foreach --parallel --all --interlaced --verbose run build:watch",
+    "build": "pnpm -r --parallel build",
+    "test:unit": "pnpm -r --parallel test:unit",
+    "test:lint": "pnpm eslint . --cache",
+    "test:types": "pnpm -r --parallel test:types",
+    "build:watch": "pnpm -r --parallel build:watch",
     "publish-all": "lerna publish from-package --no-private",
     "package:sync": "./scripts/package-sync.ts"
   },

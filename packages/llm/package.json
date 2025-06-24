@@ -32,8 +32,8 @@
     "test:types": "tsc --noEmit",
     "test:unit": "node --experimental-strip-types --experimental-test-snapshots --no-warnings --test src/**/*.test.ts",
     "test:unit:watch": "node --experimental-strip-types --experimental-test-snapshots --no-warnings --watch --test --watch src/**/*.test.ts",
-    "test": "yarn test:types && yarn test:unit",
-    "prepare": "yarn test && yarn build"
+    "test": "pnpm test:types && pnpm test:unit",
+    "prepare": "pnpm build"
   },
   "exports": {
     ".": {
@@ -58,14 +58,14 @@
     }
   },
   "dependencies": {
-    "@synstack/resolved": "workspace:*",
-    "@synstack/text": "workspace:*",
+    "@synstack/resolved": "workspace:^",
+    "@synstack/text": "workspace:^",
     "mime-types": "^3.0.1",
     "ts-pattern": "^5.7.1",
     "zod-to-json-schema": "^3.24.5"
   },
   "devDependencies": {
-    "@synstack/fs-cache": "workspace:*",
+    "@synstack/fs-cache": "workspace:^",
     "@types/mime-types": "^3.0.1",
     "@types/node": "^22.15.32",
     "ai": "^4.3.16",
@@ -74,7 +74,7 @@
     "zod": "^3.25.67"
   },
   "peerDependencies": {
-    "@synstack/fs-cache": "workspace:*",
+    "@synstack/fs-cache": "workspace:^",
     "ai": "*",
     "zod": "^3.25.0"
   },
