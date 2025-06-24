@@ -13,7 +13,6 @@ import type {
   ImagePart,
   LanguageModel,
   LanguageModelV1StreamPart,
-  ProviderMetadata,
   StepResult,
   StreamObjectResult,
   StreamTextResult,
@@ -24,6 +23,20 @@ import type {
 import type { ZodTypeAny } from "zod";
 
 type $Partial<T> = Partial<T>;
+
+// #region Re-export types from ai
+export type JSONValue =
+  | null
+  | string
+  | number
+  | boolean
+  | JSONObject
+  | JSONArray;
+export type JSONObject = {
+  [key: string]: JSONValue;
+};
+export type JSONArray = JSONValue[];
+// #endregion
 
 export declare namespace Llm {
   /**
@@ -458,6 +471,6 @@ export declare namespace Llm {
      * They are passed through to the provider from the AI SDK and enable
      * provider-specific functionality that can be fully encapsulated in the provider.
      */
-    export type Options = ProviderMetadata;
+    export type Options = Record<string, Record<string, JSONValue>>;
   }
 }
