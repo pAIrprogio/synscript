@@ -11,7 +11,7 @@ describe("Json", () => {
       assert.deepEqual(data, { a: "Hello World" });
     });
     it("deserializes with validation", () => {
-      const data = json.deserialize<{ a: string }>('{"a": "Hello World"}', {
+      const data = json.deserialize('{"a": "Hello World"}', {
         schema: z.object({ a: z.string() }),
       });
       assertType<{ a: string }>(data);

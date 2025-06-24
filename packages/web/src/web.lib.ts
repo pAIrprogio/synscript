@@ -1,6 +1,12 @@
 import { Readability } from "@mozilla/readability";
 import { parseHTML } from "linkedom";
-import type { ZodSchema } from "zod";
+import type { ZodTypeDef as ZodTypeDefV3, ZodType as ZodTypeV3 } from "zod/v3";
+import type { ZodType as ZodTypeV4 } from "zod/v4";
+
+// Union type to support both Zod v3 and v4 schemas
+type ZodSchema<OUT = any, IN = any> =
+  | ZodTypeV3<OUT, ZodTypeDefV3, IN>
+  | ZodTypeV4<OUT, IN>;
 
 /**
  * Retrieves an URL as JSON
@@ -8,10 +14,10 @@ import type { ZodSchema } from "zod";
  * @param options.schema an optional Zod schema to validate the data against
  * @returns the JSON as a JS object
  */
-export const fetchJson = <T>(
+export const fetchJson = <SHAPE>(
   url: string,
-  options: { schema?: ZodSchema<T> } = {},
-): Promise<T> =>
+  options: { schema?: ZodSchema<SHAPE> } = {},
+): Promise<SHAPE> =>
   fetch(url)
     .then((response) => response.json())
     .then((data) => (options.schema ? options.schema.parse(data) : data));

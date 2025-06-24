@@ -1,6 +1,12 @@
 import YAML from "yaml";
-import type { ZodSchema } from "zod";
+import type { ZodTypeDef as ZodTypeDefV3, ZodType as ZodTypeV3 } from "zod/v3";
+import type { ZodType as ZodTypeV4 } from "zod/v4";
 import type { Stringable } from "../../shared/src/ts.utils.ts";
+
+// Union type to support both Zod v3 and v4 schemas
+type ZodSchema<OUT = any, IN = any> =
+  | ZodTypeV3<OUT, ZodTypeDefV3, IN>
+  | ZodTypeV4<OUT, IN>;
 
 /**
  * Deserializes YAML to a TypeScript type
@@ -8,13 +14,13 @@ import type { Stringable } from "../../shared/src/ts.utils.ts";
  * @param options.schema Optional Zod schema to validate the data against after deserializing
  * @returns The deserialized data as a js entity
  */
-export const deserialize = <TFormat = any>(
+export const deserialize = <SHAPE = unknown>(
   data: Stringable,
-  options: { schema?: ZodSchema<TFormat> } = {},
-) => {
+  options: { schema?: ZodSchema<SHAPE> } = {},
+): SHAPE => {
   const validatedData = YAML.parse(data.toString());
   if (options.schema) return options.schema.parse(validatedData);
-  return validatedData as TFormat;
+  return validatedData;
 };
 
 /**
@@ -23,9 +29,9 @@ export const deserialize = <TFormat = any>(
  * @param options.schema Optional Zod schema to validate the data against before serializing
  * @returns The yaml as a string
  */
-export const serialize = <TFormat = any>(
-  data: any,
-  options: { schema?: ZodSchema<TFormat> } = {},
+export const serialize = <SHAPE = any>(
+  data: SHAPE,
+  options: { schema?: ZodSchema<any, SHAPE> } = {},
 ) => {
   const validatedData = options.schema ? options.schema.parse(data) : data;
   return YAML.stringify(validatedData, {

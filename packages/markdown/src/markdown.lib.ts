@@ -7,8 +7,14 @@ import remarkGfm, { type Options as GfmOptions } from "remark-gfm";
 import remarkParse from "remark-parse";
 import remarkStringify from "remark-stringify";
 import { unified } from "unified";
-import type { ZodSchema } from "zod";
+import type { ZodTypeDef as ZodTypeDefV3, ZodType as ZodTypeV3 } from "zod/v3";
+import type { ZodType as ZodTypeV4 } from "zod/v4";
 import { type Stringable } from "../../shared/src/ts.utils.ts";
+
+// Union type to support both Zod v3 and v4 schemas
+type ZodSchema<OUT = any, IN = any> =
+  | ZodTypeV3<OUT, ZodTypeDefV3, IN>
+  | ZodTypeV4<OUT, IN>;
 
 const beautifiedConfig = {
   gfm: {
@@ -89,10 +95,10 @@ const HEADER_REGEX = /^---\n([\s\S]*?)\n---\n?/;
  * @param options.schema - The schema to use for deserialization (optional)
  * @returns The header data
  */
-export const getHeaderData = <TFormat = any>(
+export const getHeaderData = <SHAPE = unknown>(
   text: Stringable,
-  { schema }: { schema?: ZodSchema<TFormat> } = {},
-): TFormat | undefined => {
+  { schema }: { schema?: ZodSchema<SHAPE> } = {},
+): SHAPE | undefined => {
   const header = text.toString().match(HEADER_REGEX)?.[1];
   if (!header) return undefined;
   return yaml.deserialize(header, { schema });
@@ -106,10 +112,10 @@ export const getHeaderData = <TFormat = any>(
  * @param options.schema - The schema to use for serialization (optional)
  * @returns The markdown document with the header data set
  */
-export const setHeaderData = <TFormat = any>(
+export const setHeaderData = <SHAPE = any>(
   text: Stringable,
-  data: TFormat,
-  options: { schema?: ZodSchema<TFormat> } = {},
+  data: SHAPE,
+  options: { schema?: ZodSchema<any, SHAPE> } = {},
 ) => {
   return `---\n${yaml.serialize(data, { schema: options.schema })}---\n${getBody(text.toString())}`;
 };
@@ -169,18 +175,18 @@ export const beautify = (md: string) => {
  * Markdown document instance
  */
 export class MdDoc<
-  TShape = never,
-  TData extends TShape | undefined = never,
-  TBody extends string | undefined = undefined,
+  SHAPE = never,
+  DATA extends SHAPE | undefined = never,
+  BODY extends string | undefined = undefined,
 > {
-  private readonly _body: TBody;
-  private readonly _data: TData;
-  private readonly _options: { schema?: ZodSchema<TShape> };
+  private readonly _body: BODY;
+  private readonly _data: DATA;
+  private readonly _options: { schema?: ZodSchema<SHAPE> };
 
   private constructor(
-    data: TData,
-    body: TBody,
-    options: { schema?: ZodSchema<TShape> } = {},
+    data: DATA,
+    body: BODY,
+    options: { schema?: ZodSchema<SHAPE, SHAPE> } = {},
   ) {
     this._body = body;
     this._data = data;
@@ -193,11 +199,11 @@ export class MdDoc<
    * @param options.schema - The zod schema to use for serialization/deserialization (optional)
    * @returns A new markdown document instance
    */
-  public static withOptions<TShape = any>(
+  public static withOptions<SHAPE = unknown>(
     this: void,
-    options: { schema?: ZodSchema<TShape> },
+    options: { schema?: ZodSchema<SHAPE, SHAPE> },
   ) {
-    return new MdDoc<TShape, undefined, undefined>(
+    return new MdDoc<SHAPE, undefined, undefined>(
       undefined,
       undefined,
       options,
@@ -209,9 +215,9 @@ export class MdDoc<
    * @param text - The markdown document
    * @returns The markdown document
    */
-  public static fromString<TShape = unknown>(this: void, text: string) {
-    return new MdDoc<TShape, TShape, string>(
-      getHeaderData(text) as TShape,
+  public static fromString<SHAPE = unknown>(this: void, text: string) {
+    return new MdDoc<SHAPE, SHAPE, string>(
+      getHeaderData(text) as SHAPE,
       getBody(text),
     );
   }
@@ -221,8 +227,8 @@ export class MdDoc<
    * @param html - The HTML to convert
    * @returns The markdown document
    */
-  public static fromHtml<TShape = unknown>(this: void, html: string) {
-    return new MdDoc<TShape, undefined, string>(undefined, fromHtml(html));
+  public static fromHtml<SHAPE = unknown>(this: void, html: string) {
+    return new MdDoc<SHAPE, undefined, string>(undefined, fromHtml(html));
   }
 
   /**
@@ -237,7 +243,7 @@ export class MdDoc<
    * Get the data of the markdown document
    * @returns The data of the markdown document
    */
-  public get data(): TData {
+  public get data(): DATA {
     return this._data;
   }
 
@@ -253,7 +259,7 @@ export class MdDoc<
    * Get the options of the markdown document
    * @returns The options of the markdown document
    */
-  public get options(): { schema?: ZodSchema<TShape> } {
+  public get options(): { schema?: ZodSchema<SHAPE, SHAPE> } {
     return this._options;
   }
 
@@ -263,10 +269,10 @@ export class MdDoc<
    * @returns A new markdown document
    */
   public fromString(text: string) {
-    const validatedData = getHeaderData<TShape>(text, {
+    const validatedData = getHeaderData<SHAPE>(text, {
       schema: this._options.schema,
-    }) as TShape;
-    return new MdDoc<TShape, TShape, string>(
+    });
+    return new MdDoc<SHAPE, SHAPE | undefined, string>(
       validatedData,
       getBody(text),
       this._options,
@@ -287,7 +293,7 @@ export class MdDoc<
    * @param data - The data to set
    * @returns A new markdown document
    */
-  public setData(data: TShape) {
+  public setData(data: SHAPE) {
     const validatedData = this._options.schema
       ? this._options.schema.parse(data)
       : data;

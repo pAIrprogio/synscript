@@ -1,7 +1,7 @@
-import { assertType } from "../../shared/src/ts.utils.ts";
 import assert from "node:assert/strict";
 import { describe, it } from "node:test";
 import { z } from "zod";
+import { assertType } from "../../shared/src/ts.utils.ts";
 import * as yaml from "./yaml.lib.ts";
 
 describe("Yaml", () => {
@@ -11,7 +11,7 @@ describe("Yaml", () => {
       assert.deepEqual(data, { a: "Hello World" });
     });
     it("deserializes with validation", () => {
-      const data = yaml.deserialize<{ a: string }>("a: Hello World", {
+      const data = yaml.deserialize("a: Hello World", {
         schema: z.object({ a: z.string() }),
       });
       assertType<{ a: string }>(data);

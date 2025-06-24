@@ -1,7 +1,11 @@
-import type { ZodSchema } from "zod";
+import type { ZodTypeDef as ZodTypeDefV3, ZodType as ZodTypeV3 } from "zod/v3";
+import type { ZodType as ZodTypeV4 } from "zod/v4";
 import type { Stringable } from "../../shared/src/ts.utils.ts";
 
-// Todo: check if passing "zod" as peer dependency breaks the build
+// Union type to support both Zod v3 and v4 schemas
+type ZodSchema<OUT = any, IN = any> =
+  | ZodTypeV3<OUT, ZodTypeDefV3, IN>
+  | ZodTypeV4<OUT, IN>;
 
 /**
  * Serializes data to JSON
@@ -10,9 +14,9 @@ import type { Stringable } from "../../shared/src/ts.utils.ts";
  * @param config.schema Optional Zod schema to validate the data against before serializing
  * @returns The JSON as a string
  */
-export const serialize = (
-  data: any,
-  config: { pretty?: boolean; schema?: ZodSchema<any> } = {},
+export const serialize = <SHAPE = unknown>(
+  data: SHAPE,
+  config: { pretty?: boolean; schema?: ZodSchema<any, SHAPE> } = {},
 ) => {
   const validatedData = config.schema ? config.schema.parse(data) : data;
   return JSON.stringify(validatedData, null, config.pretty ? 2 : undefined);
@@ -24,16 +28,16 @@ export const serialize = (
  * @param config.schema Optional Zod schema to validate the data against after deserializing
  * @returns The deserialized data as a js entity
  */
-export const deserialize = <T = unknown>(
+export const deserialize = <SHAPE = unknown>(
   content: Stringable,
   config: {
-    schema?: ZodSchema<T>;
+    schema?: ZodSchema<SHAPE>;
   } = {},
-): T => {
+): SHAPE => {
   try {
     const validatedData = JSON.parse(content.toString());
     if (config.schema) return config.schema.parse(validatedData);
-    return validatedData as T;
+    return validatedData;
   } catch (error) {
     throw new JsonParseException(content.toString(), error);
   }
