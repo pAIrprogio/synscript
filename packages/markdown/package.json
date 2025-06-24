@@ -58,11 +58,11 @@
     "unified": "^11.0.5"
   },
   "devDependencies": {
-    "@types/node": "^22.15.18",
+    "@types/node": "^22.15.32",
     "mdast-util-to-markdown": "^2.1.2",
-    "tsup": "^8.4.0",
+    "tsup": "^8.5.0",
     "typescript": "^5.8.3",
-    "zod": "^3.24.4"
+    "zod": "^3.25.67"
   },
   "peerDependencies": {
     "zod": "*"

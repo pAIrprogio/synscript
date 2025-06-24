@@ -50,9 +50,9 @@
     "mime-types": "^3.0.1"
   },
   "devDependencies": {
-    "@types/mime-types": "^2.1.4",
-    "@types/node": "^22.15.18",
-    "tsup": "^8.4.0",
+    "@types/mime-types": "^3.0.1",
+    "@types/node": "^22.15.32",
+    "tsup": "^8.5.0",
     "typescript": "^5.8.3"
   },
   "files": [

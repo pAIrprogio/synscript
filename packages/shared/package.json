@@ -9,8 +9,8 @@
     "test": "yarn test:types && yarn test:unit"
   },
   "devDependencies": {
-    "@types/node": "^22.15.18",
-    "tsup": "^8.4.0",
+    "@types/node": "^22.15.32",
+    "tsup": "^8.5.0",
     "typescript": "^5.8.3"
   }
 }
