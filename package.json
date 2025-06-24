@@ -21,11 +21,10 @@
   "license": "Apache-2.0",
   "scripts": {
     "postinstall": "pnpm build",
-    "build": "pnpm -r --parallel build",
-    "test:unit": "pnpm -r --parallel test:unit",
+    "build": "pnpm -r build",
+    "test:types": "pnpm --parallel test:types",
     "test:lint": "pnpm eslint . --cache",
-    "test:types": "pnpm -r --parallel test:types",
-    "build:watch": "pnpm -r --parallel build:watch",
+    "test:unit": "pnpm --parallel test:unit",
     "publish-all": "lerna publish from-package --no-private",
     "package:sync": "./scripts/package-sync.ts"
   },
