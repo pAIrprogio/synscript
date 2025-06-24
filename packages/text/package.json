@@ -34,8 +34,7 @@
     "test:types": "tsc --noEmit",
     "test:unit": "node --experimental-strip-types --experimental-test-snapshots --no-warnings --test src/**/*.test.ts",
     "test:unit:watch": "node --experimental-strip-types --experimental-test-snapshots --no-warnings --watch --test --watch src/**/*.test.ts",
-    "test": "pnpm test:types && pnpm test:unit",
-    "prepare": "pnpm build"
+    "test": "pnpm test:types && pnpm test:unit"
   },
   "exports": {
     ".": {

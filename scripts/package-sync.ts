@@ -47,7 +47,6 @@ await Promise.all(
       license: "Apache-2.0",
       scripts: {
         ...packageJson.scripts,
-        prepare: "pnpm build",
         build: "tsup",
         "build:watch": "tsup --watch",
         "test:types": "tsc --noEmit",
