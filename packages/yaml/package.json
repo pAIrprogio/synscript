@@ -56,7 +56,7 @@
     "zod": "^3.25.67"
   },
   "peerDependencies": {
-    "zod": "*"
+    "zod": "^3.25.0"
   },
   "files": [
     "src/**/*.ts",

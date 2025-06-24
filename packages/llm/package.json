@@ -76,7 +76,7 @@
   "peerDependencies": {
     "@synstack/fs-cache": "workspace:*",
     "ai": "*",
-    "zod": "*"
+    "zod": "^3.25.0"
   },
   "files": [
     "src/**/*.ts",
