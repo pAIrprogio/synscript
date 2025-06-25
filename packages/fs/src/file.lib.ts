@@ -8,9 +8,15 @@ import { type Xml, xml } from "@synstack/xml";
 import { yaml } from "@synstack/yaml";
 import * as fsSync from "fs";
 import * as fs from "fs/promises";
-import type { ZodSchema } from "zod";
+import type { ZodTypeDef as ZodTypeDefV3, ZodType as ZodTypeV3 } from "zod/v3";
+import type { ZodType as ZodTypeV4 } from "zod/v4";
 import { type Stringable } from "../../shared/src/ts.utils.ts";
 import { FsDir } from "./dir.lib.ts";
+
+// Union type to support both Zod v3 and v4 schemas
+type ZodSchema<OUT = any, IN = any> =
+  | ZodTypeV3<OUT, ZodTypeDefV3, IN>
+  | ZodTypeV4<OUT, IN>;
 
 type TextEncoding = Exclude<BufferEncoding, "buffer">;
 type WriteMode = "preserve" | "overwrite";
@@ -559,14 +565,14 @@ export class FsFile<
 }
 
 class FsFileRead<
-  TEncoding extends TextEncoding = "utf-8",
-  TSchema extends ZodSchema | undefined = undefined,
+  ENCODING extends TextEncoding = "utf-8",
+  SCHEMA extends ZodSchema | undefined = undefined,
 > {
   private readonly _path: AnyPath;
-  private readonly _encoding: TEncoding;
-  private readonly _schema?: TSchema;
+  private readonly _encoding: ENCODING;
+  private readonly _schema?: SCHEMA;
 
-  public constructor(path: AnyPath, encoding: TEncoding, schema?: TSchema) {
+  public constructor(path: AnyPath, encoding: ENCODING, schema?: SCHEMA) {
     this._path = path;
     this._encoding = encoding;
     this._schema = schema;
@@ -662,15 +668,16 @@ class FsFileRead<
    *
    * const config = await file("config.json")
    *   .schema(ConfigSchema)
-   *   .read.json<Config>();
+   *   .read.json();
+   * // config is automatically typed as the schema's output type
    * ```
    */
-  public json<T = unknown>(): Promise<
-    TSchema extends ZodSchema<infer O> ? O : T
-  > {
+  public json<
+    OUT = SCHEMA extends ZodSchema<infer O> ? O : unknown,
+  >(): Promise<OUT> {
     return this.text().then((t) =>
       json.deserialize(t, { schema: this._schema }),
-    ) as any;
+    );
   }
 
   /**
@@ -685,13 +692,16 @@ class FsFileRead<
    * ```typescript
    * const config = file("config.json")
    *   .schema(ConfigSchema)
-   *   .read.jsonSync<Config>();
+   *   .read.jsonSync();
+   * // config is automatically typed as the schema's output type
    * ```
    */
-  public jsonSync<T = unknown>(): TSchema extends ZodSchema<infer O> ? O : T {
-    return json.deserialize<T>(this.textSync(), {
+  public jsonSync<
+    OUT = SCHEMA extends ZodSchema<infer O> ? O : unknown,
+  >(): OUT {
+    return json.deserialize(this.textSync(), {
       schema: this._schema,
-    }) as any;
+    });
   }
 
   /**
@@ -711,15 +721,16 @@ class FsFileRead<
    *
    * const config = await file("config.yml")
    *   .schema(ConfigSchema)
-   *   .read.yaml<Config>();
+   *   .read.yaml();
+   * // config is automatically typed as the schema's output type
    * ```
    */
-  public yaml<T = unknown>(): Promise<
-    TSchema extends ZodSchema<infer O> ? O : T
-  > {
+  public yaml<
+    OUT = SCHEMA extends ZodSchema<infer O> ? O : unknown,
+  >(): Promise<OUT> {
     return this.text().then((t) =>
-      yaml.deserialize<T>(t, { schema: this._schema }),
-    ) as any;
+      yaml.deserialize(t, { schema: this._schema }),
+    );
   }
 
   /**
@@ -735,13 +746,16 @@ class FsFileRead<
    * ```typescript
    * const config = file("config.yml")
    *   .schema(ConfigSchema)
-   *   .read.yamlSync<Config>();
+   *   .read.yamlSync();
+   * // config is automatically typed as the schema's output type
    * ```
    */
-  public yamlSync<T = unknown>(): TSchema extends ZodSchema<infer O> ? O : T {
-    return yaml.deserialize<T>(this.textSync(), {
+  public yamlSync<
+    OUT = SCHEMA extends ZodSchema<infer O> ? O : unknown,
+  >(): OUT {
+    return yaml.deserialize(this.textSync(), {
       schema: this._schema,
-    }) as any;
+    });
   }
 
   /**
@@ -771,7 +785,7 @@ class FsFileRead<
    * - Does not support all XML features (see documentation for details)
    */
   public async xml<T extends Array<Xml.Node>>(): Promise<T> {
-    return this.text().then(xml.parse<T>);
+    return this.text().then((content) => xml.parse<T>(content));
   }
 
   /**
@@ -906,9 +920,9 @@ class FsFileRead<
    * @throws If the file doesn't exist, cannot be read, or contains invalid markdown
    * @throws If schema validation fails when a schema is provided
    */
-  public md() {
+  public md<DATA_SHAPE = SCHEMA extends ZodSchema<infer O> ? O : unknown>() {
     return this.text().then((t) =>
-      MdDoc.withOptions({
+      MdDoc.withOptions<DATA_SHAPE>({
         schema: this._schema,
       }).fromString(t),
     );
@@ -923,8 +937,10 @@ class FsFileRead<
    * @throws If the file doesn't exist, cannot be read, or contains invalid markdown
    * @throws If schema validation fails when a schema is provided
    */
-  public mdSync() {
-    return MdDoc.withOptions({
+  public mdSync<
+    DATA_SHAPE = SCHEMA extends ZodSchema<infer O> ? O : unknown,
+  >() {
+    return MdDoc.withOptions<DATA_SHAPE>({
       schema: this._schema,
     }).fromString(this.textSync());
   }
