@@ -100,8 +100,9 @@ export const getHeaderData = <SHAPE = unknown>(
   { schema }: { schema?: ZodSchema<SHAPE> } = {},
 ): SHAPE | undefined => {
   const header = text.toString().match(HEADER_REGEX)?.[1];
-  if (!header) return undefined;
-  return yaml.deserialize(header, { schema });
+  if (!header && !schema) return undefined;
+  if (!header && schema) return schema.parse(undefined);
+  return yaml.deserialize(header ?? "", { schema });
 };
 
 /**
@@ -174,18 +175,14 @@ export const beautify = (md: string) => {
 /**
  * Markdown document instance
  */
-export class MdDoc<
-  SHAPE = never,
-  DATA extends SHAPE | undefined = never,
-  BODY extends string | undefined = undefined,
-> {
-  private readonly _body: BODY;
+export class MdDoc<SHAPE = never, DATA extends SHAPE | undefined = never> {
+  private readonly _body: string;
   private readonly _data: DATA;
   private readonly _options: { schema?: ZodSchema<SHAPE> };
 
   private constructor(
     data: DATA,
-    body: BODY,
+    body: string,
     options: { schema?: ZodSchema<SHAPE, SHAPE> } = {},
   ) {
     this._body = body;
@@ -203,11 +200,7 @@ export class MdDoc<
     this: void,
     options: { schema?: ZodSchema<SHAPE, SHAPE> },
   ) {
-    return new MdDoc<SHAPE, undefined, undefined>(
-      undefined,
-      undefined,
-      options,
-    );
+    return new MdDoc<SHAPE, undefined>(undefined, "", options);
   }
 
   /**
@@ -216,10 +209,7 @@ export class MdDoc<
    * @returns The markdown document
    */
   public static fromString<SHAPE = unknown>(this: void, text: string) {
-    return new MdDoc<SHAPE, SHAPE, string>(
-      getHeaderData(text) as SHAPE,
-      getBody(text),
-    );
+    return new MdDoc<SHAPE, SHAPE>(getHeaderData(text) as SHAPE, getBody(text));
   }
 
   /**
@@ -228,7 +218,7 @@ export class MdDoc<
    * @returns The markdown document
    */
   public static fromHtml<SHAPE = unknown>(this: void, html: string) {
-    return new MdDoc<SHAPE, undefined, string>(undefined, fromHtml(html));
+    return new MdDoc<SHAPE, undefined>(undefined, fromHtml(html));
   }
 
   /**
@@ -236,7 +226,7 @@ export class MdDoc<
    * @returns The body of the markdown document
    */
   public get body(): string {
-    return this._body ?? "";
+    return this._body;
   }
 
   /**
@@ -271,12 +261,8 @@ export class MdDoc<
   public fromString(text: string) {
     const validatedData = getHeaderData<SHAPE>(text, {
       schema: this._options.schema,
-    });
-    return new MdDoc<SHAPE, SHAPE | undefined, string>(
-      validatedData,
-      getBody(text),
-      this._options,
-    );
+    })!;
+    return new MdDoc<SHAPE, SHAPE>(validatedData, getBody(text), this._options);
   }
 
   /**
