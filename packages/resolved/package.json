@@ -4,7 +4,7 @@
   "publishConfig": {
     "access": "public"
   },
-  "version": "1.2.6",
+  "version": "1.2.7",
   "description": "Type-safe piping of synchronous or asynchronous values",
   "keywords": [
     "synstack",
