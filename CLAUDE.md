@@ -98,3 +98,7 @@ When implementing new features:
 - Type imports should use `import type` syntax for better tree-shaking.
 - The project uses pnpm workspaces with the `workspace:^` protocol for internal dependencies.
 - Packages are pre-built before publishing - no `prepare` scripts run during consumer installs.
+
+## Project-Specific Knowledge
+
+- Files imports use the source extension like "./path/to/my-file.ts"
