@@ -64,21 +64,12 @@ This script will:
 ### Create `tsup.config.ts`
 
 ```typescript
-import { defineConfig } from "tsup";
-
-export default defineConfig({
-  entry: ["src/index.ts"],
-  format: ["esm", "cjs"],
-  dts: true,
-  sourcemap: true,
-  clean: true,
-  treeshake: true,
-});
+export { default } from "../../tsup.config.base.ts";
 ```
 
 ## 3. Create Source Files
 
-### Create `src/index.ts` (package entry point)
+### Create `src/<package-name>.index.ts` (package entry point)
 
 ```typescript
 // Re-export all public APIs
@@ -195,7 +186,7 @@ const component = myTemplate`Content here`;
 ```
 
 ### File Naming Conventions
-- `index.ts` - Package entry point (re-exports)
+- `<package>.index.ts` - Package entry point (re-exports)
 - `<package>.lib.ts` - Core implementation
 - `<package>.schema.ts` - Zod schemas
 - `<package>.test.ts` - Unit tests
