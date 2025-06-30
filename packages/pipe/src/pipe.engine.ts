@@ -1,3 +1,12 @@
+/* eslint-disable @typescript-eslint/no-redundant-type-constituents */
+import type { ZodTypeDef as ZodTypeDefV3, ZodType as ZodTypeV3 } from "zod/v3";
+import type { ZodType as ZodTypeV4 } from "zod/v4";
+
+// Union type to support both Zod v3 and v4 schemas
+type ZodSchema<OUT = any, IN = any> =
+  | ZodTypeV3<OUT, ZodTypeDefV3, IN>
+  | ZodTypeV4<OUT, IN>;
+
 export class Pipe<INPUT, OUTPUT> {
   private readonly _fns: Array<Pipe.Fn>;
 
@@ -27,6 +36,20 @@ export class Pipe<INPUT, OUTPUT> {
       // Synchronous
       fn(value);
       return value;
+    });
+  }
+
+  public validate<T>(schema: ZodSchema<T>) {
+    return this.append((value) => {
+      // Promises
+      if (value instanceof Promise) {
+        return value.then((resolvedValue) => {
+          return schema.parse(resolvedValue) as T;
+        });
+      }
+
+      // Synchronous
+      return schema.parse(value) as T;
     });
   }
 
