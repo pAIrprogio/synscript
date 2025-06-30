@@ -45,4 +45,58 @@ describe("Pipe", () => {
       assert.equal(result, 12.5);
     });
   });
+
+  describe("tap", () => {
+    it("allows side effects without changing value", () => {
+      let sideEffect = 0;
+      const pipe = Pipe._((x: number) => x * 2)
+        .tap((x) => {
+          sideEffect = x;
+        })
+        ._((x) => x + 1);
+
+      const result = pipe.exec(5);
+      assert.equal(result, 11);
+      assert.equal(sideEffect, 10);
+    });
+
+    it("handles tap with async values", async () => {
+      let sideEffect = 0;
+      const pipe = Pipe._((x: number) => Promise.resolve(x * 2))
+        .tap((x) => {
+          sideEffect = x;
+        })
+        ._((x) => x + 1);
+
+      const result = await pipe.exec(5);
+      assert.equal(result, 11);
+      assert.equal(sideEffect, 10);
+    });
+
+    it("allows multiple taps", () => {
+      const effects: number[] = [];
+      const pipe = Pipe._((x: number) => x * 2)
+        .tap((x) => effects.push(x))
+        ._((x) => x + 1)
+        .tap((x) => effects.push(x))
+        ._((x) => x * 3);
+
+      const result = pipe.exec(5);
+      assert.equal(result, 33);
+      assert.deepEqual(effects, [10, 11]);
+    });
+
+    it("preserves promise chain with tap", async () => {
+      let sideEffect = 0;
+      const pipe = Pipe._((x: number) => Promise.resolve(x * 2))
+        .tap((x) => {
+          sideEffect = x;
+        })
+        ._((x) => Promise.resolve(x + 1));
+
+      const result = await pipe.exec(5);
+      assert.equal(result, 11);
+      assert.equal(sideEffect, 10);
+    });
+  });
 });
