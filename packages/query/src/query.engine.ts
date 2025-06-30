@@ -52,7 +52,7 @@ export class QueryEngine<PREDICATES = never, INPUT = never> {
     return z.toJSONSchema(this.schema);
   }
 
-  public apply(
+  public match(
     query: unknown,
     input: INPUT,
     options?: { skipQueryValidation?: boolean },
