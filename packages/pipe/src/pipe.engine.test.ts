@@ -1,6 +1,7 @@
 import assert from "node:assert/strict";
 import { describe, it } from "node:test";
 import { z } from "zod";
+import { assertType } from "../../shared/src/ts.utils.ts";
 import { Pipe } from "./pipe.engine.ts";
 
 describe("Pipe", () => {
@@ -167,6 +168,120 @@ describe("Pipe", () => {
 
       const result = pipe.exec({ id: 1, name: "alice" });
       assert.equal(result, "ALICE");
+    });
+  });
+
+  describe("map", () => {
+    it("maps over sync iterables", () => {
+      const pipe = Pipe._((x: number[]) => x)
+        .map((x: number) => x * 2)
+        .toArray();
+
+      const result = pipe.exec([1, 2, 3]);
+      assertType<number[]>(result);
+      assert.deepEqual(result, [2, 4, 6]);
+    });
+
+    it("maps over async iterables", async () => {
+      // eslint-disable-next-line @typescript-eslint/require-await
+      async function* asyncGen() {
+        yield 1;
+        yield 2;
+        yield 3;
+      }
+
+      const pipe = Pipe._(() => asyncGen())
+        .map((x: number) => x * 2)
+        .toArray();
+
+      const result = pipe.exec(undefined);
+      assertType<Promise<number[]>>(result);
+      assert.deepEqual(await result, [2, 4, 6]);
+    });
+
+    it("maps over promise that resolves to iterable", async () => {
+      const pipe = Pipe._((x: number[]) => Promise.resolve(x))
+        .map((x: number) => x * 2)
+        .toArray();
+
+      const result = pipe.exec([1, 2, 3]);
+      assertType<Promise<number[]>>(result);
+      assert.deepEqual(await result, [2, 4, 6]);
+    });
+
+    it("throws on non-iterable values", () => {
+      // @ts-expect-error - map should not be callable on non-iterable values
+      const pipe = Pipe._((x: number) => x).map((x: number) => x * 2);
+
+      assert.throws(() => pipe.exec(5));
+    });
+
+    it("throws on async non-iterable values", async () => {
+      // @ts-expect-error - map should not be callable on non-iterable values
+      const pipe = Pipe._((x: number) => Promise.resolve(x)).map(
+        (x: number) => x * 2,
+      );
+
+      await assert.rejects(() => pipe.exec(5));
+    });
+
+    it("includes strings in iterable handling", () => {
+      const pipe = Pipe._((x: string) => x)
+        .map((x: string) => x.length)
+        .toArray();
+      const result = pipe.exec("hello");
+      assertType<number[]>(result);
+      assert.deepEqual(result, [1, 1, 1, 1, 1]);
+    });
+  });
+
+  describe("toArray", () => {
+    it("converts sync iterable to array", () => {
+      const pipe = Pipe._((x: number[]) => x).toArray();
+
+      const result = pipe.exec([1, 2, 3]);
+      assertType<number[]>(result);
+      assert.deepEqual(result, [1, 2, 3]);
+    });
+
+    it("converts async iterable to array", async () => {
+      // eslint-disable-next-line @typescript-eslint/require-await
+      async function* asyncGen() {
+        yield 1;
+        yield 2;
+        yield 3;
+      }
+
+      const pipe = Pipe._(() => asyncGen()).toArray();
+
+      const result = await pipe.exec(undefined);
+      assertType<number[]>(result);
+      assert.deepEqual(result, [1, 2, 3]);
+    });
+
+    it("converts promise of iterable to array", async () => {
+      const pipe = Pipe._((x: number[]) => Promise.resolve(x)).toArray();
+
+      const result = pipe.exec([1, 2, 3]);
+      assertType<Promise<number[]>>(result);
+      assert.deepEqual(await result, [1, 2, 3]);
+    });
+
+    it("throws on non-iterable values", () => {
+      // @ts-expect-error - toArray should not be callable on non-iterable values
+      const pipe = Pipe._((x: number) => x).toArray();
+
+      assert.throws(() => pipe.exec(42));
+    });
+
+    it("works with map chain", () => {
+      const pipe = Pipe._((x: number[]) => x)
+        .map((x: number) => x * 2)
+        .toArray();
+
+      const result = pipe.exec([1, 2, 3]);
+      assertType<number[]>(result);
+      assert.deepEqual(result, [2, 4, 6]);
     });
   });
 });
