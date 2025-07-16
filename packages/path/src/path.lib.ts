@@ -40,6 +40,9 @@ export class PathNotInCwdException extends Error {
  * ```
  */
 export function resolve(...paths: Array<AnyPath>) {
+  if (paths.length === 0) {
+    throw new Error("No paths provided");
+  }
   return fsPath.resolve(...paths) as AbsolutePath;
 }
 
@@ -205,9 +208,7 @@ export function ensureFileExtension(
   extension: string,
 ): AnyPath;
 export function ensureFileExtension(filePath: AnyPath, extension: string) {
-  const normalizedExt = extension.startsWith(".")
-    ? extension
-    : `.${extension}`;
+  const normalizedExt = extension.startsWith(".") ? extension : `.${extension}`;
   if (filePath.endsWith(normalizedExt)) return filePath;
   return `${filePath}${normalizedExt}`;
 }
