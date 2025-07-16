@@ -1,8 +1,8 @@
 import { type RelativePath } from "@synstack/path";
-import { glob as globAsync, globSync } from "glob";
+import { glob as globAsync, globSync, type GlobOptions } from "glob";
 import { minimatch } from "minimatch";
 
-interface GlobOptions {
+interface Options {
   includes: string[];
   excludes?: string[];
 }
@@ -88,8 +88,8 @@ export function filterExcludedFactory(
  * @returns A function that takes a path and returns true if it matches the glob patterns and none of the excluded patterns
  */
 export function filterFactory(globs: Array<string>): (path: string) => boolean;
-export function filterFactory(options: GlobOptions): (path: string) => boolean;
-export function filterFactory(options: GlobOptions | Array<string>) {
+export function filterFactory(options: Options): (path: string) => boolean;
+export function filterFactory(options: Options | Array<string>) {
   const _options = options instanceof Array ? sort(...options) : options;
   const filterIncluded = filterIncludedFactory(_options.includes ?? []);
   const filterExcluded = filterExcludedFactory(_options.excludes ?? []);
@@ -102,9 +102,16 @@ export class Glob {
   }
 
   private readonly cwd: string;
+  private readonly options: GlobOptions;
 
-  private constructor(cwd: string = ".") {
+  private constructor(
+    cwd: string = ".",
+    options: GlobOptions = {
+      nodir: true,
+    },
+  ) {
     this.cwd = cwd;
+    this.options = options;
   }
 
   /**
@@ -115,8 +122,9 @@ export class Glob {
     const { includes, excludes } = sort(_patterns);
     return globAsync(includes, {
       ignore: excludes,
-      nodir: true,
+      nodir: this.options.nodir ?? true,
       cwd: this.cwd,
+      ...this.options,
     }) as Promise<RelativePath[]>;
   }
 
@@ -128,8 +136,9 @@ export class Glob {
     const { includes, excludes } = sort(_patterns);
     return globSync(includes, {
       ignore: excludes,
-      nodir: true,
+      nodir: this.options.nodir ?? true,
       cwd: this.cwd,
+      ...this.options,
     }) as RelativePath[];
   }
 }
