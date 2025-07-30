@@ -1,4 +1,3 @@
-import { type RelativePath } from "@synstack/path";
 import { glob as globAsync, globSync, type GlobOptions } from "glob";
 import { minimatch } from "minimatch";
 
@@ -101,8 +100,8 @@ export class Glob {
     return new Glob(cwd);
   }
 
-  private readonly cwd: string;
-  private readonly options: GlobOptions;
+  private readonly _cwd: string;
+  private readonly _options: GlobOptions;
 
   private constructor(
     cwd: string = ".",
@@ -110,8 +109,17 @@ export class Glob {
       nodir: true,
     },
   ) {
-    this.cwd = cwd;
-    this.options = options;
+    this._cwd = cwd;
+    this._options = options;
+  }
+
+  /**
+   * Set advanced options for the glob search
+   * @param options GlobOptions
+   * @returns A new Glob instance with the updated options
+   */
+  public options(options: GlobOptions) {
+    return new Glob(this._cwd, options);
   }
 
   /**
@@ -122,10 +130,10 @@ export class Glob {
     const { includes, excludes } = sort(_patterns);
     return globAsync(includes, {
       ignore: excludes,
-      nodir: this.options.nodir ?? true,
-      cwd: this.cwd,
-      ...this.options,
-    }) as Promise<RelativePath[]>;
+      nodir: this._options.nodir ?? true,
+      cwd: this._cwd,
+      ...this._options,
+    }) as Promise<string[]>;
   }
 
   /**
@@ -136,10 +144,10 @@ export class Glob {
     const { includes, excludes } = sort(_patterns);
     return globSync(includes, {
       ignore: excludes,
-      nodir: this.options.nodir ?? true,
-      cwd: this.cwd,
-      ...this.options,
-    }) as RelativePath[];
+      nodir: this._options.nodir ?? true,
+      cwd: this._cwd,
+      ...this._options,
+    }) as string[];
   }
 }
 
