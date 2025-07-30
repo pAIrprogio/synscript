@@ -17,7 +17,7 @@ export interface FsFileArrayMethods {
   filterDir(this: FsFileArray, dir: FsDir): FsFileArray;
   filterDir(this: FsFileArray, path: string): FsFileArray;
   toPaths(this: FsFileArray): Array<string>;
-  relativePathsTo(this: FsFileArray, dir: FsDir | FsFile): Array<string>;
+  relativePathsFrom(this: FsFileArray, dir: FsDir | FsFile): Array<string>;
 }
 
 const filesArrayMethods: FsFileArrayMethods = {
@@ -46,8 +46,8 @@ const filesArrayMethods: FsFileArrayMethods = {
     return this.map((file) => file.path);
   },
 
-  relativePathsTo(dirOrFileOrPath) {
-    return this.map((file) => file.relativePathTo(dirOrFileOrPath));
+  relativePathsFrom(dirOrFileOrPath) {
+    return this.map((file) => file.relativePathFrom(dirOrFileOrPath));
   },
 };
 
