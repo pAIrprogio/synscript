@@ -80,8 +80,12 @@ export class Pipe<INPUT, OUTPUT> {
   }
 
   public map<T>(
-    this: OUTPUT extends Pipe.AsyncLoopable<any> | Promise<Pipe.AsyncLoopable<any>> ? Pipe<INPUT, OUTPUT> : never,
-    fn: (value: Pipe.ElementOf<Awaited<OUTPUT>>) => T
+    this: OUTPUT extends
+      | Pipe.AsyncLoopable<any>
+      | Promise<Pipe.AsyncLoopable<any>>
+      ? Pipe<INPUT, OUTPUT>
+      : never,
+    fn: (value: Pipe.ElementOf<Awaited<OUTPUT>>) => T,
   ): Pipe<INPUT, Pipe.MapReturn<OUTPUT, T>> {
     return this.append((value) => {
       // Handle Promise values
@@ -127,7 +131,11 @@ export class Pipe<INPUT, OUTPUT> {
   }
 
   public toArray(
-    this: OUTPUT extends Pipe.AsyncLoopable<any> | Promise<Pipe.AsyncLoopable<any>> ? Pipe<INPUT, OUTPUT> : never
+    this: OUTPUT extends
+      | Pipe.AsyncLoopable<any>
+      | Promise<Pipe.AsyncLoopable<any>>
+      ? Pipe<INPUT, OUTPUT>
+      : never,
   ): Pipe<INPUT, Pipe.ToArrayReturn<OUTPUT>> {
     return this.append((value) => {
       // Handle Promise values
@@ -182,17 +190,22 @@ export declare namespace Pipe {
   // Type helpers inspired by iter-tools
   type AsyncLoopable<T> = Iterable<T> | AsyncIterable<T>;
   type Loopable<T> = Iterable<T>;
-  
+
   // Type checkers
   type IsIterable<T> = T extends Iterable<any> ? true : false;
   type IsAsyncIterable<T> = T extends AsyncIterable<any> ? true : false;
   type IsPromise<T> = T extends Promise<any> ? true : false;
-  
+
   // Extract element type from iterables
-  type ElementOf<T> = T extends Iterable<infer U> ? U : T extends AsyncIterable<infer U> ? U : never;
-  
+  type ElementOf<T> =
+    T extends Iterable<infer U>
+      ? U
+      : T extends AsyncIterable<infer U>
+        ? U
+        : never;
+
   // Map return types
-  type MapReturn<T, U> = 
+  type MapReturn<T, U> =
     T extends Promise<infer V>
       ? V extends AsyncIterable<any>
         ? Promise<AsyncIterable<U>>
@@ -204,7 +217,7 @@ export declare namespace Pipe {
         : T extends Iterable<any>
           ? Iterable<U>
           : never;
-          
+
   // ToArray return types
   type ToArrayReturn<T> =
     T extends Promise<infer V>
