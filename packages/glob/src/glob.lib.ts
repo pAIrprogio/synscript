@@ -7,6 +7,15 @@ interface Options {
 }
 
 /**
+ * Ensures a glob pattern has a trailing slash to match directories only
+ * @param glob - The glob pattern to ensure has a trailing slash
+ * @returns The glob pattern with a trailing slash
+ */
+export function ensureDirTrailingSlash(glob: string) {
+  return glob.endsWith("/") ? glob : `${glob}/`;
+}
+
+/**
  * Allows extracting values from a glob pattern
  * @example **\/path/to/(*)/(*).ts => [string, string]
  * @returns string[] or null if glob does not match

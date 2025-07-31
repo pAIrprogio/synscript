@@ -5,8 +5,9 @@ import { Pipeable } from "@synstack/pipe";
 import { type TemplateExpression } from "execa";
 import * as fsSync from "fs";
 import * as fs from "fs/promises";
+import { dirs } from "./dirs-array.lib.ts";
 import { FsFile } from "./file.lib.ts";
-import { filesFromDir } from "./files-array.lib.ts";
+import { files, filesFromDir } from "./files-array.lib.ts";
 
 export class FsDir extends Pipeable<FsDir> {
   private readonly _path: AnyPath;
@@ -389,11 +390,12 @@ Trying to access a dir file from an absolute paths:
    * const configs = await srcDir.glob(["*.json", "*.yaml"]);
    * ```
    */
-  public async glob(...patterns: Array<string> | [Array<string>]) {
+  public glob(...patterns: Array<string> | [Array<string>]) {
     return glob
       .cwd(this._path)
+      .options({ absolute: true })
       .find(...patterns)
-      .then(filesFromDir(this));
+      .then(files);
   }
 
   /**
@@ -414,7 +416,50 @@ Trying to access a dir file from an absolute paths:
    * ```
    */
   public globSync(...patterns: Array<string> | [Array<string>]) {
-    return filesFromDir(this)(glob.cwd(this._path).findSync(...patterns));
+    return files(
+      glob
+        .cwd(this._path)
+        .options({ absolute: true })
+        .findSync(...patterns),
+    );
+  }
+
+  /**
+   * Find folders in the directory that match the specified glob patterns.
+   *
+   * @param patterns - One or more glob patterns to match against
+   * @returns A promise that resolves to an FsDirArray containing the matching folders
+   */
+  public globDirs(...patterns: Array<string> | [Array<string>]) {
+    const patternsWithTrailingSlash = patterns
+      .flat()
+      .map((p) => glob.ensureDirTrailingSlash(p));
+
+    return glob
+      .cwd(this._path)
+      .options({ nodir: false, absolute: true })
+      .find(patternsWithTrailingSlash)
+      .then(dirs);
+  }
+
+  /**
+   * Find folders in the directory that match the specified glob patterns synchronously.
+   *
+   * @param patterns - One or more glob patterns to match against
+   * @returns An FsDirArray containing the matching folders
+   * @synchronous
+   */
+  public globDirsSync(...patterns: Array<string> | [Array<string>]) {
+    const patternsWithTrailingSlash = patterns
+      .flat()
+      .map((p) => glob.ensureDirTrailingSlash(p));
+
+    return dirs(
+      glob
+        .cwd(this._path)
+        .options({ nodir: false, absolute: true })
+        .findSync(patternsWithTrailingSlash),
+    );
   }
 
   /**

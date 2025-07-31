@@ -1,6 +1,7 @@
 export {
   capture,
   cwd,
+  ensureDirTrailingSlash,
   filterExcludedFactory,
   filterFactory,
   filterIncludedFactory,
