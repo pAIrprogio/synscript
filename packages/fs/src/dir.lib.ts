@@ -2,7 +2,7 @@ import { git } from "@synstack/git";
 import { glob } from "@synstack/glob";
 import { type AnyPath, path } from "@synstack/path";
 import { Pipeable } from "@synstack/pipe";
-import { type TemplateExpression } from "execa";
+import type { TemplateExpression } from "execa";
 import * as fsSync from "fs";
 import * as fs from "fs/promises";
 import { dirs } from "./dirs-array.lib.ts";
