@@ -271,29 +271,7 @@ importers:
         specifier: ^3.25.67
         version: 3.25.67
 
-  packages/path:
-    dependencies:
-      '@synstack/pipe':
-        specifier: workspace:^
-        version: link:../pipe
-      mime-types:
-        specifier: ^3.0.1
-        version: 3.0.1
-    devDependencies:
-      '@types/mime-types':
-        specifier: ^3.0.1
-        version: 3.0.1
-      '@types/node':
-        specifier: ^22.15.32
-        version: 22.15.33
-      tsup:
-        specifier: ^8.5.0
-        version: 8.5.0(tsx@4.20.3)(typescript@5.8.3)(yaml@2.8.0)
-      typescript:
-        specifier: ^5.8.3
-        version: 5.8.3
-
-  packages/pattern:
+  packages/markdown-patterns:
     dependencies:
       '@synstack/fs':
         specifier: workspace:^
@@ -320,6 +298,28 @@ importers:
       zod:
         specifier: ^3.25.67
         version: 3.25.67
+
+  packages/path:
+    dependencies:
+      '@synstack/pipe':
+        specifier: workspace:^
+        version: link:../pipe
+      mime-types:
+        specifier: ^3.0.1
+        version: 3.0.1
+    devDependencies:
+      '@types/mime-types':
+        specifier: ^3.0.1
+        version: 3.0.1
+      '@types/node':
+        specifier: ^22.15.32
+        version: 22.15.33
+      tsup:
+        specifier: ^8.5.0
+        version: 8.5.0(tsx@4.20.3)(typescript@5.8.3)(yaml@2.8.0)
+      typescript:
+        specifier: ^5.8.3
+        version: 5.8.3
 
   packages/pipe:
     dependencies:
