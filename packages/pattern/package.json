@@ -1,0 +1,64 @@
+{
+  "name": "@synstack/pattern",
+  "type": "module",
+  "publishConfig": {
+    "access": "public"
+  },
+  "version": "1.0.1",
+  "description": "Pattern engine",
+  "keywords": [
+    "synstack",
+    "pattern",
+    "utility"
+  ],
+  "author": {
+    "name": "pAIrprog",
+    "url": "https://pairprog.io"
+  },
+  "homepage": "https://github.com/pAIrprogio/synscript/tree/main/packages/pattern",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/pAIrprogio/synscript.git",
+    "directory": "packages/pattern"
+  },
+  "license": "Apache-2.0",
+  "scripts": {
+    "build": "tsup",
+    "build:watch": "tsup --watch",
+    "test:types": "tsc --noEmit",
+    "test:unit": "node --experimental-strip-types --experimental-test-snapshots --no-warnings --test src/**/*.test.ts",
+    "test:unit:watch": "node --experimental-strip-types --experimental-test-snapshots --no-warnings --watch --test --watch src/**/*.test.ts",
+    "test": "pnpm test:types && pnpm test:unit"
+  },
+  "exports": {
+    ".": {
+      "import": {
+        "types": "./dist/pattern.index.d.ts",
+        "default": "./dist/pattern.index.js"
+      },
+      "require": {
+        "types": "./dist/pattern.index.d.cts",
+        "default": "./dist/pattern.index.cjs"
+      }
+    }
+  },
+  "dependencies": {
+    "@synstack/fs": "workspace:^"
+  },
+  "devDependencies": {
+    "@synstack/query": "workspace:^",
+    "@types/node": "^22.15.32",
+    "tsup": "^8.5.0",
+    "typescript": "^5.8.3",
+    "zod": "^3.25.67"
+  },
+  "files": [
+    "src/**/*.ts",
+    "!src/**/*.test.ts",
+    "dist/**/*"
+  ],
+  "peerDependencies": {
+    "@synstack/query": "workspace:^",
+    "zod": "^3.25.67"
+  }
+}
