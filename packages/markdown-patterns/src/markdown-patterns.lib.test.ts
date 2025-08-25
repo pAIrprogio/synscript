@@ -1,7 +1,7 @@
 import { dir, file } from "@synstack/fs";
 import assert from "node:assert/strict";
 import { describe, it } from "node:test";
-import { getPatternName } from "./pattern.lib.ts";
+import { getPatternName } from "./markdown-patterns.lib.ts";
 
 describe("getPatternName()", () => {
   it("returns the pattern name from directory and file", () => {

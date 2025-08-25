@@ -1,7 +1,7 @@
 import type { FsDir } from "@synstack/fs";
 import { QueryEngine } from "@synstack/query";
 import { z } from "zod/v4";
-import { getPatterns, NAME_SEPARATOR } from "./pattern.lib.ts";
+import { getPatterns, NAME_SEPARATOR } from "./markdown-patterns.lib.ts";
 
 type BaseConfigSchema = z.ZodObject<{
   query: z.ZodType<unknown>;
@@ -11,7 +11,7 @@ type Pattern<CONFIG_SCHEMA extends BaseConfigSchema> = Awaited<
   ReturnType<typeof getPatterns<CONFIG_SCHEMA>>
 >[number];
 
-export class PatternEngine<
+export class MarkdownPatternsEngine<
   INPUT = unknown,
   CONFIG_SCHEMA extends BaseConfigSchema = BaseConfigSchema,
 > {
@@ -38,7 +38,7 @@ export class PatternEngine<
 
   public static cwd<INPUT = unknown>(cwd: FsDir) {
     const engine = QueryEngine.default<INPUT>();
-    return new PatternEngine<INPUT, BaseConfigSchema>(
+    return new MarkdownPatternsEngine<INPUT, BaseConfigSchema>(
       cwd,
       engine,
       z.object({ query: engine.schema }),
@@ -54,13 +54,13 @@ export class PatternEngine<
     const newSchema = this._configSchema.omit({ query: true }).extend({
       query: queryEngine.schema,
     }) as CONFIG_SCHEMA;
-    return new PatternEngine(this._cwd, queryEngine, newSchema);
+    return new MarkdownPatternsEngine(this._cwd, queryEngine, newSchema);
   }
 
   public setConfigSchema<NEW_CONFIG_SCHEMA extends z.ZodObject<any>>(
     configSchema: NEW_CONFIG_SCHEMA,
   ) {
-    return new PatternEngine(
+    return new MarkdownPatternsEngine(
       this._cwd,
       this._queryEngine,
       configSchema.extend({
@@ -185,17 +185,17 @@ export class PatternEngine<
   }
 }
 
-export declare namespace PatternEngine {
+export declare namespace MarkdownPatternsEngine {
   export namespace Config {
     // Todo: fix typings in main class so it works
-    export type Infer<T extends PatternEngine<any, any>> =
-      T extends PatternEngine<any, infer CONFIG_SCHEMA>
+    export type Infer<T extends MarkdownPatternsEngine<any, any>> =
+      T extends MarkdownPatternsEngine<any, infer CONFIG_SCHEMA>
         ? z.input<CONFIG_SCHEMA>
         : never;
   }
 
   export namespace Pattern {
-    export type Infer<T extends PatternEngine<any, any>> = Awaited<
+    export type Infer<T extends MarkdownPatternsEngine<any, any>> = Awaited<
       ReturnType<T["getPatterns"]>
     >[number];
   }

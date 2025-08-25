@@ -1,1 +1,0 @@
-export { PatternEngine } from "./pattern.engine.ts";

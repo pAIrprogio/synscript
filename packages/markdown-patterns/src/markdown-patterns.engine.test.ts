@@ -4,7 +4,7 @@ import assert from "node:assert/strict";
 import { describe, it } from "node:test";
 import path from "path";
 import { z } from "zod/v4";
-import { PatternEngine } from "./pattern.engine.ts";
+import { MarkdownPatternsEngine } from "./markdown-patterns.engine.ts";
 
 const currentDirectoryPath =
   import.meta.dirname || path.dirname(import.meta.url.replace("file://", ""));
@@ -34,13 +34,13 @@ function createTestQueryEngine() {
 describe("PatternEngine", () => {
   describe("constructor and factory methods", () => {
     it("creates a PatternEngine with default query engine using cwd", () => {
-      const engine = PatternEngine.cwd(testPatternsDir);
+      const engine = MarkdownPatternsEngine.cwd(testPatternsDir);
 
       assert.ok(engine);
     });
 
     it("has a default config schema with query field", () => {
-      const engine = PatternEngine.cwd(testPatternsDir);
+      const engine = MarkdownPatternsEngine.cwd(testPatternsDir);
       const schema = engine.schema;
 
       // Verify the schema has a query field
@@ -51,7 +51,7 @@ describe("PatternEngine", () => {
 
   describe("setQueryEngine", () => {
     it("returns a new instance with updated query engine", () => {
-      const engine1 = PatternEngine.cwd<TestInput>(testPatternsDir);
+      const engine1 = MarkdownPatternsEngine.cwd<TestInput>(testPatternsDir);
 
       const customQuery = QueryEngine.default<{
         content: string;
@@ -69,7 +69,7 @@ describe("PatternEngine", () => {
     it("updates query schema when setting new query engine", () => {
       const customQuery = createTestQueryEngine();
 
-      const engine = PatternEngine.cwd<TestInput>(testPatternsDir)
+      const engine = MarkdownPatternsEngine.cwd<TestInput>(testPatternsDir)
         .setQueryEngine(customQuery)
         .setConfigSchema(z.object({ status: z.string() }));
 
@@ -85,7 +85,7 @@ describe("PatternEngine", () => {
 
   describe("setConfigSchema", () => {
     it("returns a new instance with extended config schema", () => {
-      const engine1 = PatternEngine.cwd(testPatternsDir);
+      const engine1 = MarkdownPatternsEngine.cwd(testPatternsDir);
       const engine2 = engine1.setConfigSchema(
         z.object({
           status: z
@@ -109,7 +109,9 @@ describe("PatternEngine", () => {
     });
 
     it("applies default values from config schema", () => {
-      const engine = PatternEngine.cwd(testPatternsDir).setConfigSchema(
+      const engine = MarkdownPatternsEngine.cwd(
+        testPatternsDir,
+      ).setConfigSchema(
         z.object({
           status: z
             .enum(["tag", "blocked", "ok", "ignore"])
@@ -131,7 +133,7 @@ describe("PatternEngine", () => {
 
   describe("getPatterns", () => {
     it("loads patterns from markdown files", async () => {
-      const engine = PatternEngine.cwd<TestInput>(
+      const engine = MarkdownPatternsEngine.cwd<TestInput>(
         testPatternsDir,
       ).setQueryEngine(createTestQueryEngine());
 
@@ -153,7 +155,7 @@ describe("PatternEngine", () => {
     });
 
     it("handles duplicate folder/file names correctly", async () => {
-      const engine = PatternEngine.cwd<TestInput>(
+      const engine = MarkdownPatternsEngine.cwd<TestInput>(
         testPatternsDir,
       ).setQueryEngine(createTestQueryEngine());
       const patterns = await engine.getPatterns();
@@ -165,7 +167,7 @@ describe("PatternEngine", () => {
     });
 
     it("loads patterns with custom config fields", async () => {
-      const engine = PatternEngine.cwd<TestInput>(testPatternsDir)
+      const engine = MarkdownPatternsEngine.cwd<TestInput>(testPatternsDir)
         .setQueryEngine(createTestQueryEngine())
         .setConfigSchema(
           z.object({
@@ -184,7 +186,7 @@ describe("PatternEngine", () => {
     });
 
     it("returns patterns sorted by name", async () => {
-      const engine = PatternEngine.cwd<TestInput>(
+      const engine = MarkdownPatternsEngine.cwd<TestInput>(
         testPatternsDir,
       ).setQueryEngine(createTestQueryEngine());
       const patterns = await engine.getPatterns();
@@ -204,7 +206,7 @@ query:
 ---`);
 
       try {
-        const engine = PatternEngine.cwd<TestInput>(
+        const engine = MarkdownPatternsEngine.cwd<TestInput>(
           testPatternsDir,
         ).setQueryEngine(createTestQueryEngine());
         const patterns = await engine.getPatterns();
@@ -225,7 +227,7 @@ query:
 
   describe("matchingPatterns", () => {
     it("filters patterns based on query evaluation", async () => {
-      const engine = PatternEngine.cwd<TestInput>(
+      const engine = MarkdownPatternsEngine.cwd<TestInput>(
         testPatternsDir,
       ).setQueryEngine(createTestQueryEngine());
 
@@ -245,7 +247,7 @@ query:
     });
 
     it("uses query engine to evaluate patterns", async () => {
-      const engine = PatternEngine.cwd<TestInput>(
+      const engine = MarkdownPatternsEngine.cwd<TestInput>(
         testPatternsDir,
       ).setQueryEngine(createTestQueryEngine());
 
@@ -272,7 +274,9 @@ query:
 
   describe("schema getters", () => {
     it("returns the correct zod schema", () => {
-      const engine = PatternEngine.cwd(testPatternsDir).setConfigSchema(
+      const engine = MarkdownPatternsEngine.cwd(
+        testPatternsDir,
+      ).setConfigSchema(
         z.object({
           status: z.string(),
           priority: z.number(),
@@ -302,7 +306,9 @@ query:
     });
 
     it("generates valid JSON schema", () => {
-      const engine = PatternEngine.cwd(testPatternsDir).setConfigSchema(
+      const engine = MarkdownPatternsEngine.cwd(
+        testPatternsDir,
+      ).setConfigSchema(
         z.object({
           status: z.enum(["blocked", "ok"]),
         }),
@@ -331,7 +337,7 @@ query:
 
 Invalid pattern.`);
 
-      const engine = PatternEngine.cwd(testPatternsDir);
+      const engine = MarkdownPatternsEngine.cwd(testPatternsDir);
 
       await assert.rejects(
         async () => await engine.getPatterns(),
@@ -351,7 +357,9 @@ status: "ok"
 
 Missing query field.`);
 
-      const engine = PatternEngine.cwd(testPatternsDir).setConfigSchema(
+      const engine = MarkdownPatternsEngine.cwd(
+        testPatternsDir,
+      ).setConfigSchema(
         z.object({
           status: z.string(),
         }),
@@ -369,14 +377,16 @@ Missing query field.`);
 
   describe("type inference", () => {
     it("correctly infers config type", () => {
-      const engine = PatternEngine.cwd(testPatternsDir).setConfigSchema(
+      const engine = MarkdownPatternsEngine.cwd(
+        testPatternsDir,
+      ).setConfigSchema(
         z.object({
           status: z.enum(["blocked", "ok"]),
           priority: z.number().optional(),
         }),
       );
 
-      type InferredConfig = PatternEngine.Config.Infer<typeof engine>;
+      type InferredConfig = MarkdownPatternsEngine.Config.Infer<typeof engine>;
 
       const config: InferredConfig = {
         query: { always: true },

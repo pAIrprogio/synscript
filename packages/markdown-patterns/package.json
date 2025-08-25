@@ -1,25 +1,32 @@
 {
-  "name": "@synstack/pattern",
+  "name": "@synstack/markdown-patterns",
   "type": "module",
   "publishConfig": {
     "access": "public"
   },
-  "version": "1.0.1",
-  "description": "Pattern engine",
+  "version": "1.0.0",
+  "description": "Query-based configuration engine for markdown files",
   "keywords": [
-    "synstack",
     "pattern",
-    "utility"
+    "engine",
+    "configuration",
+    "query",
+    "matching",
+    "markdown",
+    "typescript",
+    "ts",
+    "rules",
+    "hierarchy"
   ],
   "author": {
     "name": "pAIrprog",
     "url": "https://pairprog.io"
   },
-  "homepage": "https://github.com/pAIrprogio/synscript/tree/main/packages/pattern",
+  "homepage": "https://github.com/pAIrprogio/synscript/tree/main/packages/markdown-patterns",
   "repository": {
     "type": "git",
     "url": "https://github.com/pAIrprogio/synscript.git",
-    "directory": "packages/pattern"
+    "directory": "packages/markdown-patterns"
   },
   "license": "Apache-2.0",
   "scripts": {
@@ -33,12 +40,12 @@
   "exports": {
     ".": {
       "import": {
-        "types": "./dist/pattern.index.d.ts",
-        "default": "./dist/pattern.index.js"
+        "types": "./dist/markdown-patterns.index.d.ts",
+        "default": "./dist/markdown-patterns.index.js"
       },
       "require": {
-        "types": "./dist/pattern.index.d.cts",
-        "default": "./dist/pattern.index.cjs"
+        "types": "./dist/markdown-patterns.index.d.cts",
+        "default": "./dist/markdown-patterns.index.cjs"
       }
     }
   },
