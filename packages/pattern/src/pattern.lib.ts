@@ -1,18 +1,18 @@
-import type { FsDir, FsFile } from '@synstack/fs';
-import { md } from '@synstack/markdown';
-import { t } from '@synstack/text';
-import z from 'zod/v4';
+import type { FsDir, FsFile } from "@synstack/fs";
+import { md } from "@synstack/markdown";
+import { t } from "@synstack/text";
+import z from "zod/v4";
 
-export const NAME_SEPARATOR = '/';
+export const NAME_SEPARATOR = "/";
 
 export function getPatternName(patternDir: FsDir, patternFile: FsFile) {
   const relativePath = patternFile.dir().relativePathFrom(patternDir);
-  const dirPath = relativePath.split('/');
+  const dirPath = relativePath.split("/");
   const lastFolderName = dirPath.pop();
   let fileName = patternFile.fileNameWithoutExtension();
 
   // Remove numeric prefix (e.g., "0." from "0.buttons")
-  fileName = fileName.replace(/^\d+\./, '');
+  fileName = fileName.replace(/^\d+\./, "");
 
   // Extract type suffix if present (e.g., "my-type" from "buttons.my-type")
   let type: string | null = null;
@@ -24,35 +24,39 @@ export function getPatternName(patternDir: FsDir, patternFile: FsFile) {
 
   // If the last folder's name is the same as the file name, we can skip it
   const nameParts =
-    lastFolderName === fileName ? [...dirPath, fileName] : [...dirPath, lastFolderName, fileName];
+    lastFolderName === fileName
+      ? [...dirPath, fileName]
+      : [...dirPath, lastFolderName, fileName];
 
   return {
-    name: nameParts.filter(part => part !== '').join(NAME_SEPARATOR),
+    name: nameParts.filter((part) => part !== "").join(NAME_SEPARATOR),
     type,
   };
 }
 
 export async function getPatterns<CONFIG_SCHEMA extends z.ZodObject<any>>(
   cwd: FsDir,
-  configSchema: CONFIG_SCHEMA
+  configSchema: CONFIG_SCHEMA,
 ) {
   const patternFiles = await cwd
-    .glob('**/*.md')
+    .glob("**/*.md")
     // Sort by path
-    .then(files =>
-      files.sort((a, b) => a.relativePathFrom(cwd).localeCompare(b.relativePathFrom(cwd)))
+    .then((files) =>
+      files.sort((a, b) =>
+        a.relativePathFrom(cwd).localeCompare(b.relativePathFrom(cwd)),
+      ),
     );
   return Promise.all(
-    patternFiles.map(async patternFile => {
+    patternFiles.map(async (patternFile) => {
       // Read the pattern file
       const content = await patternFile.read.text();
-      const data = await new Promise(resolve => resolve(md.getHeaderData(content))).catch(
-        async err => {
-          throw new Error(
-            `Failed to read pattern file ${cwd.relativePathTo(patternFile)}: ${err.message}`
-          );
-        }
-      );
+      const data = await new Promise((resolve) =>
+        resolve(md.getHeaderData(content)),
+      ).catch(async (err) => {
+        throw new Error(
+          `Failed to read pattern file ${cwd.relativePathTo(patternFile)}: ${err.message}`,
+        );
+      });
       const prompt = md.getBody(content).trim();
       const parsedData = configSchema.safeParse(data);
 
@@ -72,6 +76,6 @@ export async function getPatterns<CONFIG_SCHEMA extends z.ZodObject<any>>(
         $file: patternFile,
         ...parsedData.data,
       };
-    })
+    }),
   );
 }

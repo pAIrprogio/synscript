@@ -1,7 +1,7 @@
-import type { FsDir } from '@synstack/fs';
-import { z } from 'zod/v4';
-import { getPatterns, NAME_SEPARATOR } from './pattern.lib.ts';
-import { QueryEngine } from '@synstack/query';
+import type { FsDir } from "@synstack/fs";
+import { QueryEngine } from "@synstack/query";
+import { z } from "zod/v4";
+import { getPatterns, NAME_SEPARATOR } from "./pattern.lib.ts";
 
 type BaseConfigSchema = z.ZodObject<{
   query: z.ZodType<unknown>;
@@ -19,13 +19,17 @@ export class PatternEngine<
   private _cwd;
   private _queryEngine;
   private _patternsPromise: Promise<Pattern<CONFIG_SCHEMA>[]> | null = null;
-  private _patternsMapPromise: Promise<Map<string, Pattern<CONFIG_SCHEMA>>> | null = null;
-  private _parentPatternsMapPromise: Promise<Map<string, Pattern<CONFIG_SCHEMA>[]>> | null = null;
+  private _patternsMapPromise: Promise<
+    Map<string, Pattern<CONFIG_SCHEMA>>
+  > | null = null;
+  private _parentPatternsMapPromise: Promise<
+    Map<string, Pattern<CONFIG_SCHEMA>[]>
+  > | null = null;
 
   private constructor(
     cwd: FsDir,
     queryEngine: QueryEngine<any, INPUT>,
-    configSchema: CONFIG_SCHEMA
+    configSchema: CONFIG_SCHEMA,
   ) {
     this._cwd = cwd;
     this._queryEngine = queryEngine;
@@ -37,7 +41,7 @@ export class PatternEngine<
     return new PatternEngine<INPUT, BaseConfigSchema>(
       cwd,
       engine,
-      z.object({ query: engine.schema })
+      z.object({ query: engine.schema }),
     );
   }
 
@@ -54,7 +58,7 @@ export class PatternEngine<
   }
 
   public setConfigSchema<NEW_CONFIG_SCHEMA extends z.ZodObject<any>>(
-    configSchema: NEW_CONFIG_SCHEMA
+    configSchema: NEW_CONFIG_SCHEMA,
   ) {
     return new PatternEngine(
       this._cwd,
@@ -63,14 +67,15 @@ export class PatternEngine<
         query: this._queryEngine.schema,
       }) as NEW_CONFIG_SCHEMA extends z.ZodObject<infer T>
         ? z.ZodObject<T & { query: z.ZodType<unknown> }>
-        : never
+        : never,
     );
   }
 
   public async refreshPatterns() {
     this._patternsPromise = getPatterns(this._cwd, this.schema);
     this._patternsMapPromise = this._patternsPromise.then(
-      patterns => new Map(patterns.map(pattern => [pattern.$name, pattern]))
+      (patterns) =>
+        new Map(patterns.map((pattern) => [pattern.$name, pattern])),
     );
     this._parentPatternsMapPromise = null; // Reset parent patterns cache
   }
@@ -85,7 +90,8 @@ export class PatternEngine<
   public async getPatternsMap() {
     if (!this._patternsMapPromise) {
       this._patternsMapPromise = this.getPatterns().then(
-        patterns => new Map(patterns.map(pattern => [pattern.$name, pattern]))
+        (patterns) =>
+          new Map(patterns.map((pattern) => [pattern.$name, pattern])),
       );
     }
     return this._patternsMapPromise!;
@@ -98,8 +104,8 @@ export class PatternEngine<
 
   public async getParentPatternsMap() {
     if (!this._parentPatternsMapPromise) {
-      this._parentPatternsMapPromise = this.getPatterns().then(patterns => {
-        const patternsMap = new Map(patterns.map(p => [p.$name, p]));
+      this._parentPatternsMapPromise = this.getPatterns().then((patterns) => {
+        const patternsMap = new Map(patterns.map((p) => [p.$name, p]));
         const parentMap = new Map<string, Pattern<CONFIG_SCHEMA>[]>();
 
         // Precompute parent patterns for each pattern
@@ -145,7 +151,10 @@ export class PatternEngine<
       const query =
         parentPatterns.length > 0
           ? {
-              and: [...parentPatterns.map(parent => parent.query), pattern.query],
+              and: [
+                ...parentPatterns.map((parent) => parent.query),
+                pattern.query,
+              ],
             }
           : pattern.query;
 
@@ -164,7 +173,7 @@ export class PatternEngine<
 
   public async matchingPatternNames(input: INPUT) {
     const patterns = await this.matchingPatterns(input);
-    return patterns.map(pattern => pattern.$name);
+    return patterns.map((pattern) => pattern.$name);
   }
 
   public get schema() {
@@ -180,12 +189,14 @@ export declare namespace PatternEngine {
   export namespace Config {
     // Todo: fix typings in main class so it works
     export type Infer<T extends PatternEngine<any, any>> =
-      T extends PatternEngine<any, infer CONFIG_SCHEMA> ? z.input<CONFIG_SCHEMA> : never;
+      T extends PatternEngine<any, infer CONFIG_SCHEMA>
+        ? z.input<CONFIG_SCHEMA>
+        : never;
   }
 
   export namespace Pattern {
     export type Infer<T extends PatternEngine<any, any>> = Awaited<
-      ReturnType<T['getPatterns']>
+      ReturnType<T["getPatterns"]>
     >[number];
   }
 }

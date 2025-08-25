@@ -298,6 +298,12 @@ importers:
       '@synstack/fs':
         specifier: workspace:^
         version: link:../fs
+      '@synstack/markdown':
+        specifier: workspace:^
+        version: link:../markdown
+      '@synstack/text':
+        specifier: workspace:^
+        version: link:../text
     devDependencies:
       '@synstack/query':
         specifier: workspace:^

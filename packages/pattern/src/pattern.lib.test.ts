@@ -1,44 +1,50 @@
-import { dir, file } from '@synstack/fs';
-import assert from 'node:assert/strict';
-import { describe, it } from 'node:test';
-import { getPatternName } from './pattern.lib.ts';
+import { dir, file } from "@synstack/fs";
+import assert from "node:assert/strict";
+import { describe, it } from "node:test";
+import { getPatternName } from "./pattern.lib.ts";
 
-describe('getPatternName()', () => {
-  it('returns the pattern name from directory and file', () => {
-    const mockDir = dir('/base/patterns');
-    const mockFile = file('/base/patterns/ember/template/uses/buttons.md');
+describe("getPatternName()", () => {
+  it("returns the pattern name from directory and file", () => {
+    const mockDir = dir("/base/patterns");
+    const mockFile = file("/base/patterns/ember/template/uses/buttons.md");
 
-    const expected = { name: 'ember/template/uses/buttons', type: null };
+    const expected = { name: "ember/template/uses/buttons", type: null };
     assert.deepEqual(getPatternName(mockDir, mockFile), expected);
   });
   it("skips the file name if it's the same as the last folder", () => {
-    const mockDir = dir('/base/patterns');
-    const mockFile = file('/base/patterns/ember/template/uses/buttons/buttons');
+    const mockDir = dir("/base/patterns");
+    const mockFile = file("/base/patterns/ember/template/uses/buttons/buttons");
 
-    const expected = { name: 'ember/template/uses/buttons', type: null };
+    const expected = { name: "ember/template/uses/buttons", type: null };
     assert.deepEqual(getPatternName(mockDir, mockFile), expected);
   });
-  it('returns removes the prefix', () => {
-    const mockDir = dir('/base/patterns');
-    const mockFile = file('/base/patterns/ember/template/uses/buttons/0.buttons.md');
+  it("returns removes the prefix", () => {
+    const mockDir = dir("/base/patterns");
+    const mockFile = file(
+      "/base/patterns/ember/template/uses/buttons/0.buttons.md",
+    );
 
-    const expected = { name: 'ember/template/uses/buttons', type: null };
+    const expected = { name: "ember/template/uses/buttons", type: null };
     assert.deepEqual(getPatternName(mockDir, mockFile), expected);
   });
-  it('returns the type', () => {
-    const mockDir = dir('/base/patterns');
-    const mockFile = file('/base/patterns/ember/template/uses/buttons/0.buttons.my-type.md');
+  it("returns the type", () => {
+    const mockDir = dir("/base/patterns");
+    const mockFile = file(
+      "/base/patterns/ember/template/uses/buttons/0.buttons.my-type.md",
+    );
 
-    const expected = { name: 'ember/template/uses/buttons', type: 'my-type' };
+    const expected = { name: "ember/template/uses/buttons", type: "my-type" };
     assert.deepEqual(getPatternName(mockDir, mockFile), expected);
   });
-  it('returns the middle part of the file name even if it contains a dot', () => {
-    const mockDir = dir('/base/patterns');
-    const mockFile = file('/base/patterns/ember/template/uses/0.buttons.with.dot.my-type.md');
+  it("returns the middle part of the file name even if it contains a dot", () => {
+    const mockDir = dir("/base/patterns");
+    const mockFile = file(
+      "/base/patterns/ember/template/uses/0.buttons.with.dot.my-type.md",
+    );
 
     const expected = {
-      name: 'ember/template/uses/buttons.with.dot',
-      type: 'my-type',
+      name: "ember/template/uses/buttons.with.dot",
+      type: "my-type",
     };
     assert.deepEqual(getPatternName(mockDir, mockFile), expected);
   });

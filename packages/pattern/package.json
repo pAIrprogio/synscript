@@ -43,7 +43,9 @@
     }
   },
   "dependencies": {
-    "@synstack/fs": "workspace:^"
+    "@synstack/fs": "workspace:^",
+    "@synstack/markdown": "workspace:^",
+    "@synstack/text": "workspace:^"
   },
   "devDependencies": {
     "@synstack/query": "workspace:^",

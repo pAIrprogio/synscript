@@ -1,14 +1,14 @@
-import { dir } from '@synstack/fs';
-import assert from 'node:assert/strict';
-import { describe, it } from 'node:test';
-import { z } from 'zod/v4';
-import { PatternEngine } from './pattern.engine.ts';
-import { QueryEngine } from './query.engine.ts';
-import path from 'path';
+import { dir } from "@synstack/fs";
+import { QueryEngine } from "@synstack/query";
+import assert from "node:assert/strict";
+import { describe, it } from "node:test";
+import path from "path";
+import { z } from "zod/v4";
+import { PatternEngine } from "./pattern.engine.ts";
 
 const currentDirectoryPath =
-  import.meta.dirname || path.dirname(import.meta.url.replace('file://', ''));
-const testPatternsDir = dir(currentDirectoryPath).to('.test/patterns');
+  import.meta.dirname || path.dirname(import.meta.url.replace("file://", ""));
+const testPatternsDir = dir(currentDirectoryPath).to(".test/patterns");
 
 // Simple test input type
 type TestInput = {
@@ -19,23 +19,27 @@ type TestInput = {
 // Helper to create a test query engine with common predicates
 function createTestQueryEngine() {
   return QueryEngine.default<TestInput>()
-    .addPredicate('contains', z.string(), param => input => input.content.includes(param))
     .addPredicate(
-      'hasExtension',
+      "contains",
+      z.string(),
+      (param) => (input) => input.content.includes(param),
+    )
+    .addPredicate(
+      "hasExtension",
       z.array(z.string()),
-      extensions => input => extensions.includes(input.extension)
+      (extensions) => (input) => extensions.includes(input.extension),
     );
 }
 
-describe('PatternEngine', () => {
-  describe('constructor and factory methods', () => {
-    it('creates a PatternEngine with default query engine using cwd', () => {
+describe("PatternEngine", () => {
+  describe("constructor and factory methods", () => {
+    it("creates a PatternEngine with default query engine using cwd", () => {
       const engine = PatternEngine.cwd(testPatternsDir);
 
       assert.ok(engine);
     });
 
-    it('has a default config schema with query field', () => {
+    it("has a default config schema with query field", () => {
       const engine = PatternEngine.cwd(testPatternsDir);
       const schema = engine.schema;
 
@@ -45,20 +49,24 @@ describe('PatternEngine', () => {
     });
   });
 
-  describe('setQueryEngine', () => {
-    it('returns a new instance with updated query engine', () => {
+  describe("setQueryEngine", () => {
+    it("returns a new instance with updated query engine", () => {
       const engine1 = PatternEngine.cwd<TestInput>(testPatternsDir);
 
       const customQuery = QueryEngine.default<{
         content: string;
-      }>().addPredicate('contains', z.string(), param => input => input.content.includes(param));
+      }>().addPredicate(
+        "contains",
+        z.string(),
+        (param) => (input) => input.content.includes(param),
+      );
 
       const engine2 = engine1.setQueryEngine(customQuery);
 
       assert.notEqual(engine1, engine2);
     });
 
-    it('updates query schema when setting new query engine', () => {
+    it("updates query schema when setting new query engine", () => {
       const customQuery = createTestQueryEngine();
 
       const engine = PatternEngine.cwd<TestInput>(testPatternsDir)
@@ -66,8 +74,8 @@ describe('PatternEngine', () => {
         .setConfigSchema(z.object({ status: z.string() }));
 
       const input = {
-        query: { contains: 'test' },
-        status: 'ok',
+        query: { contains: "test" },
+        status: "ok",
       };
       const parsed = engine.schema.parse(input);
 
@@ -75,21 +83,24 @@ describe('PatternEngine', () => {
     });
   });
 
-  describe('setConfigSchema', () => {
-    it('returns a new instance with extended config schema', () => {
+  describe("setConfigSchema", () => {
+    it("returns a new instance with extended config schema", () => {
       const engine1 = PatternEngine.cwd(testPatternsDir);
       const engine2 = engine1.setConfigSchema(
         z.object({
-          status: z.enum(['tag', 'blocked', 'ok', 'ignore']).optional().default('ok'),
+          status: z
+            .enum(["tag", "blocked", "ok", "ignore"])
+            .optional()
+            .default("ok"),
           priority: z.number().optional(),
-        })
+        }),
       );
 
       assert.notEqual(engine1, engine2);
 
       const input = {
         query: { always: true },
-        status: 'blocked',
+        status: "blocked",
         priority: 1,
       };
       const parsed = engine2.schema.parse(input);
@@ -97,11 +108,14 @@ describe('PatternEngine', () => {
       assert.deepEqual(parsed, input);
     });
 
-    it('applies default values from config schema', () => {
+    it("applies default values from config schema", () => {
       const engine = PatternEngine.cwd(testPatternsDir).setConfigSchema(
         z.object({
-          status: z.enum(['tag', 'blocked', 'ok', 'ignore']).optional().default('ok'),
-        })
+          status: z
+            .enum(["tag", "blocked", "ok", "ignore"])
+            .optional()
+            .default("ok"),
+        }),
       );
 
       const parsed = engine.schema.parse({
@@ -110,82 +124,93 @@ describe('PatternEngine', () => {
 
       assert.deepEqual(parsed, {
         query: { always: true },
-        status: 'ok',
+        status: "ok",
       });
     });
   });
 
-  describe('getPatterns', () => {
-    it('loads patterns from markdown files', async () => {
-      const engine =
-        PatternEngine.cwd<TestInput>(testPatternsDir).setQueryEngine(createTestQueryEngine());
+  describe("getPatterns", () => {
+    it("loads patterns from markdown files", async () => {
+      const engine = PatternEngine.cwd<TestInput>(
+        testPatternsDir,
+      ).setQueryEngine(createTestQueryEngine());
 
       const patterns = await engine.getPatterns();
 
-      const basicPattern = patterns.find(p => p.$name === 'simple/basic');
+      const basicPattern = patterns.find((p) => p.$name === "simple/basic");
       assert.ok(basicPattern);
       assert.deepEqual(basicPattern.query, { always: true });
-      assert.deepEqual(basicPattern.$prompt, 'This is a simple test pattern that always matches.');
+      assert.deepEqual(
+        basicPattern.$prompt,
+        "This is a simple test pattern that always matches.",
+      );
 
-      const pattern1 = patterns.find(p => p.$name === 'nested/level1/pattern1');
+      const pattern1 = patterns.find(
+        (p) => p.$name === "nested/level1/pattern1",
+      );
       assert.ok(pattern1);
-      assert.deepEqual(pattern1.query, { contains: 'test1' });
+      assert.deepEqual(pattern1.query, { contains: "test1" });
     });
 
-    it('handles duplicate folder/file names correctly', async () => {
-      const engine =
-        PatternEngine.cwd<TestInput>(testPatternsDir).setQueryEngine(createTestQueryEngine());
+    it("handles duplicate folder/file names correctly", async () => {
+      const engine = PatternEngine.cwd<TestInput>(
+        testPatternsDir,
+      ).setQueryEngine(createTestQueryEngine());
       const patterns = await engine.getPatterns();
 
       // The file nested/level1/level1.md should be named "nested/level1"
-      const level1Pattern = patterns.find(p => p.$name === 'nested/level1');
+      const level1Pattern = patterns.find((p) => p.$name === "nested/level1");
       assert.ok(level1Pattern);
       assert.deepEqual(level1Pattern.query, { never: true });
     });
 
-    it('loads patterns with custom config fields', async () => {
+    it("loads patterns with custom config fields", async () => {
       const engine = PatternEngine.cwd<TestInput>(testPatternsDir)
         .setQueryEngine(createTestQueryEngine())
         .setConfigSchema(
           z.object({
             status: z.string().optional(),
-          })
+          }),
         );
 
       const patterns = await engine.getPatterns();
-      const statusPattern = patterns.find(p => p.$name === 'complex/with-status');
+      const statusPattern = patterns.find(
+        (p) => p.$name === "complex/with-status",
+      );
 
       assert.ok(statusPattern);
-      assert.deepEqual(statusPattern.status, 'blocked');
-      assert.deepEqual(statusPattern.query, { contains: 'button' });
+      assert.deepEqual(statusPattern.status, "blocked");
+      assert.deepEqual(statusPattern.query, { contains: "button" });
     });
 
-    it('returns patterns sorted by name', async () => {
-      const engine =
-        PatternEngine.cwd<TestInput>(testPatternsDir).setQueryEngine(createTestQueryEngine());
+    it("returns patterns sorted by name", async () => {
+      const engine = PatternEngine.cwd<TestInput>(
+        testPatternsDir,
+      ).setQueryEngine(createTestQueryEngine());
       const patterns = await engine.getPatterns();
 
-      const names = patterns.map(p => p.$name);
+      const names = patterns.map((p) => p.$name);
       const sortedNames = [...names].sort((a, b) => a.localeCompare(b));
 
       assert.deepEqual(names, sortedNames);
     });
 
-    it('handles empty prompt correctly', async () => {
+    it("handles empty prompt correctly", async () => {
       // Create a pattern with no body content
-      const emptyPromptFile = testPatternsDir.toFile('empty-prompt.md');
+      const emptyPromptFile = testPatternsDir.toFile("empty-prompt.md");
       await emptyPromptFile.write.text(`---
 query:
   always: true
 ---`);
 
       try {
-        const engine =
-          PatternEngine.cwd<TestInput>(testPatternsDir).setQueryEngine(createTestQueryEngine());
+        const engine = PatternEngine.cwd<TestInput>(
+          testPatternsDir,
+        ).setQueryEngine(createTestQueryEngine());
         const patterns = await engine.getPatterns();
 
         const emptyPromptPattern = patterns.find(
-          p => p.$name === 'empty-prompt' || p.$name === '/empty-prompt'
+          (p) => p.$name === "empty-prompt" || p.$name === "/empty-prompt",
         );
         assert.ok(emptyPromptPattern);
         assert.deepEqual(emptyPromptPattern.$prompt, null);
@@ -198,56 +223,60 @@ query:
     });
   });
 
-  describe('matchingPatterns', () => {
-    it('filters patterns based on query evaluation', async () => {
-      const engine =
-        PatternEngine.cwd<TestInput>(testPatternsDir).setQueryEngine(createTestQueryEngine());
+  describe("matchingPatterns", () => {
+    it("filters patterns based on query evaluation", async () => {
+      const engine = PatternEngine.cwd<TestInput>(
+        testPatternsDir,
+      ).setQueryEngine(createTestQueryEngine());
 
       const input: TestInput = {
-        content: 'test1 component code',
-        extension: 'tsx',
+        content: "test1 component code",
+        extension: "tsx",
       };
 
       const matching = await engine.matchingPatterns(input);
-      const matchingNames = matching.map(p => p.$name);
+      const matchingNames = matching.map((p) => p.$name);
 
       // Should match: simple/basic (always: true), complex/with-query (contains "component")
       // Should not match: nested/level1 (never: true), nested/level1/pattern1 (parent has never: true)
-      const expectedMatches = ['simple/basic', 'complex/with-query'];
+      const expectedMatches = ["simple/basic", "complex/with-query"];
 
       assert.deepEqual(matchingNames.sort(), expectedMatches.sort());
     });
 
-    it('uses query engine to evaluate patterns', async () => {
-      const engine =
-        PatternEngine.cwd<TestInput>(testPatternsDir).setQueryEngine(createTestQueryEngine());
+    it("uses query engine to evaluate patterns", async () => {
+      const engine = PatternEngine.cwd<TestInput>(
+        testPatternsDir,
+      ).setQueryEngine(createTestQueryEngine());
 
       const input: TestInput = {
-        content: 'test1 code',
-        extension: 'tsx',
+        content: "test1 code",
+        extension: "tsx",
       };
 
       const matching = await engine.matchingPatterns(input);
-      const names = matching.map(p => p.$name);
+      const names = matching.map((p) => p.$name);
 
       // Should match patterns based on query evaluation
       const expectedMatches = [
-        'simple/basic', // always: true
+        "simple/basic", // always: true
         // nested/level1/pattern1 won't match because parent has never: true
       ];
 
-      const actualSubset = names.filter(name => expectedMatches.includes(name));
+      const actualSubset = names.filter((name) =>
+        expectedMatches.includes(name),
+      );
       assert.deepEqual(actualSubset.sort(), expectedMatches.sort());
     });
   });
 
-  describe('schema getters', () => {
-    it('returns the correct zod schema', () => {
+  describe("schema getters", () => {
+    it("returns the correct zod schema", () => {
       const engine = PatternEngine.cwd(testPatternsDir).setConfigSchema(
         z.object({
           status: z.string(),
           priority: z.number(),
-        })
+        }),
       );
 
       const schema = engine.schema;
@@ -255,7 +284,7 @@ query:
       // Test parsing valid data
       const validData = {
         query: { always: true },
-        status: 'ok',
+        status: "ok",
         priority: 1,
       };
 
@@ -266,35 +295,35 @@ query:
       assert.throws(() => {
         schema.parse({
           query: { always: true },
-          status: 'ok',
+          status: "ok",
           // Missing required priority
         });
       });
     });
 
-    it('generates valid JSON schema', () => {
+    it("generates valid JSON schema", () => {
       const engine = PatternEngine.cwd(testPatternsDir).setConfigSchema(
         z.object({
-          status: z.enum(['blocked', 'ok']),
-        })
+          status: z.enum(["blocked", "ok"]),
+        }),
       );
 
       const jsonSchema = engine.jsonSchema;
 
-      assert.deepEqual(jsonSchema.type, 'object');
+      assert.deepEqual(jsonSchema.type, "object");
       assert.ok(jsonSchema.properties);
       assert.ok(jsonSchema.properties.query);
       assert.ok(jsonSchema.properties.status);
 
       const statusSchema = jsonSchema.properties.status as any;
-      assert.deepEqual(statusSchema.enum, ['blocked', 'ok']);
+      assert.deepEqual(statusSchema.enum, ["blocked", "ok"]);
     });
   });
 
-  describe('error handling', () => {
-    it('throws error for invalid pattern config', async () => {
+  describe("error handling", () => {
+    it("throws error for invalid pattern config", async () => {
       // Create an invalid pattern file
-      const invalidFile = testPatternsDir.toFile('invalid.md');
+      const invalidFile = testPatternsDir.toFile("invalid.md");
       await invalidFile.write.text(`---
 query:
   invalid_predicate: true
@@ -304,15 +333,18 @@ Invalid pattern.`);
 
       const engine = PatternEngine.cwd(testPatternsDir);
 
-      await assert.rejects(async () => await engine.getPatterns(), /Failed to parse config/);
+      await assert.rejects(
+        async () => await engine.getPatterns(),
+        /Failed to parse config/,
+      );
 
       // Clean up
       await invalidFile.remove();
     });
 
-    it('throws error for missing required config fields', async () => {
+    it("throws error for missing required config fields", async () => {
       // Create a pattern missing required field
-      const missingFieldFile = testPatternsDir.toFile('missing-field.md');
+      const missingFieldFile = testPatternsDir.toFile("missing-field.md");
       await missingFieldFile.write.text(`---
 status: "ok"
 ---
@@ -322,34 +354,37 @@ Missing query field.`);
       const engine = PatternEngine.cwd(testPatternsDir).setConfigSchema(
         z.object({
           status: z.string(),
-        })
+        }),
       );
 
-      await assert.rejects(async () => await engine.getPatterns(), /Failed to parse config/);
+      await assert.rejects(
+        async () => await engine.getPatterns(),
+        /Failed to parse config/,
+      );
 
       // Clean up
       await missingFieldFile.remove();
     });
   });
 
-  describe('type inference', () => {
-    it('correctly infers config type', () => {
+  describe("type inference", () => {
+    it("correctly infers config type", () => {
       const engine = PatternEngine.cwd(testPatternsDir).setConfigSchema(
         z.object({
-          status: z.enum(['blocked', 'ok']),
+          status: z.enum(["blocked", "ok"]),
           priority: z.number().optional(),
-        })
+        }),
       );
 
       type InferredConfig = PatternEngine.Config.Infer<typeof engine>;
 
       const config: InferredConfig = {
         query: { always: true },
-        status: 'ok',
+        status: "ok",
         priority: 1,
       };
 
-      assert.deepEqual(config.status, 'ok');
+      assert.deepEqual(config.status, "ok");
     });
   });
 });
