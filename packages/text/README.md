@@ -54,7 +54,10 @@ List of items:
 
 ```bash
 npm install @synstack/text
+# or
 yarn add @synstack/text
+# or
+pnpm add @synstack/text
 ```
 
 ## Features
@@ -151,7 +154,7 @@ This is a list of items:
 - You can infer the value type of the extra object by using a type assertion from `Text.ExtraObject.Infer`
 
 ```ts
-import { t, tParse, type Text } from "@pairprog/text";
+import { t, tParse, type Text } from "@synstack/text";
 
 // @ts-expect-error - The non-matching extra object will be rejected
 const textFail: Text.String<{ type: "extra"; value: string }> =
@@ -163,4 +166,47 @@ const text: string & { __extra: { type: "extra"; value: string } } =
 
 console.log(tParse(text));
 // ["Hello ", { type: "extra", value: "Hello" }, " World"]
+```
+
+### Configuration Options
+
+You can configure text processing behavior using `Text.options()`:
+
+```ts
+import { Text } from "@synstack/text";
+
+// Custom join string for arrays
+const customText = Text.options({ joinString: " | " });
+const result = customText.t`Items: ${["A", "B", "C"]}`;
+// "Items: A | B | C"
+
+// Chain options
+const text = Text.options()
+  .options({ joinString: ", " })
+  .t`List: ${["item1", "item2"]}`;
+// "List: item1, item2"
+```
+
+
+## API Reference
+
+### Core Functions
+
+- **`t`** - Main templating function for creating formatted text
+- **`tParse`** - Parse text with extra objects back into components
+
+### Classes & Types
+
+- **`Text`** - Main text processing class with configurable options
+- **`Text.Options`** - Configuration options interface
+- **`Text.String<T>`** - String type with extra object information
+- **`Text.ExtraObject.Base`** - Base type for extra objects
+- **`TextParseExtraItemException`** - Exception thrown during parsing errors
+
+### Configuration
+
+```ts
+type Text.Options = {
+  joinString?: string; // Default: "\n"
+}
 ```
