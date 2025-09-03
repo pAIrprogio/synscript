@@ -61,6 +61,6 @@
   ],
   "gitHead": "ed339f5b4ef3a70b7371313234250b1e7445ef69",
   "peerDependencies": {
-    "zod": "^3.25.67"
+    "zod": "^3.25.67 || ^4.0.0"
   }
 }

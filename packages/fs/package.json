@@ -73,7 +73,7 @@
   },
   "peerDependencies": {
     "execa": "*",
-    "zod": "^3.25.0"
+    "zod": "^3.25.0 || ^4.0.0"
   },
   "files": [
     "src/**/*.ts",
