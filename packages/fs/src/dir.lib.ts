@@ -7,7 +7,7 @@ import * as fsSync from "fs";
 import * as fs from "fs/promises";
 import { dirs } from "./dirs-array.lib.ts";
 import { FsFile } from "./file.lib.ts";
-import { files, filesFromDir } from "./files-array.lib.ts";
+import { fsFiles, fsFilesFromDir } from "./files-array.lib.ts";
 
 export class FsDir extends Pipeable<FsDir> {
   private readonly _path: AnyPath;
@@ -395,7 +395,7 @@ Trying to access a dir file from an absolute paths:
       .cwd(this._path)
       .options({ absolute: true })
       .find(...patterns)
-      .then(files);
+      .then(fsFiles);
   }
 
   /**
@@ -416,7 +416,7 @@ Trying to access a dir file from an absolute paths:
    * ```
    */
   public globSync(...patterns: Array<string> | [Array<string>]) {
-    return files(
+    return fsFiles(
       glob
         .cwd(this._path)
         .options({ absolute: true })
@@ -475,7 +475,7 @@ Trying to access a dir file from an absolute paths:
    * ```
    */
   public async gitLs() {
-    return git.ls(this._path).then(filesFromDir(this));
+    return git.ls(this._path).then(fsFilesFromDir(this));
   }
 
   /**
@@ -511,5 +511,10 @@ Trying to access a dir file from an absolute paths:
  * // Create from existing directory
  * const existingDir = dir(dir("/path/to/existing"));
  * ```
+ */
+export const fsDir = FsDir.cwd;
+
+/**
+ * @deprecated Changed to avoid namespacing conflicts. Use {@link fsDir} instead
  */
 export const dir = FsDir.cwd;

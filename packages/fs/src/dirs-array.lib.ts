@@ -1,6 +1,6 @@
 import { enhance, type Enhanced } from "@synstack/enhance";
 import { type AnyPath } from "@synstack/path";
-import { dir as fsDir, FsDir } from "./dir.lib.ts";
+import { fsDir, FsDir } from "./dir.lib.ts";
 import type { FsFile } from "./file.lib.ts";
 
 /**
@@ -15,7 +15,7 @@ export interface FsDirArrayMethods {
 
 const dirsArrayMethods: FsDirArrayMethods = {
   filter(fn) {
-    return dirs(this.filter(fn));
+    return fsDirs(this.filter(fn));
   },
 
   toPaths() {
@@ -33,5 +33,15 @@ export type FsDirArray = Enhanced<
   FsDirArrayMethods
 >;
 
-export const dirs = (dirs: Array<FsDir | AnyPath>): FsDirArray =>
+/**
+ * Create a new FsDirArray instance with the provided directories.
+ * @param dirs - An array of FsDir or AnyPath instances
+ * @returns A new FsDirArray instance
+ */
+export const fsDirs = (dirs: Array<FsDir | AnyPath>): FsDirArray =>
   enhance("dirs_array", dirs.map(fsDir), dirsArrayMethods);
+
+/**
+ * @deprecated Changed to avoid namespacing conflicts. Use {@link fsDirs} instead
+ */
+export const dirs = fsDirs;

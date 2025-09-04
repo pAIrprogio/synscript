@@ -1,7 +1,7 @@
 import { enhance, type Enhanced } from "@synstack/enhance";
 import { type AnyPath } from "@synstack/path";
 import { FsDir } from "./dir.lib.ts";
-import { FsFile, file } from "./file.lib.ts";
+import { FsFile, fsFile } from "./file.lib.ts";
 
 /**
  * Interface defining chainable methods for arrays of FsFile instances.
@@ -22,7 +22,7 @@ export interface FsFileArrayMethods {
 
 const filesArrayMethods: FsFileArrayMethods = {
   filter(fn) {
-    return files(this.filter(fn));
+    return fsFiles(this.filter(fn));
   },
 
   filterGlobs(...patterns) {
@@ -57,17 +57,33 @@ export type FsFileArray = Enhanced<
   FsFileArrayMethods
 >;
 
-export const files = (files: Array<FsFile<any> | AnyPath>): FsFileArray =>
+/**
+ * Create a new FsFileArray instance with the provided files.
+ * @param files - An array of FsFile or paths
+ * @returns A new FsFileArray instance
+ */
+export const fsFiles = (files: Array<FsFile<any> | AnyPath>): FsFileArray =>
   enhance(
     "files_array",
     files.map((f) => {
       if (f instanceof FsFile) return f;
-      return file(f);
+      return fsFile(f);
     }),
     filesArrayMethods,
   );
 
-export const filesFromDir =
+/**
+ * @deprecated Changed to avoid namespacing conflicts. Use {@link fsFiles} instead
+ */
+export const files = fsFiles;
+
+/**
+ * Create a new FsFileArray instance with the provided files relative to the cwd directory.
+ * @param dir - The cwd directory
+ * @param files - An array of relative paths from the cwd directory
+ * @returns A new FsFileArray instance
+ */
+export const fsFilesFromDir =
   (dir: FsDir) =>
   (files: Array<FsFile<any> | AnyPath>): FsFileArray =>
     enhance(
@@ -78,3 +94,8 @@ export const filesFromDir =
       }),
       filesArrayMethods,
     );
+
+/**
+ * @deprecated Changed to match naming convention. Use {@link fsFilesFromDir} instead
+ */
+export const filesFromDir = fsFilesFromDir;

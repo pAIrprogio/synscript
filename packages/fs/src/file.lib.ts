@@ -1183,4 +1183,9 @@ class FsFileWrite<
  * const existingFile = file(file("/path/to/existing.txt"));
  * ```
  */
+export const fsFile = FsFile.from;
+
+/**
+ * @deprecated Changed to avoid namespacing conflicts. Use {@link fsFile} instead
+ */
 export const file = FsFile.from;
