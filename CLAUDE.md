@@ -45,16 +45,17 @@ Synstack is a TypeScript monorepo providing modular utilities for building LLM a
 
 1. **Immutable, Chainable APIs**: All packages implement fluent interfaces that return new instances.
 
-2. **Builder Pattern**: Complex objects (completions, messages) use builder patterns. See `CompletionBuilder` in `@synstack/llm` for the primary example.
+2. **Builder Pattern**: Complex objects (completions, messages) use builder patterns. See [`CompletionBuilder`](./packages/llm/src/completion.builder.ts) in `@synstack/llm` for the primary example.
 
 ## Key Packages
 
-- `@synstack/llm`: Core LLM operations, wraps Vercel AI SDK
-- `@synstack/fs`: Immutable file system operations
-- `@synstack/fs-cache`: Caching middleware for LLM calls
-- `@synstack/json`, `@synstack/yaml`, `@synstack/xml`: Data format handlers
-- `@synstack/enhance`: Base classes for wrapping values in Proxy objects and adding methods
-- `@synstack/reforge`: IDE integration and development tools
+- [`@synstack/fs`](./packages/fs/README.md): Immutable file system operations
+- [`@synstack/str`](./packages/str/README.md): Pipeable string manipulation utilities
+- [`@synstack/text`](./packages/text/README.md): Advanced string templating with async support
+- [`@synstack/fs-cache`](./packages/fs-cache/README.md): Caching middleware engine
+- [`@synstack/json`](./packages/json/README.md), [`@synstack/yaml`](./packages/yaml/README.md), [`@synstack/xml`](./packages/xml/README.md): Data format handlers
+- [`@synstack/llm`](./packages/llm/README.md): Core LLM operations, wraps Vercel AI SDK
+- [`@synstack/query`](./packages/query/README.md): Query engine builder
 
 ## Important Notes
 
@@ -65,5 +66,5 @@ Synstack is a TypeScript monorepo providing modular utilities for building LLM a
 
 Always read the relevant rules before writing code.
 
-- [Typescript](.llm/rules/typescript.rules.md)
-- [Unit Tests](.llm/rules/unit-test.rules.md)
+- [Typescript](./llm/rules/typescript.rules.md)
+- [Unit Tests](./llm/rules/unit-test.rules.md)
