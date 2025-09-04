@@ -37,9 +37,10 @@ export function getPatternName(patternDir: FsDir, patternFile: FsFile) {
 export async function getPatterns<CONFIG_SCHEMA extends z.ZodObject<any>>(
   cwd: FsDir,
   configSchema: CONFIG_SCHEMA,
+  glob: string = "**/*.md",
 ) {
   const patternFiles = await cwd
-    .glob("**/*.md")
+    .glob(glob)
     // Sort by path
     .then((files) =>
       files.sort((a, b) =>

@@ -18,6 +18,7 @@ export class MarkdownPatternsEngine<
   private _configSchema;
   private _cwd;
   private _queryEngine;
+  private _glob: string = "**/*.md";
   private _patternsPromise: Promise<Pattern<CONFIG_SCHEMA>[]> | null = null;
   private _patternsMapPromise: Promise<
     Map<string, Pattern<CONFIG_SCHEMA>>
@@ -30,10 +31,12 @@ export class MarkdownPatternsEngine<
     cwd: FsDir,
     queryEngine: QueryEngine<any, INPUT>,
     configSchema: CONFIG_SCHEMA,
+    glob: string = "**/*.md",
   ) {
     this._cwd = cwd;
     this._queryEngine = queryEngine;
     this._configSchema = configSchema;
+    this._glob = glob;
   }
 
   public static cwd<INPUT = unknown>(cwd: FsDir) {
@@ -54,7 +57,7 @@ export class MarkdownPatternsEngine<
     const newSchema = this._configSchema.omit({ query: true }).extend({
       query: queryEngine.schema,
     }) as CONFIG_SCHEMA;
-    return new MarkdownPatternsEngine(this._cwd, queryEngine, newSchema);
+    return new MarkdownPatternsEngine(this._cwd, queryEngine, newSchema, this._glob);
   }
 
   public setConfigSchema<NEW_CONFIG_SCHEMA extends z.ZodObject<any>>(
@@ -68,11 +71,16 @@ export class MarkdownPatternsEngine<
       }) as NEW_CONFIG_SCHEMA extends z.ZodObject<infer T>
         ? z.ZodObject<T & { query: z.ZodType<unknown> }>
         : never,
+      this._glob,
     );
   }
 
+  public setGlob(glob: string) {
+    return new MarkdownPatternsEngine(this._cwd, this._queryEngine, this._configSchema, glob);
+  }
+
   public async refreshPatterns() {
-    this._patternsPromise = getPatterns(this._cwd, this.schema);
+    this._patternsPromise = getPatterns(this._cwd, this.schema, this._glob);
     this._patternsMapPromise = this._patternsPromise.then(
       (patterns) =>
         new Map(patterns.map((pattern) => [pattern.$name, pattern])),
@@ -82,7 +90,7 @@ export class MarkdownPatternsEngine<
 
   public async getPatterns() {
     if (!this._patternsPromise) {
-      this._patternsPromise = getPatterns(this._cwd, this.schema);
+      this._patternsPromise = getPatterns(this._cwd, this.schema, this._glob);
     }
     return this._patternsPromise;
   }

@@ -131,6 +131,29 @@ describe("PatternEngine", () => {
     });
   });
 
+  describe("setGlob", () => {
+    it("returns a new instance with custom glob pattern", () => {
+      const engine1 = MarkdownPatternsEngine.cwd(testPatternsDir);
+      const engine2 = engine1.setGlob("simple/**/*.md");
+
+      assert.notEqual(engine1, engine2);
+    });
+
+    it("filters patterns using custom glob pattern", async () => {
+      const engine = MarkdownPatternsEngine.cwd<TestInput>(testPatternsDir)
+        .setQueryEngine(createTestQueryEngine())
+        .setGlob("simple/**/*.md");
+
+      const patterns = await engine.getPatterns();
+      const patternNames = patterns.map((p) => p.$name);
+
+      // Should only find patterns from the simple directory
+      assert.ok(patternNames.includes("simple/basic"));
+      assert.ok(!patternNames.some((name) => name.startsWith("nested/")));
+      assert.ok(!patternNames.some((name) => name.startsWith("complex/")));
+    });
+  });
+
   describe("getPatterns", () => {
     it("loads patterns from markdown files", async () => {
       const engine = MarkdownPatternsEngine.cwd<TestInput>(
