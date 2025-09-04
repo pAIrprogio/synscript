@@ -45,9 +45,9 @@ pnpm add @synstack/fs-cache
 Cache directory can be initialized using an `FsDir` instance:
 
 ```typescript
-import { dir } from "@synstack/fs";
+import { fsDir } from "@synstack/fs";
 
-const cacheDir = dir(".cache");
+const cacheDir = fsDir(".cache");
 const cache = fsCache(cacheDir);
 ```
 

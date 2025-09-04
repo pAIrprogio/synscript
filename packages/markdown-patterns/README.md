@@ -8,11 +8,11 @@ This package provides a powerful pattern engine that allows you to organize conf
 
 ```typescript
 import { PatternEngine } from "@synstack/pattern";
-import { dir } from "@synstack/fs";
+import { fsDir } from "@synstack/fs";
 import { z } from "zod";
 
 // Create a pattern engine for a directory containing .md pattern files
-const engine = PatternEngine.cwd(dir("./patterns"));
+const engine = PatternEngine.cwd(fsDir("./patterns"));
 
 // Find all patterns that match specific input
 const matchingPatterns = await engine.matchingPatterns(inputData);

@@ -1,4 +1,4 @@
-import { dir, FsDir } from "@synstack/fs";
+import { fsDir, FsDir } from "@synstack/fs";
 import { type OneToN } from "../../shared/src/ts.utils.ts";
 import { deepEqual } from "./deepEqual.lib.ts";
 
@@ -82,7 +82,7 @@ export class FsCache<
     args: TFnArgs,
   ) {
     const relativePath = FsCache.keyToRelativePath(this._config.key, args);
-    const cacheDir = dir(this._config.cwd);
+    const cacheDir = fsDir(this._config.cwd);
     const file = cacheDir.file(relativePath);
 
     if (!(await file.exists())) {
@@ -105,7 +105,7 @@ export class FsCache<
     args: TFnArgs,
   ): Promise<["miss", null] | ["hit", TValue]> {
     const relativePath = FsCache.keyToRelativePath(this._config.key, args);
-    const cacheDir = dir(this._config.cwd);
+    const cacheDir = fsDir(this._config.cwd);
 
     if (!(await cacheDir.file(relativePath).exists())) return ["miss", null];
 
@@ -140,7 +140,7 @@ export class FsCache<
     value: any,
   ) {
     const relativePath = FsCache.keyToRelativePath(this._config.key, args);
-    const file = dir(this._config.cwd).file(relativePath);
+    const file = fsDir(this._config.cwd).file(relativePath);
     return file.write.text(
       JSON.stringify(
         {

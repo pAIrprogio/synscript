@@ -9,8 +9,10 @@ This package provides a strongly-typed, chainable, and immutable API for file sy
 Turn verbose file operations into chainable, immutable, and strongly-typed commands:
 
 ```typescript
+import { fsDir } from "@synstack/fs";
+
 // Chain directory and file operations
-const srcDir = dir("./src");
+const srcDir = fsDir("./src");
 
 // Recursively create directories
 await srcDir.to("dist/assets/images").make();
@@ -72,10 +74,10 @@ Create and work with files using the `file()` function:
 #### Basic Operations
 
 ```typescript
-import { file } from "@synstack/fs";
+import { fsFile } from "@synstack/fs";
 
 // Create a file instance
-const myFile = file("/path/to/file.txt");
+const myFile = fsFile("/path/to/file.txt");
 
 // Check file existence
 await myFile.exists(); // Promise<boolean>
@@ -97,7 +99,7 @@ myFile.creationDateSync(); // Date
 #### Path Operations
 
 ```typescript
-const myFile = file("/path/to/file.txt");
+const myFile = fsFile("/path/to/file.txt");
 
 // Get path information
 myFile.path; // "/path/to/file.txt"
@@ -170,10 +172,11 @@ await myFile.write.mode("overwrite").text("content"); // Default behavior
 #### Schema Validation
 
 ```typescript
+import { fsFile } from "@synstack/fs";
 import { z } from "zod";
 
 const schema = z.object({ name: z.string() });
-const configFile = file("config.json").schema(schema);
+const configFile = fsFile("config.json").schema(schema);
 
 // Read with validation
 const config = await configFile.read.json();
@@ -188,9 +191,9 @@ Work with directories using the `dir()` function:
 #### Basic Operations
 
 ```typescript
-import { dir } from "@synstack/fs";
+import { fsDir } from "@synstack/fs";
 
-const myDir = dir("/path/to/directory");
+const myDir = fsDir("/path/to/directory");
 
 // Check existence
 await myDir.exists(); // Promise<boolean>
@@ -251,14 +254,14 @@ await myDir.exec`echo "Hello, world!"`;
 Work with collections of files using powerful array methods:
 
 ```typescript
-import { dir, files } from "@synstack/fs";
+import { fsDir, fsFiles } from "@synstack/fs";
 
 // Create from directory
-const sourceDir = dir("./src");
+const sourceDir = fsDir("./src");
 const fileArray = await sourceDir.glob("**/*");
 
 // Create from paths
-const customArray = files(["/path/to/file1.txt", "/path/to/file2.txt"]);
+const customArray = fsFiles(["/path/to/file1.txt", "/path/to/file2.txt"]);
 
 // Filtering
 fileArray.filter((file) => file.fileExtension() === ".ts");

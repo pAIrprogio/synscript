@@ -23,7 +23,7 @@ export class FsDir extends Pipeable<FsDir> {
    * @returns The absolute path of the directory as a string
    *
    * ```typescript
-   * const srcDir = dir("./src");
+   * const srcDir = fsDir("./src");
    * console.log(srcDir.toString()); // "/absolute/path/to/src"
    * ```
    */
@@ -56,7 +56,7 @@ export class FsDir extends Pipeable<FsDir> {
    * @returns The absolute path as a string
    *
    * ```typescript
-   * const srcDir = dir("./src");
+   * const srcDir = fsDir("./src");
    * console.log(srcDir.path); // "/absolute/path/to/src"
    * ```
    */
@@ -95,13 +95,13 @@ export class FsDir extends Pipeable<FsDir> {
    *
    * ```typescript
    * // Create from absolute path
-   * const rootDir = dir("/path/to/project");
+   * const rootDir = fsDir("/path/to/project");
    *
    * // Create from relative path
-   * const srcDir = dir("./src");
+   * const srcDir = fsDir("./src");
    *
    * // Create from existing directory
-   * const existingDir = dir(dir("/path/to/existing"));
+   * const existingDir = fsDir(fsDir("/path/to/existing"));
    * ```
    */
   public static cwd(this: void, arg: FsDir | AnyPath): FsDir;
@@ -118,7 +118,7 @@ export class FsDir extends Pipeable<FsDir> {
    * @returns A new FsDir instance representing the combined path
    *
    * ```typescript
-   * const projectDir = dir("/path/to/project");
+   * const projectDir = fsDir("/path/to/project");
    *
    * // Navigate to subdirectories
    * const srcDir = projectDir.toDir("src");
@@ -141,7 +141,7 @@ export class FsDir extends Pipeable<FsDir> {
    * @returns A new FsDir instance representing the combined path
    *
    * ```typescript
-   * const projectDir = dir("/path/to/project");
+   * const projectDir = fsDir("/path/to/project");
    *
    * // Navigate to subdirectories
    * const srcDir = projectDir.to("src");
@@ -164,7 +164,7 @@ export class FsDir extends Pipeable<FsDir> {
    * @throws If an absolute path is provided
    *
    * ```typescript
-   * const srcDir = dir("./src");
+   * const srcDir = fsDir("./src");
    *
    * // Access files in the directory
    * const configFile = srcDir.toFile("config.json");
@@ -193,7 +193,7 @@ Trying to access a dir file from an absolute paths:
    * @throws If an absolute path is provided
    *
    * ```typescript
-   * const srcDir = dir("./src");
+   * const srcDir = fsDir("./src");
    *
    * // Access files in the directory
    * const configFile = srcDir.file("config.json");
@@ -213,7 +213,7 @@ Trying to access a dir file from an absolute paths:
    * @returns The directory name without the full path
    *
    * ```typescript
-   * const srcDir = dir("/path/to/project/src");
+   * const srcDir = fsDir("/path/to/project/src");
    * console.log(srcDir.name()); // "src"
    * ```
    */
@@ -227,7 +227,7 @@ Trying to access a dir file from an absolute paths:
    * @returns A promise that resolves to true if the directory exists, false otherwise
    *
    * ```typescript
-   * const configDir = dir("./config");
+   * const configDir = fsDir("./config");
    *
    * if (await configDir.exists()) {
    *   // Directory exists, safe to use
@@ -252,7 +252,7 @@ Trying to access a dir file from an absolute paths:
    * @returns True if the directory exists, false otherwise
    *
    * ```typescript
-   * const configDir = dir("./config");
+   * const configDir = fsDir("./config");
    *
    * if (configDir.existsSync()) {
    *   // Directory exists, safe to use
@@ -279,7 +279,7 @@ Trying to access a dir file from an absolute paths:
    * @returns A promise that resolves when the directory is created
    *
    * ```typescript
-   * const assetsDir = dir("./dist/assets/images");
+   * const assetsDir = fsDir("./dist/assets/images");
    *
    * // Creates all necessary parent directories
    * await assetsDir.make();
@@ -295,7 +295,7 @@ Trying to access a dir file from an absolute paths:
    * @synchronous
    *
    * ```typescript
-   * const assetsDir = dir("./dist/assets/images");
+   * const assetsDir = fsDir("./dist/assets/images");
    *
    * // Creates all necessary parent directories immediately
    * assetsDir.makeSync();
@@ -336,7 +336,7 @@ Trying to access a dir file from an absolute paths:
    * @returns A promise that resolves when the directory is removed
    *
    * ```typescript
-   * const tempDir = dir("./temp");
+   * const tempDir = fsDir("./temp");
    *
    * // Remove directory and all contents
    * await tempDir.rm();
@@ -356,7 +356,7 @@ Trying to access a dir file from an absolute paths:
    * @synchronous
    *
    * ```typescript
-   * const tempDir = dir("./temp");
+   * const tempDir = fsDir("./temp");
    *
    * // Remove directory and all contents immediately
    * tempDir.rmSync();
@@ -378,7 +378,7 @@ Trying to access a dir file from an absolute paths:
    * @returns A promise that resolves to an FsFileArray containing the matching files
    *
    * ```typescript
-   * const srcDir = dir("./src");
+   * const srcDir = fsDir("./src");
    *
    * // Find all TypeScript files
    * const tsFiles = await srcDir.glob("**\/*.ts");
@@ -406,7 +406,7 @@ Trying to access a dir file from an absolute paths:
    * @synchronous
    *
    * ```typescript
-   * const srcDir = dir("./src");
+   * const srcDir = fsDir("./src");
    *
    * // Find all TypeScript files synchronously
    * const tsFiles = srcDir.globSync("**\/*.ts");
@@ -468,7 +468,7 @@ Trying to access a dir file from an absolute paths:
    * @returns A promise that resolves to an FsFileArray containing the git-tracked files
    *
    * ```typescript
-   * const projectDir = dir("./project");
+   * const projectDir = fsDir("./project");
    *
    * // Get all git-tracked files in the directory
    * const trackedFiles = await projectDir.gitLs();
@@ -503,13 +503,13 @@ Trying to access a dir file from an absolute paths:
  *
  * ```typescript
  * // Create from absolute path
- * const rootDir = dir("/path/to/project");
+ * const rootDir = fsDir("/path/to/project");
  *
  * // Create from relative path
- * const srcDir = dir("./src");
+ * const srcDir = fsDir("./src");
  *
  * // Create from existing directory
- * const existingDir = dir(dir("/path/to/existing"));
+ * const existingDir = fsDir(fsDir("/path/to/existing"));
  * ```
  */
 export const fsDir = FsDir.cwd;

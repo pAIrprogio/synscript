@@ -1,9 +1,9 @@
-import { dir } from "@synstack/fs";
+import { fsDir } from "@synstack/fs";
 import assert from "node:assert/strict";
 import { afterEach, describe, it } from "node:test";
 import { fsCache } from "./fs-cache.lib.ts";
 
-const TMP_DIR = dir(import.meta.dirname).to("tmp");
+const TMP_DIR = fsDir(import.meta.dirname).to("tmp");
 
 describe("FsCache", () => {
   afterEach(async () => {

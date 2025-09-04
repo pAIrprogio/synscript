@@ -1,4 +1,4 @@
-import { dir } from "@synstack/fs";
+import { fsDir } from "@synstack/fs";
 import { QueryEngine } from "@synstack/query";
 import assert from "node:assert/strict";
 import { describe, it } from "node:test";
@@ -8,7 +8,7 @@ import { MarkdownPatternsEngine } from "./markdown-patterns.engine.ts";
 
 const currentDirectoryPath =
   import.meta.dirname || path.dirname(import.meta.url.replace("file://", ""));
-const testPatternsDir = dir(currentDirectoryPath).to(".test/patterns");
+const testPatternsDir = fsDir(currentDirectoryPath).to(".test/patterns");
 
 // Simple test input type
 type TestInput = {

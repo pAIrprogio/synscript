@@ -35,15 +35,15 @@ export interface Base64Data {
  * @typeParam TSchema - Optional Zod schema for validating JSON/YAML data
  *
  * ```typescript
- * import { file } from "@synstack/fs";
+ * import { fsFile } from "@synstack/fs";
  *
  * // Create a file instance
- * const configFile = file("./config.json")
+ * const configFile = fsFile("./config.json")
  *   .schema(ConfigSchema)
  *   .read.json();
  *
  * // Write text with different encodings
- * const logFile = file("./log.txt")
+ * const logFile = fsFile("./log.txt")
  *   .write.text("Hello World");
  * ```
  */
@@ -63,10 +63,10 @@ export class FsFile<
    * @returns A new FsFile instance with UTF-8 encoding
    *
    * ```typescript
-   * import { file } from "@synstack/fs";
+   * import { fsFile } from "@synstack/fs";
    *
-   * const relativeFile = file("./relative/path.txt");
-   * const existingFile = file(file("/path/to/existing.txt"));
+   * const relativeFile = fsFile("./relative/path.txt");
+   * const existingFile = fsFile(fsFile("/path/to/existing.txt"));
    * ```
    */
   public static from(this: void, arg: FsFile | AnyPath) {
@@ -97,7 +97,7 @@ export class FsFile<
    * @returns A new FsFile instance with the schema attached
    *
    * ```typescript
-   * import { file } from "@synstack/fs";
+   * import { fsFile } from "@synstack/fs";
    * import { z } from "zod";
    *
    * const ConfigSchema = z.object({
@@ -105,7 +105,7 @@ export class FsFile<
    *   host: z.string()
    * });
    *
-   * const config = await file("config.json")
+   * const config = await fsFile("config.json")
    *   .schema(ConfigSchema)
    *   .read.json();
    * // config is typed as { port: number, host: string }
@@ -143,9 +143,9 @@ export class FsFile<
    * @returns An FsFileRead instance with methods for reading the file
    *
    * ```typescript
-   * const content = await file("data.txt").read.text();
-   * const json = await file("config.json").read.json();
-   * const yaml = await file("config.yml").read.yaml();
+   * const content = await fsFile("data.txt").read.text();
+   * const json = await fsFile("config.json").read.json();
+   * const yaml = await fsFile("config.yml").read.yaml();
    * ```
    */
   public get read() {
@@ -163,9 +163,9 @@ export class FsFile<
    * @returns An FsFileWrite instance with methods for writing to the file
    *
    * ```typescript
-   * await file("data.txt").write.text("Hello");
-   * await file("config.json").write.json({ hello: "world" });
-   * await file("config.yml").write.yaml({ config: true });
+   * await fsFile("data.txt").write.text("Hello");
+   * await fsFile("config.json").write.json({ hello: "world" });
+   * await fsFile("config.yml").write.yaml({ config: true });
    * ```
    */
   public get write() {
@@ -205,7 +205,7 @@ export class FsFile<
    * @returns An FsDir instance for the parent directory
    *
    * ```typescript
-   * const file = file("/path/to/file.txt");
+   * const file = fsFile("/path/to/file.txt");
    * const parentDir = file.dir(); // FsDir for "/path/to"
    * ```
    */
@@ -219,7 +219,7 @@ export class FsFile<
    * @returns The file name with extension
    *
    * ```typescript
-   * const file = file("/path/to/document.txt");
+   * const file = fsFile("/path/to/document.txt");
    * console.log(file.fileName()); // "document.txt"
    * ```
    */
@@ -233,7 +233,7 @@ export class FsFile<
    * @returns The file extension including the dot (e.g., ".txt")
    *
    * ```typescript
-   * const file = file("/path/to/document.txt");
+   * const file = fsFile("/path/to/document.txt");
    * console.log(file.fileExtension()); // ".txt"
    * ```
    */
@@ -247,7 +247,7 @@ export class FsFile<
    * @returns The file name without extension
    *
    * ```typescript
-   * const file = file("/path/to/document.txt");
+   * const file = fsFile("/path/to/document.txt");
    * console.log(file.fileNameWithoutExtension()); // "document"
    * ```
    */
@@ -261,7 +261,7 @@ export class FsFile<
    * @returns The MIME type string or null if it cannot be determined
    *
    * ```typescript
-   * const file = file("/path/to/image.png");
+   * const file = fsFile("/path/to/image.png");
    * console.log(file.mimeType()); // "image/png"
    * ```
    */
@@ -276,9 +276,9 @@ export class FsFile<
    * @returns A new FsFile instance for the target path
    *
    * ```typescript
-   * import { file } from "@synstack/fs";
+   * import { fsFile } from "@synstack/fs";
    *
-   * const sourceFile = file("/path/to/source.txt");
+   * const sourceFile = fsFile("/path/to/source.txt");
    * const targetFile = sourceFile.toFile("../output/target.txt");
    * // targetFile.path === "/path/output/target.txt"
    * ```
@@ -295,9 +295,9 @@ export class FsFile<
    * @returns A new FsDir instance for the target directory
    *
    * ```typescript
-   * import { file } from "@synstack/fs";
+   * import { fsFile } from "@synstack/fs";
    *
-   * const sourceFile = file("/path/to/source.txt");
+   * const sourceFile = fsFile("/path/to/source.txt");
    * const outputDir = sourceFile.toDir("../output");
    * // outputDir.path === "/path/output"
    * ```
@@ -311,10 +311,10 @@ export class FsFile<
    * Get the relative path from another file to this file
    *
    * ```ts
-   * import { file } from "@synstack/fs";
+   * import { fsFile } from "@synstack/fs";
    *
-   * const file1 = file("/path/to/file1.txt");
-   * const file2 = file("/path/to-other/file2.txt");
+   * const file1 = fsFile("/path/to/file1.txt");
+   * const file2 = fsFile("/path/to-other/file2.txt");
    *
    * console.log(file1.relativePathFrom(file2)); // ../to/file1.txt
    * ```
@@ -329,10 +329,10 @@ export class FsFile<
    * Get the relative path to go from this file to another
    *
    * ```ts
-   * import { file } from "@synstack/fs";
+   * import { fsFile } from "@synstack/fs";
    *
-   * const file1 = file("/path/to/file1.txt");
-   * const file2 = file("/path/to-other/file2.txt");
+   * const file1 = fsFile("/path/to/file1.txt");
+   * const file2 = fsFile("/path/to-other/file2.txt");
    *
    * console.log(file1.relativePathTo(file2)); // ../to-other/file2.txt
    * ```
@@ -348,11 +348,11 @@ export class FsFile<
    * @returns True if the file is in the directory, false otherwise
    *
    * ```typescript
-   * import { file, dir } from "@synstack/fs";
+   * import { fsFile, fsDir } from "@synstack/fs";
    *
-   * const sourceFile = file("/path/to/file.txt");
-   * console.log(sourceFile.isInDir(dir("/path"))); // true
-   * console.log(sourceFile.isInDir(dir("/other"))); // false
+   * const sourceFile = fsFile("/path/to/file.txt");
+   * console.log(sourceFile.isInDir(fsDir("/path"))); // true
+   * console.log(sourceFile.isInDir(fsDir("/other"))); // false
    * ```
    */
   public isInDir(dirOrPath: AnyPath | FsDir) {
@@ -366,9 +366,9 @@ export class FsFile<
    * @returns A promise that resolves when the file is deleted
    *
    * ```typescript
-   * import { file } from "@synstack/fs";
+   * import { fsFile } from "@synstack/fs";
    *
-   * const tempFile = file("./temp.txt");
+   * const tempFile = fsFile("./temp.txt");
    * await tempFile.write.text("temporary content");
    * await tempFile.remove(); // File is deleted
    * ```
@@ -394,9 +394,9 @@ export class FsFile<
    * @synchronous
    *
    * ```typescript
-   * import { file } from "@synstack/fs";
+   * import { fsFile } from "@synstack/fs";
    *
-   * const tempFile = file("./temp.txt");
+   * const tempFile = fsFile("./temp.txt");
    * tempFile.write.textSync("temporary content");
    * tempFile.removeSync(); // File is deleted immediately
    * ```
@@ -447,9 +447,9 @@ export class FsFile<
    * @returns A promise that resolves to true if the file exists, false otherwise
    *
    * ```typescript
-   * import { file } from "@synstack/fs";
+   * import { fsFile } from "@synstack/fs";
    *
-   * const configFile = file("./config.json");
+   * const configFile = fsFile("./config.json");
    * if (await configFile.exists()) {
    *   const config = await configFile.read.json();
    * }
@@ -469,9 +469,9 @@ export class FsFile<
    * @returns True if the file exists, false otherwise
    *
    * ```typescript
-   * import { file } from "@synstack/fs";
+   * import { fsFile } from "@synstack/fs";
    *
-   * const configFile = file("./config.json");
+   * const configFile = fsFile("./config.json");
    * if (configFile.existsSync()) {
    *   const config = configFile.read.jsonSync();
    * }
@@ -494,9 +494,9 @@ export class FsFile<
    * @throws If the file doesn't exist or cannot be accessed
    *
    * ```typescript
-   * import { file } from "@synstack/fs";
+   * import { fsFile } from "@synstack/fs";
    *
-   * const sourceFile = file("./source.txt");
+   * const sourceFile = fsFile("./source.txt");
    * const created = await sourceFile.creationDate();
    * console.log(`File created on: ${created.toISOString()}`);
    * ```
@@ -514,9 +514,9 @@ export class FsFile<
    * @throws If the file doesn't exist or cannot be accessed
    *
    * ```typescript
-   * import { file } from "@synstack/fs";
+   * import { fsFile } from "@synstack/fs";
    *
-   * const sourceFile = file("./source.txt");
+   * const sourceFile = fsFile("./source.txt");
    * const created = sourceFile.creationDateSync();
    * console.log(`File created on: ${created.toISOString()}`);
    * ```
@@ -533,9 +533,9 @@ export class FsFile<
    * @returns True if the file matches any pattern, false otherwise
    *
    * ```typescript
-   * import { file } from "@synstack/fs";
+   * import { fsFile } from "@synstack/fs";
    *
-   * const sourceFile = file("./src/components/Button.tsx");
+   * const sourceFile = fsFile("./src/components/Button.tsx");
    * console.log(sourceFile.matchesGlobs("**\/*.tsx")); // true
    * console.log(sourceFile.matchesGlobs(["*.css", "*.html"])); // false
    * console.log(sourceFile.matchesGlobs("**\/*.ts", "**\/*.tsx")); // true
@@ -549,9 +549,9 @@ export class FsFile<
    * Capture parts of the file path using a glob pattern
    *
    * ```ts
-   * import { file } from "@synstack/fs";
+   * import { fsFile } from "@synstack/fs";
    *
-   * const myFile = file("/my-domain/my-sub-domain/features/feature-name.controller.ts");
+   * const myFile = fsFile("/my-domain/my-sub-domain/features/feature-name.controller.ts");
    * const res = myFile.globCapture("/(*)/(*)/features/(*).controller.ts");
    * if (!res) throw new Error("File doesn't match glob pattern");
    * console.log(res[1]); // my-domain
@@ -591,7 +591,7 @@ class FsFileRead<
    * @throws If the file doesn't exist or cannot be read
    *
    * ```typescript
-   * const content = await file("data.txt").read.text();
+   * const content = await fsFile("data.txt").read.text();
    * console.log(content); // "Hello, World!"
    * ```
    */
@@ -607,7 +607,7 @@ class FsFileRead<
    * @throws If the file doesn't exist or cannot be read
    *
    * ```typescript
-   * const content = file("data.txt").read.textSync();
+   * const content = fsFile("data.txt").read.textSync();
    * console.log(content); // "Hello, World!"
    * ```
    */
@@ -623,7 +623,7 @@ class FsFileRead<
    * @throws If the file doesn't exist or cannot be read
    *
    * ```typescript
-   * const content = await file("data.txt").read.str();
+   * const content = await fsFile("data.txt").read.str();
    * const lines = content
    *   .split("\n")
    *   .filter((line) => line.trim().length > 0);
@@ -642,7 +642,7 @@ class FsFileRead<
    * @throws If the file doesn't exist or cannot be read
    *
    * ```typescript
-   * const content = file("data.txt").read.strSync();
+   * const content = fsFile("data.txt").read.strSync();
    * const lines = content
    *   .split("\n")
    *   .filter((line) => line.trim().length > 0);
@@ -666,7 +666,7 @@ class FsFileRead<
    *   host: string;
    * }
    *
-   * const config = await file("config.json")
+   * const config = await fsFile("config.json")
    *   .schema(ConfigSchema)
    *   .read.json();
    * // config is automatically typed as the schema's output type
@@ -690,7 +690,7 @@ class FsFileRead<
    * @throws If schema validation fails when a schema is provided
    *
    * ```typescript
-   * const config = file("config.json")
+   * const config = fsFile("config.json")
    *   .schema(ConfigSchema)
    *   .read.jsonSync();
    * // config is automatically typed as the schema's output type
@@ -719,7 +719,7 @@ class FsFileRead<
    *   settings: Record<string, unknown>;
    * }
    *
-   * const config = await file("config.yml")
+   * const config = await fsFile("config.yml")
    *   .schema(ConfigSchema)
    *   .read.yaml();
    * // config is automatically typed as the schema's output type
@@ -744,7 +744,7 @@ class FsFileRead<
    * @throws If schema validation fails when a schema is provided
    *
    * ```typescript
-   * const config = file("config.yml")
+   * const config = fsFile("config.yml")
    *   .schema(ConfigSchema)
    *   .read.yamlSync();
    * // config is automatically typed as the schema's output type
@@ -774,7 +774,7 @@ class FsFileRead<
    *   children: Array<XmlNode>;
    * }
    *
-   * const nodes = await file("data.xml").read.xml<XmlNode[]>();
+   * const nodes = await fsFile("data.xml").read.xml<XmlNode[]>();
    * console.log(nodes[0].tag); // "root"
    * console.log(nodes[0].attributes.id); // "main"
    * ```
@@ -799,7 +799,7 @@ class FsFileRead<
    * @see {@link https://github.com/pAIrprogio/synscript/tree/main/packages/xml|@synstack/xml documentation}
    *
    * ```typescript
-   * const nodes = file("data.xml").read.xmlSync<XmlNode[]>();
+   * const nodes = fsFile("data.xml").read.xmlSync<XmlNode[]>();
    * console.log(nodes[0].tag); // "root"
    * console.log(nodes[0].attributes.id); // "main"
    * ```
@@ -822,7 +822,7 @@ class FsFileRead<
    *
    * ```typescript
    * // Read and encode an image file
-   * const imageBase64 = await file("image.png").read.base64();
+   * const imageBase64 = await fsFile("image.png").read.base64();
    * console.log(imageBase64); // "iVBORw0KGgoAAAANSUhEUgAA..."
    *
    * // Create a data URL for use in HTML/CSS
@@ -842,7 +842,7 @@ class FsFileRead<
    * @throws If the file doesn't exist or cannot be read
    *
    * ```typescript
-   * const imageBase64 = file("image.png").read.base64Sync();
+   * const imageBase64 = fsFile("image.png").read.base64Sync();
    * const dataUrl = `data:image/png;base64,${imageBase64}`;
    * ```
    */
@@ -860,7 +860,7 @@ class FsFileRead<
    *
    * ```typescript
    * // Read an image with automatic MIME type detection
-   * const imageData = await file("image.png").read.base64Data();
+   * const imageData = await fsFile("image.png").read.base64Data();
    * console.log(imageData);
    * // {
    * //   type: "base64",
@@ -869,7 +869,7 @@ class FsFileRead<
    * // }
    *
    * // Specify a custom MIME type for a binary file
-   * const data = await file("custom.bin")
+   * const data = await fsFile("custom.bin")
    *   .read.base64Data("application/custom");
    * ```
    */
@@ -893,7 +893,7 @@ class FsFileRead<
    * @throws If the file doesn't exist or cannot be read
    *
    * ```typescript
-   * const imageData = file("image.png").read.base64DataSync();
+   * const imageData = fsFile("image.png").read.base64DataSync();
    * console.log(imageData);
    * // {
    * //   type: "base64",
@@ -1177,10 +1177,10 @@ class FsFileWrite<
  * @returns A new FsFile instance with UTF-8 encoding
  *
  * ```typescript
- * import { file } from "@synstack/fs";
+ * import { fsFile } from "@synstack/fs";
  *
- * const relativeFile = file("./relative/path.txt");
- * const existingFile = file(file("/path/to/existing.txt"));
+ * const relativeFile = fsFile("./relative/path.txt");
+ * const existingFile = fsFile(fsFile("/path/to/existing.txt"));
  * ```
  */
 export const fsFile = FsFile.from;
