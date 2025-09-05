@@ -31,6 +31,7 @@
   "license": "Apache-2.0",
   "scripts": {
     "build": "tsup",
+    "prepack": "pnpm build",
     "build:watch": "tsup --watch",
     "test:types": "tsc --noEmit",
     "test:unit": "node --experimental-strip-types --experimental-test-snapshots --no-warnings --test src/**/*.test.ts",

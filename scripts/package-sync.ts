@@ -48,6 +48,7 @@ await Promise.all(
       scripts: {
         ...packageJson.scripts,
         build: "tsup",
+        prepack: "pnpm build",
         "build:watch": "tsup --watch",
         "test:types": "tsc --noEmit",
         "test:unit":

@@ -32,6 +32,7 @@
   "scripts": {
     "build": "tsup",
     "build:watch": "tsup --watch",
+    "prepack": "pnpm build",
     "test:types": "tsc --noEmit",
     "test:unit": "node --experimental-strip-types --experimental-test-snapshots --no-warnings --test src/**/*.test.ts",
     "test:unit:watch": "node --experimental-strip-types --experimental-test-snapshots --no-warnings --watch --test --watch src/**/*.test.ts",
@@ -61,13 +62,13 @@
     "typescript": "^5.8.3",
     "zod": "^3.25.67"
   },
+  "peerDependencies": {
+    "@synstack/query": "^1.0.2",
+    "zod": "^3.25.67 || ^4.0.0"
+  },
   "files": [
     "src/**/*.ts",
     "!src/**/*.test.ts",
     "dist/**/*"
-  ],
-  "peerDependencies": {
-    "@synstack/query": "^1.0.2",
-    "zod": "^3.25.67 || ^4.0.0"
-  }
+  ]
 }

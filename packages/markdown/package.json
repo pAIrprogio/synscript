@@ -29,6 +29,7 @@
   "scripts": {
     "build": "tsup",
     "build:watch": "tsup --watch",
+    "prepack": "pnpm build",
     "test:types": "tsc --noEmit",
     "test:unit": "node --experimental-strip-types --experimental-test-snapshots --no-warnings --test src/**/*.test.ts",
     "test:unit:watch": "node --experimental-strip-types --experimental-test-snapshots --no-warnings --watch --test --watch src/**/*.test.ts",
