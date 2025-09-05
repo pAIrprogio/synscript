@@ -3,8 +3,9 @@
 Pattern-based configuration engine with query matching capabilities
 
 ## What is it for?
-
-This package provides a powerful pattern engine that allows you to organize configuration data in markdown files and query them using sophisticated matching logic. It's perfect for creating rule-based systems, configuration hierarchies, and pattern-matching workflows.
+- Matches markdown files based on provided entry data
+- Supports hierarchical pattern inheritance
+- Supports custom query engines and schema validation
 
 ```typescript
 import { PatternEngine } from "@synstack/pattern";
