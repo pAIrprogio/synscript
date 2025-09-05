@@ -11,7 +11,7 @@ export class QueryEngine<PREDICATES = never, INPUT = never> {
   private predicates: Array<QueryPredicate<string, any, INPUT>>;
   private _schema: z.ZodType<BasePredicates<PREDICATES>>;
 
-  private constructor(predicates: Array<QueryPredicate<string, any, INPUT>>) {
+  protected constructor(predicates: Array<QueryPredicate<string, any, INPUT>>) {
     this.predicates = predicates;
     // Build schema once in constructor instead of rebuilding on every access
     this._schema = querySchema(
