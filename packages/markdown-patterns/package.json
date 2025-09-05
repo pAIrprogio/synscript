@@ -4,7 +4,7 @@
   "publishConfig": {
     "access": "public"
   },
-  "version": "1.1.1",
+  "version": "2.0.0",
   "description": "Query-based configuration engine for markdown files",
   "keywords": [
     "pattern",
