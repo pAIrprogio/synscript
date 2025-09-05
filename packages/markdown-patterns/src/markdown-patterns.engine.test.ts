@@ -166,7 +166,7 @@ describe("PatternEngine", () => {
       assert.ok(basicPattern);
       assert.deepEqual(basicPattern.query, { always: true });
       assert.deepEqual(
-        basicPattern.$prompt,
+        basicPattern.$content,
         "This is a simple test pattern that always matches.",
       );
 
@@ -238,7 +238,7 @@ query:
           (p) => p.$name === "empty-prompt" || p.$name === "/empty-prompt",
         );
         assert.ok(emptyPromptPattern);
-        assert.deepEqual(emptyPromptPattern.$prompt, null);
+        assert.deepEqual(emptyPromptPattern.$content, null);
       } finally {
         // Always clean up
         if (await emptyPromptFile.exists()) {
