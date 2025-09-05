@@ -112,7 +112,7 @@ export class Glob {
   private readonly _cwd: string;
   private readonly _options: GlobOptions;
 
-  private constructor(
+  protected constructor(
     cwd: string = ".",
     options: GlobOptions = {
       nodir: true,

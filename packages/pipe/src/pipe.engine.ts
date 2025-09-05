@@ -10,7 +10,7 @@ type ZodSchema<OUT = any, IN = any> =
 export class Pipe<INPUT, OUTPUT> {
   private readonly _fns: Array<Pipe.Fn>;
 
-  private constructor(fns: Array<Pipe.Fn>) {
+  protected constructor(fns: Array<Pipe.Fn>) {
     this._fns = fns;
   }
 

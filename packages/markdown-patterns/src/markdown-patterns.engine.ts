@@ -27,7 +27,7 @@ export class MarkdownPatternsEngine<
     Map<string, Pattern<CONFIG_SCHEMA>[]>
   > | null = null;
 
-  private constructor(
+  protected constructor(
     cwd: FsDir,
     queryEngine: QueryEngine<any, INPUT>,
     configSchema: CONFIG_SCHEMA,
@@ -57,7 +57,12 @@ export class MarkdownPatternsEngine<
     const newSchema = this._configSchema.omit({ query: true }).extend({
       query: queryEngine.schema,
     }) as CONFIG_SCHEMA;
-    return new MarkdownPatternsEngine(this._cwd, queryEngine, newSchema, this._glob);
+    return new MarkdownPatternsEngine(
+      this._cwd,
+      queryEngine,
+      newSchema,
+      this._glob,
+    );
   }
 
   public setConfigSchema<NEW_CONFIG_SCHEMA extends z.ZodObject<any>>(
@@ -76,7 +81,12 @@ export class MarkdownPatternsEngine<
   }
 
   public setGlob(glob: string) {
-    return new MarkdownPatternsEngine(this._cwd, this._queryEngine, this._configSchema, glob);
+    return new MarkdownPatternsEngine(
+      this._cwd,
+      this._queryEngine,
+      this._configSchema,
+      glob,
+    );
   }
 
   public async refreshPatterns() {

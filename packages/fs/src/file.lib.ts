@@ -74,7 +74,7 @@ export class FsFile<
     return new FsFile<"utf-8", undefined>(path.resolve(arg), "utf-8");
   }
 
-  private constructor(path: AnyPath, encoding?: TEncoding, schema?: TSchema) {
+  protected constructor(path: AnyPath, encoding?: TEncoding, schema?: TSchema) {
     super();
     this._path = path;
     this._encoding = encoding ?? ("utf-8" as TEncoding);

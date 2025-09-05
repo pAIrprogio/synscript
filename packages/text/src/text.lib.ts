@@ -12,7 +12,7 @@ export class Text {
     joinString: string;
   };
 
-  private constructor(options: Text.Options = {}) {
+  protected constructor(options: Text.Options = {}) {
     this._options = {
       joinString: options.joinString ?? "\n",
     };

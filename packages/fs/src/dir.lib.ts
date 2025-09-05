@@ -12,7 +12,7 @@ import { fsFiles, fsFilesFromDir } from "./files-array.lib.ts";
 export class FsDir extends Pipeable<FsDir> {
   private readonly _path: AnyPath;
 
-  private constructor(path: AnyPath) {
+  protected constructor(path: AnyPath) {
     super();
     this._path = path;
   }

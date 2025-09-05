@@ -24,7 +24,7 @@ export class CompletionBuilder<OPTIONS extends Llm.Completion.Partial> {
 
   private readonly _options: OPTIONS;
 
-  private constructor(options: OPTIONS) {
+  protected constructor(options: OPTIONS) {
     this._options = options;
   }
 

@@ -180,7 +180,7 @@ export class MdDoc<SHAPE = never, DATA extends SHAPE | undefined = never> {
   private readonly _data: DATA;
   private readonly _options: { schema?: ZodSchema<SHAPE> };
 
-  private constructor(
+  protected constructor(
     data: DATA,
     body: string,
     options: { schema?: ZodSchema<SHAPE, SHAPE> } = {},
