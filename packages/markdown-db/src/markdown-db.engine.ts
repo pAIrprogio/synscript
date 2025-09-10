@@ -7,11 +7,11 @@ type BaseConfigSchema = z.ZodObject<{
   query: z.ZodType<unknown>;
 }>;
 
-type Pattern<CONFIG_SCHEMA extends BaseConfigSchema> = Awaited<
+type Entry<CONFIG_SCHEMA extends BaseConfigSchema> = Awaited<
   ReturnType<typeof getMarkdownEntries<CONFIG_SCHEMA>>
 >[number];
 
-export class MarkdownPatternsEngine<
+export class MarkdownDb<
   INPUT = unknown,
   CONFIG_SCHEMA extends BaseConfigSchema = BaseConfigSchema,
 > {
@@ -19,12 +19,12 @@ export class MarkdownPatternsEngine<
   private _cwd;
   private _queryEngine;
   private _glob: string = "**/*.md";
-  private _patternsPromise: Promise<Pattern<CONFIG_SCHEMA>[]> | null = null;
-  private _patternsMapPromise: Promise<
-    Map<string, Pattern<CONFIG_SCHEMA>>
+  private _entriesPromise: Promise<Entry<CONFIG_SCHEMA>[]> | null = null;
+  private _entriesMapPromise: Promise<
+    Map<string, Entry<CONFIG_SCHEMA>>
   > | null = null;
   private _parentPatternsMapPromise: Promise<
-    Map<string, Pattern<CONFIG_SCHEMA>[]>
+    Map<string, Entry<CONFIG_SCHEMA>[]>
   > | null = null;
 
   protected constructor(
@@ -41,7 +41,7 @@ export class MarkdownPatternsEngine<
 
   public static cwd<INPUT = unknown>(cwd: FsDir) {
     const engine = QueryEngine.default<INPUT>();
-    return new MarkdownPatternsEngine<INPUT, BaseConfigSchema>(
+    return new MarkdownDb<INPUT, BaseConfigSchema>(
       cwd,
       engine,
       z.object({ query: engine.schema }),
@@ -57,18 +57,13 @@ export class MarkdownPatternsEngine<
     const newSchema = this._configSchema.omit({ query: true }).extend({
       query: queryEngine.schema,
     }) as CONFIG_SCHEMA;
-    return new MarkdownPatternsEngine(
-      this._cwd,
-      queryEngine,
-      newSchema,
-      this._glob,
-    );
+    return new MarkdownDb(this._cwd, queryEngine, newSchema, this._glob);
   }
 
   public setConfigSchema<NEW_CONFIG_SCHEMA extends z.ZodObject<any>>(
     configSchema: NEW_CONFIG_SCHEMA,
   ) {
-    return new MarkdownPatternsEngine(
+    return new MarkdownDb(
       this._cwd,
       this._queryEngine,
       configSchema.extend({
@@ -81,7 +76,7 @@ export class MarkdownPatternsEngine<
   }
 
   public setGlob(glob: string) {
-    return new MarkdownPatternsEngine(
+    return new MarkdownDb(
       this._cwd,
       this._queryEngine,
       this._configSchema,
@@ -89,66 +84,64 @@ export class MarkdownPatternsEngine<
     );
   }
 
-  public async refreshPatterns() {
-    this._patternsPromise = getMarkdownEntries(
+  public async refreshEntries() {
+    this._entriesPromise = getMarkdownEntries(
       this._cwd,
       this.schema,
       this._glob,
     );
-    this._patternsMapPromise = this._patternsPromise.then(
-      (patterns) =>
-        new Map(patterns.map((pattern) => [pattern.$name, pattern])),
+    this._entriesMapPromise = this._entriesPromise.then(
+      (entries) => new Map(entries.map((entry) => [entry.$id, entry])),
     );
-    this._parentPatternsMapPromise = null; // Reset parent patterns cache
+    this._parentPatternsMapPromise = null; // Reset parent entries cache
   }
 
-  public async getPatterns() {
-    if (!this._patternsPromise) {
-      this._patternsPromise = getMarkdownEntries(
+  public async getEntries() {
+    if (!this._entriesPromise) {
+      this._entriesPromise = getMarkdownEntries(
         this._cwd,
         this.schema,
         this._glob,
       );
     }
-    return this._patternsPromise;
+    return this._entriesPromise;
   }
 
-  public async getPatternsMap() {
-    if (!this._patternsMapPromise) {
-      this._patternsMapPromise = this.getPatterns().then(
-        (patterns) =>
-          new Map(patterns.map((pattern) => [pattern.$name, pattern])),
+  public async getEntriesMap() {
+    if (!this._entriesMapPromise) {
+      this._entriesMapPromise = this.getEntries().then(
+        (entries) => new Map(entries.map((entry) => [entry.$id, entry])),
       );
     }
-    return this._patternsMapPromise!;
+    return this._entriesMapPromise!;
   }
 
-  public async getPatternByName(name: string) {
-    const patternsMap = await this.getPatternsMap();
-    return patternsMap.get(name);
+  public async getEntryById(id: string) {
+    const entries = await this.getEntriesMap();
+    return entries.get(id);
   }
 
-  public async getParentPatternsMap() {
+  public async getParentEntriesMap() {
     if (!this._parentPatternsMapPromise) {
-      this._parentPatternsMapPromise = this.getPatterns().then((patterns) => {
-        const patternsMap = new Map(patterns.map((p) => [p.$name, p]));
-        const parentMap = new Map<string, Pattern<CONFIG_SCHEMA>[]>();
+      this._parentPatternsMapPromise = this.getEntries().then((entries) => {
+        const entriesMap = new Map(entries.map((p) => [p.$id, p]));
+        const parentMap = new Map<string, Entry<CONFIG_SCHEMA>[]>();
 
-        // Precompute parent patterns for each pattern
-        for (const pattern of patterns) {
-          const path = pattern.$name.split(NAME_SEPARATOR);
-          const parentPatterns: Pattern<CONFIG_SCHEMA>[] = [];
+        // Precompute parent entries for each entry
+        for (const entry of entries) {
+          const path = entry.$id.split(NAME_SEPARATOR);
+          const parentEntries: Entry<CONFIG_SCHEMA>[] = [];
 
           // Build parent chain: "a" -> "a/b" -> "a/b/c"
           for (let i = 1; i <= path.length; i++) {
             const parentName = path.slice(0, i).join(NAME_SEPARATOR);
-            const parentPattern = patternsMap.get(parentName);
+            const parentPattern = entriesMap.get(parentName);
             if (parentPattern) {
-              parentPatterns.push(parentPattern);
+              parentEntries.push(parentPattern);
             }
           }
 
-          parentMap.set(pattern.$name, parentPatterns);
+          parentMap.set(entry.$id, parentEntries);
         }
 
         return parentMap;
@@ -157,49 +150,79 @@ export class MarkdownPatternsEngine<
     return this._parentPatternsMapPromise!;
   }
 
-  public async getParentPatterns(pattern: string) {
-    const parentMap = await this.getParentPatternsMap();
-    return parentMap.get(pattern) || [];
+  public async getParentEntries(id: string) {
+    const parentMap = await this.getParentEntriesMap();
+    return parentMap.get(id) || [];
   }
 
-  public async matchingPatterns(input: INPUT) {
-    // Retrieve all patterns and parent patterns map
-    const patterns = await this.getPatterns();
-    const parentMap = await this.getParentPatternsMap();
+  public async match(
+    input: INPUT,
+    config: {
+      /**
+       * Skip markdown entries with empty content
+       */
+      skipEmpty?: boolean;
+    } = { skipEmpty: false },
+  ) {
+    // Retrieve all entries and parent entries map
+    const entries = await this.getEntries();
+    const parentMap = await this.getParentEntriesMap();
 
-    const matchingPatterns: Pattern<CONFIG_SCHEMA>[] = [];
+    const matchingEntries: Entry<CONFIG_SCHEMA>[] = [];
 
-    // Process patterns synchronously instead of creating promise storm
-    for (const pattern of patterns) {
-      const parentPatterns = parentMap.get(pattern.$name) ?? [];
+    // Process entries synchronously instead of creating promise storm
+    for (const entry of entries) {
+      const parentPatterns = parentMap.get(entry.$id) ?? [];
 
-      // Create a query that matches parent patterns and the current pattern
+      // Create a query that matches parent entries and the current entry
       const query =
         parentPatterns.length > 0
           ? {
               and: [
                 ...parentPatterns.map((parent) => parent.query),
-                pattern.query,
+                entry.query,
               ],
             }
-          : pattern.query;
+          : entry.query;
 
-      // If the query matches, add the pattern
+      // If the query matches, add the entry
       if (
         this.query.match(query, input, {
           skipQueryValidation: true,
         })
       ) {
-        matchingPatterns.push(pattern);
+        if (config.skipEmpty && !entry.$content?.trim()) continue;
+        matchingEntries.push(entry);
       }
     }
 
-    return matchingPatterns;
+    return matchingEntries;
   }
 
-  public async matchingPatternNames(input: INPUT) {
-    const patterns = await this.matchingPatterns(input);
-    return patterns.map((pattern) => pattern.$name);
+  public async matchAll(
+    inputs: INPUT[],
+    config: {
+      /**
+       * Skip markdown entries with empty content
+       */
+      skipEmpty?: boolean;
+    } = { skipEmpty: false },
+  ) {
+    const allResults = await Promise.all(
+      inputs.map((input) => this.match(input, config)),
+    );
+
+    // Remove duplicates
+    return Object.values(
+      allResults.flat().reduce(
+        (acc, result) => {
+          if (config.skipEmpty && !result.$content?.trim()) return acc;
+          acc[result.$id] = result;
+          return acc;
+        },
+        {} as Record<string, Entry<CONFIG_SCHEMA>>,
+      ),
+    );
   }
 
   public get schema() {
@@ -211,18 +234,18 @@ export class MarkdownPatternsEngine<
   }
 }
 
-export declare namespace MarkdownPatternsEngine {
+export declare namespace MarkdownDb {
   export namespace Config {
     // Todo: fix typings in main class so it works
-    export type Infer<T extends MarkdownPatternsEngine<any, any>> =
-      T extends MarkdownPatternsEngine<any, infer CONFIG_SCHEMA>
+    export type Infer<T extends MarkdownDb<any, any>> =
+      T extends MarkdownDb<any, infer CONFIG_SCHEMA>
         ? z.input<CONFIG_SCHEMA>
         : never;
   }
 
-  export namespace Pattern {
-    export type Infer<T extends MarkdownPatternsEngine<any, any>> = Awaited<
-      ReturnType<T["getPatterns"]>
+  export namespace Entry {
+    export type Infer<T extends MarkdownDb<any, any>> = Awaited<
+      ReturnType<T["getEntries"]>
     >[number];
   }
 }

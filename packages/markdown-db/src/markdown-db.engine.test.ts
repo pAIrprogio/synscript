@@ -4,7 +4,7 @@ import assert from "node:assert/strict";
 import { describe, it } from "node:test";
 import path from "path";
 import { z } from "zod/v4";
-import { MarkdownPatternsEngine } from "./markdown-db.engine.ts";
+import { MarkdownDb } from "./markdown-db.engine.ts";
 
 const currentDirectoryPath =
   import.meta.dirname || path.dirname(import.meta.url.replace("file://", ""));
@@ -34,13 +34,13 @@ function createTestQueryEngine() {
 describe("PatternEngine", () => {
   describe("constructor and factory methods", () => {
     it("creates a PatternEngine with default query engine using cwd", () => {
-      const engine = MarkdownPatternsEngine.cwd(testPatternsDir);
+      const engine = MarkdownDb.cwd(testPatternsDir);
 
       assert.ok(engine);
     });
 
     it("has a default config schema with query field", () => {
-      const engine = MarkdownPatternsEngine.cwd(testPatternsDir);
+      const engine = MarkdownDb.cwd(testPatternsDir);
       const schema = engine.schema;
 
       // Verify the schema has a query field
@@ -51,7 +51,7 @@ describe("PatternEngine", () => {
 
   describe("setQueryEngine", () => {
     it("returns a new instance with updated query engine", () => {
-      const engine1 = MarkdownPatternsEngine.cwd<TestInput>(testPatternsDir);
+      const engine1 = MarkdownDb.cwd<TestInput>(testPatternsDir);
 
       const customQuery = QueryEngine.default<{
         content: string;
@@ -69,7 +69,7 @@ describe("PatternEngine", () => {
     it("updates query schema when setting new query engine", () => {
       const customQuery = createTestQueryEngine();
 
-      const engine = MarkdownPatternsEngine.cwd<TestInput>(testPatternsDir)
+      const engine = MarkdownDb.cwd<TestInput>(testPatternsDir)
         .setQueryEngine(customQuery)
         .setConfigSchema(z.object({ status: z.string() }));
 
@@ -85,7 +85,7 @@ describe("PatternEngine", () => {
 
   describe("setConfigSchema", () => {
     it("returns a new instance with extended config schema", () => {
-      const engine1 = MarkdownPatternsEngine.cwd(testPatternsDir);
+      const engine1 = MarkdownDb.cwd(testPatternsDir);
       const engine2 = engine1.setConfigSchema(
         z.object({
           status: z
@@ -109,9 +109,7 @@ describe("PatternEngine", () => {
     });
 
     it("applies default values from config schema", () => {
-      const engine = MarkdownPatternsEngine.cwd(
-        testPatternsDir,
-      ).setConfigSchema(
+      const engine = MarkdownDb.cwd(testPatternsDir).setConfigSchema(
         z.object({
           status: z
             .enum(["tag", "blocked", "ok", "ignore"])
@@ -133,19 +131,19 @@ describe("PatternEngine", () => {
 
   describe("setGlob", () => {
     it("returns a new instance with custom glob pattern", () => {
-      const engine1 = MarkdownPatternsEngine.cwd(testPatternsDir);
+      const engine1 = MarkdownDb.cwd(testPatternsDir);
       const engine2 = engine1.setGlob("simple/**/*.md");
 
       assert.notEqual(engine1, engine2);
     });
 
     it("filters patterns using custom glob pattern", async () => {
-      const engine = MarkdownPatternsEngine.cwd<TestInput>(testPatternsDir)
+      const engine = MarkdownDb.cwd<TestInput>(testPatternsDir)
         .setQueryEngine(createTestQueryEngine())
         .setGlob("simple/**/*.md");
 
-      const patterns = await engine.getPatterns();
-      const patternNames = patterns.map((p) => p.$name);
+      const patterns = await engine.getEntries();
+      const patternNames = patterns.map((p) => p.$id);
 
       // Should only find patterns from the simple directory
       assert.ok(patternNames.includes("simple/basic"));
@@ -156,13 +154,13 @@ describe("PatternEngine", () => {
 
   describe("getPatterns", () => {
     it("loads patterns from markdown files", async () => {
-      const engine = MarkdownPatternsEngine.cwd<TestInput>(
-        testPatternsDir,
-      ).setQueryEngine(createTestQueryEngine());
+      const engine = MarkdownDb.cwd<TestInput>(testPatternsDir).setQueryEngine(
+        createTestQueryEngine(),
+      );
 
-      const patterns = await engine.getPatterns();
+      const patterns = await engine.getEntries();
 
-      const basicPattern = patterns.find((p) => p.$name === "simple/basic");
+      const basicPattern = patterns.find((p) => p.$id === "simple/basic");
       assert.ok(basicPattern);
       assert.deepEqual(basicPattern.query, { always: true });
       assert.deepEqual(
@@ -170,27 +168,25 @@ describe("PatternEngine", () => {
         "This is a simple test pattern that always matches.",
       );
 
-      const pattern1 = patterns.find(
-        (p) => p.$name === "nested/level1/pattern1",
-      );
+      const pattern1 = patterns.find((p) => p.$id === "nested/level1/pattern1");
       assert.ok(pattern1);
       assert.deepEqual(pattern1.query, { contains: "test1" });
     });
 
     it("handles duplicate folder/file names correctly", async () => {
-      const engine = MarkdownPatternsEngine.cwd<TestInput>(
-        testPatternsDir,
-      ).setQueryEngine(createTestQueryEngine());
-      const patterns = await engine.getPatterns();
+      const engine = MarkdownDb.cwd<TestInput>(testPatternsDir).setQueryEngine(
+        createTestQueryEngine(),
+      );
+      const patterns = await engine.getEntries();
 
       // The file nested/level1/level1.md should be named "nested/level1"
-      const level1Pattern = patterns.find((p) => p.$name === "nested/level1");
+      const level1Pattern = patterns.find((p) => p.$id === "nested/level1");
       assert.ok(level1Pattern);
       assert.deepEqual(level1Pattern.query, { never: true });
     });
 
     it("loads patterns with custom config fields", async () => {
-      const engine = MarkdownPatternsEngine.cwd<TestInput>(testPatternsDir)
+      const engine = MarkdownDb.cwd<TestInput>(testPatternsDir)
         .setQueryEngine(createTestQueryEngine())
         .setConfigSchema(
           z.object({
@@ -198,9 +194,9 @@ describe("PatternEngine", () => {
           }),
         );
 
-      const patterns = await engine.getPatterns();
+      const patterns = await engine.getEntries();
       const statusPattern = patterns.find(
-        (p) => p.$name === "complex/with-status",
+        (p) => p.$id === "complex/with-status",
       );
 
       assert.ok(statusPattern);
@@ -209,12 +205,12 @@ describe("PatternEngine", () => {
     });
 
     it("returns patterns sorted by name", async () => {
-      const engine = MarkdownPatternsEngine.cwd<TestInput>(
-        testPatternsDir,
-      ).setQueryEngine(createTestQueryEngine());
-      const patterns = await engine.getPatterns();
+      const engine = MarkdownDb.cwd<TestInput>(testPatternsDir).setQueryEngine(
+        createTestQueryEngine(),
+      );
+      const patterns = await engine.getEntries();
 
-      const names = patterns.map((p) => p.$name);
+      const names = patterns.map((p) => p.$id);
       const sortedNames = [...names].sort((a, b) => a.localeCompare(b));
 
       assert.deepEqual(names, sortedNames);
@@ -229,13 +225,13 @@ query:
 ---`);
 
       try {
-        const engine = MarkdownPatternsEngine.cwd<TestInput>(
+        const engine = MarkdownDb.cwd<TestInput>(
           testPatternsDir,
         ).setQueryEngine(createTestQueryEngine());
-        const patterns = await engine.getPatterns();
+        const patterns = await engine.getEntries();
 
         const emptyPromptPattern = patterns.find(
-          (p) => p.$name === "empty-prompt" || p.$name === "/empty-prompt",
+          (p) => p.$id === "empty-prompt" || p.$id === "/empty-prompt",
         );
         assert.ok(emptyPromptPattern);
         assert.deepEqual(emptyPromptPattern.$content, null);
@@ -250,17 +246,17 @@ query:
 
   describe("matchingPatterns", () => {
     it("filters patterns based on query evaluation", async () => {
-      const engine = MarkdownPatternsEngine.cwd<TestInput>(
-        testPatternsDir,
-      ).setQueryEngine(createTestQueryEngine());
+      const engine = MarkdownDb.cwd<TestInput>(testPatternsDir).setQueryEngine(
+        createTestQueryEngine(),
+      );
 
       const input: TestInput = {
         content: "test1 component code",
         extension: "tsx",
       };
 
-      const matching = await engine.matchingPatterns(input);
-      const matchingNames = matching.map((p) => p.$name);
+      const matching = await engine.match(input);
+      const matchingNames = matching.map((p) => p.$id);
 
       // Should match: simple/basic (always: true), complex/with-query (contains "component")
       // Should not match: nested/level1 (never: true), nested/level1/pattern1 (parent has never: true)
@@ -270,17 +266,17 @@ query:
     });
 
     it("uses query engine to evaluate patterns", async () => {
-      const engine = MarkdownPatternsEngine.cwd<TestInput>(
-        testPatternsDir,
-      ).setQueryEngine(createTestQueryEngine());
+      const engine = MarkdownDb.cwd<TestInput>(testPatternsDir).setQueryEngine(
+        createTestQueryEngine(),
+      );
 
       const input: TestInput = {
         content: "test1 code",
         extension: "tsx",
       };
 
-      const matching = await engine.matchingPatterns(input);
-      const names = matching.map((p) => p.$name);
+      const matching = await engine.match(input);
+      const names = matching.map((p) => p.$id);
 
       // Should match patterns based on query evaluation
       const expectedMatches = [
@@ -297,9 +293,7 @@ query:
 
   describe("schema getters", () => {
     it("returns the correct zod schema", () => {
-      const engine = MarkdownPatternsEngine.cwd(
-        testPatternsDir,
-      ).setConfigSchema(
+      const engine = MarkdownDb.cwd(testPatternsDir).setConfigSchema(
         z.object({
           status: z.string(),
           priority: z.number(),
@@ -329,9 +323,7 @@ query:
     });
 
     it("generates valid JSON schema", () => {
-      const engine = MarkdownPatternsEngine.cwd(
-        testPatternsDir,
-      ).setConfigSchema(
+      const engine = MarkdownDb.cwd(testPatternsDir).setConfigSchema(
         z.object({
           status: z.enum(["blocked", "ok"]),
         }),
@@ -360,10 +352,10 @@ query:
 
 Invalid pattern.`);
 
-      const engine = MarkdownPatternsEngine.cwd(testPatternsDir);
+      const engine = MarkdownDb.cwd(testPatternsDir);
 
       await assert.rejects(
-        async () => await engine.getPatterns(),
+        async () => await engine.getEntries(),
         /Failed to parse config/,
       );
 
@@ -380,16 +372,14 @@ status: "ok"
 
 Missing query field.`);
 
-      const engine = MarkdownPatternsEngine.cwd(
-        testPatternsDir,
-      ).setConfigSchema(
+      const engine = MarkdownDb.cwd(testPatternsDir).setConfigSchema(
         z.object({
           status: z.string(),
         }),
       );
 
       await assert.rejects(
-        async () => await engine.getPatterns(),
+        async () => await engine.getEntries(),
         /Failed to parse config/,
       );
 
@@ -400,16 +390,14 @@ Missing query field.`);
 
   describe("type inference", () => {
     it("correctly infers config type", () => {
-      const engine = MarkdownPatternsEngine.cwd(
-        testPatternsDir,
-      ).setConfigSchema(
+      const engine = MarkdownDb.cwd(testPatternsDir).setConfigSchema(
         z.object({
           status: z.enum(["blocked", "ok"]),
           priority: z.number().optional(),
         }),
       );
 
-      type InferredConfig = MarkdownPatternsEngine.Config.Infer<typeof engine>;
+      type InferredConfig = MarkdownDb.Config.Infer<typeof engine>;
 
       const config: InferredConfig = {
         query: { always: true },

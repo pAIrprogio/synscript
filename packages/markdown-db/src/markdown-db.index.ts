@@ -1,1 +1,1 @@
-export { MarkdownPatternsEngine } from "./markdown-db.engine.ts";
+export { MarkdownDb } from "./markdown-db.engine.ts";

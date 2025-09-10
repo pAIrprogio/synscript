@@ -5,11 +5,11 @@ import z from "zod/v4";
 
 export const NAME_SEPARATOR = "/";
 
-export function getMarkdownEntryId(patternDir: FsDir, patternFile: FsFile) {
-  const relativePath = patternFile.dir().relativePathFrom(patternDir);
+export function getMarkdownEntryId(mdDir: FsDir, mdFile: FsFile) {
+  const relativePath = mdFile.dir().relativePathFrom(mdDir);
   const dirPath = relativePath.split("/");
   const lastFolderName = dirPath.pop();
-  let fileName = patternFile.fileNameWithoutExtension();
+  let fileName = mdFile.fileNameWithoutExtension();
 
   // Remove numeric prefix (e.g., "0." from "0.buttons")
   fileName = fileName.replace(/^\d+\./, "");
@@ -37,7 +37,7 @@ export function getMarkdownEntryId(patternDir: FsDir, patternFile: FsFile) {
 export async function getMarkdownEntries<
   CONFIG_SCHEMA extends z.ZodObject<any>,
 >(cwd: FsDir, configSchema: CONFIG_SCHEMA, glob: string = "**/*.md") {
-  const patternFiles = await cwd
+  const mdFiles = await cwd
     .glob(glob)
     // Sort by path
     .then((files) =>
@@ -46,14 +46,14 @@ export async function getMarkdownEntries<
       ),
     );
   return Promise.all(
-    patternFiles.map(async (patternFile) => {
-      // Read the pattern file
-      const mdContent = await patternFile.read.text();
+    mdFiles.map(async (mdFile) => {
+      // Read the md file
+      const mdContent = await mdFile.read.text();
       const data = await new Promise((resolve) =>
         resolve(md.getHeaderData(mdContent)),
       ).catch(async (err) => {
         throw new Error(
-          `Failed to read pattern file header ${cwd.relativePathTo(patternFile)}: ${err.message}`,
+          `Failed to read markdown file header ${cwd.relativePathTo(mdFile)}: ${err.message}`,
         );
       });
       const content = md.getBody(mdContent).trim();
@@ -61,18 +61,18 @@ export async function getMarkdownEntries<
 
       if (!parsedData.success)
         throw new Error(t`
-          Failed to parse config for ${cwd.relativePathTo(patternFile)}:
+          Failed to parse config for ${cwd.relativePathTo(mdFile)}:
             ${z.prettifyError(parsedData.error)}
         `);
 
-      // Compute the pattern name
-      const { name, type } = getMarkdownEntryId(cwd, patternFile);
+      // Compute the entry id
+      const { name, type } = getMarkdownEntryId(cwd, mdFile);
 
       return {
-        $name: name,
+        $id: name,
         $type: type,
         $content: content.length > 0 ? content : null,
-        $file: patternFile,
+        $file: mdFile,
         ...parsedData.data,
       };
     }),
