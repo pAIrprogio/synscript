@@ -222,7 +222,7 @@ export class MarkdownDb<
         },
         {} as Record<string, Entry<CONFIG_SCHEMA>>,
       ),
-    );
+    ).sort((a, b) => a.$file.path.localeCompare(b.$file.path));
   }
 
   public get schema() {

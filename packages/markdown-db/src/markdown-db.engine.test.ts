@@ -289,6 +289,25 @@ query:
       );
       assert.deepEqual(actualSubset.sort(), expectedMatches.sort());
     });
+
+    it("returns results sorted by file path when using matchAll", async () => {
+      const engine = MarkdownDb.cwd<TestInput>(testPatternsDir).setQueryEngine(
+        createTestQueryEngine(),
+      );
+
+      const inputs: TestInput[] = [
+        { content: "test", extension: "tsx" },
+        { content: "component", extension: "tsx" },
+      ];
+
+      const results = await engine.matchAll(inputs);
+      const resultIds = results.map((result) => result.$id);
+
+      // Verify results are returned in sorted order by file path
+      // Based on the test patterns, we expect these entries to match and be sorted
+      const expectedIds = ["complex/with-query", "simple/basic"];
+      assert.deepEqual(resultIds, expectedIds);
+    });
   });
 
   describe("schema getters", () => {
