@@ -1,50 +1,50 @@
-# @synstack/pattern
+# @synstack/markdown-db
 
-Pattern-based configuration engine with query matching capabilities
+Markdown database engine with query matching capabilities
 
 ## What is it for?
 - Matches markdown files based on provided entry data
-- Supports hierarchical pattern inheritance
+- Supports hierarchical entry inheritance
 - Supports custom query engines and schema validation
 
 ```typescript
-import { PatternEngine } from "@synstack/pattern";
+import { MarkdownDb } from "@synstack/markdown-db";
 import { fsDir } from "@synstack/fs";
 import { z } from "zod";
 
-// Create a pattern engine for a directory containing .md pattern files
-const engine = PatternEngine.cwd(fsDir("./patterns"));
+// Create a markdown database for a directory containing .md files
+const engine = MarkdownDb.cwd(fsDir("./entries"));
 
-// Find all patterns that match specific input
-const matchingPatterns = await engine.matchingPatterns(inputData);
+// Find all entries that match specific input
+const matchingEntries = await engine.match(inputData);
 
-// Get pattern names that match
-const patternNames = await engine.matchingPatternNames(inputData);
+// Match multiple inputs and get deduplicated results sorted by file path
+const allMatches = await engine.matchAll([inputData1, inputData2]);
 
-// Get a specific pattern by name
-const pattern = await engine.getPatternByName("complex/with-query");
+// Get a specific entry by id
+const entry = await engine.getEntryById("complex/with-query");
 ```
 
 ## Installation
 
 ```bash
 # Using npm
-npm install @synstack/pattern @synstack/query zod
+npm install @synstack/markdown-db @synstack/query zod
 
 # Using yarn
-yarn add @synstack/pattern @synstack/query zod
+yarn add @synstack/markdown-db @synstack/query zod
 
 # Using pnpm
-pnpm add @synstack/pattern @synstack/query zod
+pnpm add @synstack/markdown-db @synstack/query zod
 ```
 
 ## Features
 
-### Pattern Organization
+### Entry Organization
 
-Patterns are organized as markdown files with YAML frontmatter containing configuration data and queries:
+Entries are organized as markdown files with YAML frontmatter containing configuration data and queries:
 
-#### Basic Pattern Example
+#### Basic Entry Example
 
 ```markdown
 ---
@@ -52,12 +52,12 @@ query:
   always: true
 ---
 
-# Simple Pattern
+# Simple Entry
 
-This is a basic pattern that always matches any input.
+This is a basic entry that always matches any input.
 ```
 
-#### Complex Query Pattern
+#### Complex Query Entry
 
 ```markdown
 ---
@@ -75,13 +75,13 @@ priority: 1
 
 # React Component Detection
 
-This pattern matches React component files that:
+This entry matches React component files that:
 - Contain the word 'component' in their path or content
 - Have either .tsx or .jsx extension
 - Do not contain 'deprecated' in their path or content
 ```
 
-#### Hierarchical Pattern Example
+#### Hierarchical Entry Example
 
 ```markdown
 ---
@@ -94,69 +94,69 @@ metadata:
 
 # Level 1 Test Pattern
 
-Pattern that matches when input contains "test1".
-This pattern inherits from parent patterns in the directory hierarchy.
+Entry that matches when input contains "test1".
+This entry inherits from parent entries in the directory hierarchy.
 ```
 
-### Pattern Directory Structure
+### Entry Directory Structure
 
-Organize your patterns in a directory structure like this:
+Organize your entries in a directory structure like this:
 
 ```
-patterns/
+entries/
 ├── simple/
-│   └── basic.md              # Pattern name: "simple/basic"
+│   └── basic.md              # Entry ID: "simple/basic"
 ├── complex/
-│   └── with-query.md         # Pattern name: "complex/with-query"
+│   └── with-query.md         # Entry ID: "complex/with-query"
 ├── components/
-│   ├── 0.components.md       # Pattern name: "components" (numeric prefix removed)
+│   ├── 0.components.md       # Entry ID: "components" (numeric prefix removed)
 │   ├── button/
-│   │   ├── 0.button.md       # Pattern name: "components/button"
-│   │   ├── primary.md        # Pattern name: "components/button/primary"
-│   │   └── button.theme.md   # Pattern name: "components/button" (type: "theme")
+│   │   ├── 0.button.md       # Entry ID: "components/button"
+│   │   ├── primary.md        # Entry ID: "components/button/primary"
+│   │   └── button.theme.md   # Entry ID: "components/button" (type: "theme")
 │   └── form/
-│       ├── input.md          # Pattern name: "components/form/input"
-│       └── input.validation.md # Pattern name: "components/form/input" (type: "validation")
+│       ├── input.md          # Entry ID: "components/form/input"
+│       └── input.validation.md # Entry ID: "components/form/input" (type: "validation")
 ├── nested/
 │   └── level1/
-│       ├── level1.md         # Pattern name: "nested/level1/level1"
-│       └── pattern1.md       # Pattern name: "nested/level1/pattern1"
+│       ├── level1.md         # Entry ID: "nested/level1/level1"
+│       └── pattern1.md       # Entry ID: "nested/level1/pattern1"
 └── user/
-    ├── active.md             # Pattern name: "user/active"
-    ├── inactive.md           # Pattern name: "user/inactive"
-    └── user.permissions.md   # Pattern name: "user" (type: "permissions")
+    ├── active.md             # Entry ID: "user/active"
+    ├── inactive.md           # Entry ID: "user/inactive"
+    └── user.permissions.md   # Entry ID: "user" (type: "permissions")
 ```
 
-### Pattern Naming
+### Entry Naming
 
-Pattern files are automatically named based on their directory structure and filename:
+Entry files are automatically named based on their directory structure and filename:
 
-- `patterns/user/active.md` → Pattern name: `user/active`
-- `patterns/complex/with-query.md` → Pattern name: `complex/with-query` 
-- `patterns/nested/level1/pattern1.md` → Pattern name: `nested/level1/pattern1`
+- `entries/user/active.md` → Entry ID: `user/active`
+- `entries/complex/with-query.md` → Entry ID: `complex/with-query` 
+- `entries/nested/level1/pattern1.md` → Entry ID: `nested/level1/pattern1`
 
 #### Numeric Prefix Handling
 
 Numeric prefixes are automatically removed from filenames to allow for ordering:
 
-- `patterns/components/0.components.md` → Pattern name: `components`
-- `patterns/components/button/0.button.md` → Pattern name: `components/button`
-- `patterns/components/button/primary.md` → Pattern name: `components/button/primary`
+- `entries/components/0.components.md` → Entry ID: `components`
+- `entries/components/button/0.button.md` → Entry ID: `components/button`
+- `entries/components/button/primary.md` → Entry ID: `components/button/primary`
 
-This allows you to control the processing order of patterns while keeping clean, meaningful names.
+This allows you to control the processing order of entries while keeping clean, meaningful names.
 
 #### Type Suffix Support
 
-Pattern files can include type suffixes for categorization:
+Entry files can include type suffixes for categorization:
 
-- `patterns/button.primary.md` → Pattern name: `button` (type: `primary`)
-- `patterns/form.validation.md` → Pattern name: `form` (type: `validation`)
+- `entries/button.primary.md` → Entry ID: `button` (type: `primary`)
+- `entries/form.validation.md` → Entry ID: `form` (type: `validation`)
 
-The type information is available in the pattern metadata for advanced filtering and organization.
+The type information is available in the entry metadata for advanced filtering and organization.
 
 ### Query Integration
 
-The pattern engine integrates with `@synstack/query` for sophisticated matching:
+The markdown database engine integrates with `@synstack/query` for sophisticated matching:
 
 ```typescript
 import { QueryEngine } from "@synstack/query";
@@ -166,27 +166,27 @@ const queryEngine = QueryEngine
   .addPredicate("status", z.string(), (status) => (input) => input.status === status)
   .addPredicate("priority", z.number(), (priority) => (input) => input.priority >= priority);
 
-// Apply custom query engine to pattern engine
-const engine = PatternEngine
-  .cwd(dir("./patterns"))
+// Apply custom query engine to markdown database
+const engine = MarkdownDb
+  .cwd(dir("./entries"))
   .setQueryEngine(queryEngine);
 ```
 
-### Pattern Inheritance
+### Entry Inheritance
 
-Patterns support hierarchical inheritance where parent patterns are automatically applied:
+Entries support hierarchical inheritance where parent entries are automatically applied:
 
 ```typescript
-// Get parent patterns for a specific pattern
-const parentPatterns = await engine.getParentPatterns("nested/level1/pattern1");
+// Get parent entries for a specific entry
+const parentEntries = await engine.getParentEntries("nested/level1/pattern1");
 
-// Parent patterns are automatically combined during matching
-const matches = await engine.matchingPatterns(inputData);
+// Parent entries are automatically combined during matching
+const matches = await engine.match(inputData);
 ```
 
 ### Schema Validation
 
-Configure custom schema validation for pattern data:
+Configure custom schema validation for entry data:
 
 ```typescript
 const customSchema = z.object({
@@ -197,20 +197,20 @@ const customSchema = z.object({
 });
 
 const typedEngine = engine.setConfigSchema(customSchema);
-const patterns = await typedEngine.getPatterns(); // Fully typed patterns
+const entries = await typedEngine.getEntries(); // Fully typed entries
 ```
 
-### Pattern Management
+### Entry Management
 
 ```typescript
-// Get all patterns
-const allPatterns = await engine.getPatterns();
+// Get all entries
+const allEntries = await engine.getEntries();
 
-// Get patterns as a map for quick lookup
-const patternsMap = await engine.getPatternsMap();
+// Get entries as a map for quick lookup
+const entriesMap = await engine.getEntriesMap();
 
-// Refresh patterns from filesystem
-await engine.refreshPatterns();
+// Refresh entries from filesystem
+await engine.refreshEntries();
 
 // Get schema information
 const schema = engine.schema;
@@ -219,23 +219,23 @@ const jsonSchema = engine.jsonSchema;
 
 ## API Reference
 
-### PatternEngine
+### MarkdownDb
 
 #### Static Methods
 
-- `PatternEngine.cwd(dir)` - Create a pattern engine for a directory
+- `MarkdownDb.cwd(dir)` - Create a markdown database for a directory
 
 #### Instance Methods
 
 - `setQueryEngine(queryEngine)` - Set custom query engine for matching
-- `setConfigSchema(schema)` - Set custom schema for pattern validation
-- `getPatterns()` - Get all patterns
-- `getPatternsMap()` - Get patterns as a Map for quick lookup
-- `getPatternByName(name)` - Get a specific pattern by name
-- `getParentPatterns(patternName)` - Get parent patterns for hierarchical matching
-- `matchingPatterns(input)` - Find patterns that match the input
-- `matchingPatternNames(input)` - Get names of matching patterns
-- `refreshPatterns()` - Reload patterns from filesystem
+- `setConfigSchema(schema)` - Set custom schema for entry validation
+- `getEntries()` - Get all entries
+- `getEntriesMap()` - Get entries as a Map for quick lookup
+- `getEntryById(id)` - Get a specific entry by ID
+- `getParentEntries(entryId)` - Get parent entries for hierarchical matching
+- `match(input)` - Find entries that match the input
+- `matchAll(inputs)` - Find entries that match any of the inputs (deduplicated and sorted)
+- `refreshEntries()` - Reload entries from filesystem
 - `query` - Access the underlying query engine
 - `schema` - Get the configuration schema
 - `jsonSchema` - Get JSON schema representation
@@ -244,8 +244,8 @@ const jsonSchema = engine.jsonSchema;
 
 ```typescript
 // Infer configuration type from engine
-type Config = PatternEngine.Config.Infer<typeof engine>;
+type Config = MarkdownDb.Config.Infer<typeof engine>;
 
-// Infer pattern type from engine  
-type Pattern = PatternEngine.Pattern.Infer<typeof engine>;
+// Infer entry type from engine  
+type Entry = MarkdownDb.Entry.Infer<typeof engine>;
 ```
