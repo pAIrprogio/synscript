@@ -270,7 +270,7 @@ importers:
         specifier: ^3.25.67
         version: 3.25.67
 
-  packages/markdown-patterns:
+  packages/markdown-db:
     dependencies:
       "@synstack/fs":
         specifier: workspace:^
@@ -5762,6 +5762,7 @@ packages:
         integrity: sha512-2ymg6oRBpebeZi9UUNsgQ89bhx01TcTkmNTGnNO88imTmbSgy4nfujrgVEFKWpMTEGA11EDkTt7mqObTPdigIA==,
       }
     engines: { node: ">= 8" }
+    deprecated: The work that was done in this beta branch won't be included in future versions
 
   space-separated-tokens@2.0.2:
     resolution:
