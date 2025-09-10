@@ -1,15 +1,15 @@
 import { fsDir, fsFile } from "@synstack/fs";
 import assert from "node:assert/strict";
 import { describe, it } from "node:test";
-import { getPatternName } from "./markdown-patterns.lib.ts";
+import { getMarkdownEntryId } from "./markdown-db.lib.ts";
 
-describe("getPatternName()", () => {
+describe("getMarkdownEntryId()", () => {
   it("returns the pattern name from directory and file", () => {
     const mockDir = fsDir("/base/patterns");
     const mockFile = fsFile("/base/patterns/ember/template/uses/buttons.md");
 
     const expected = { name: "ember/template/uses/buttons", type: null };
-    assert.deepEqual(getPatternName(mockDir, mockFile), expected);
+    assert.deepEqual(getMarkdownEntryId(mockDir, mockFile), expected);
   });
   it("skips the file name if it's the same as the last folder", () => {
     const mockDir = fsDir("/base/patterns");
@@ -18,7 +18,7 @@ describe("getPatternName()", () => {
     );
 
     const expected = { name: "ember/template/uses/buttons", type: null };
-    assert.deepEqual(getPatternName(mockDir, mockFile), expected);
+    assert.deepEqual(getMarkdownEntryId(mockDir, mockFile), expected);
   });
   it("returns removes the prefix", () => {
     const mockDir = fsDir("/base/patterns");
@@ -27,7 +27,7 @@ describe("getPatternName()", () => {
     );
 
     const expected = { name: "ember/template/uses/buttons", type: null };
-    assert.deepEqual(getPatternName(mockDir, mockFile), expected);
+    assert.deepEqual(getMarkdownEntryId(mockDir, mockFile), expected);
   });
   it("returns the type", () => {
     const mockDir = fsDir("/base/patterns");
@@ -36,7 +36,7 @@ describe("getPatternName()", () => {
     );
 
     const expected = { name: "ember/template/uses/buttons", type: "my-type" };
-    assert.deepEqual(getPatternName(mockDir, mockFile), expected);
+    assert.deepEqual(getMarkdownEntryId(mockDir, mockFile), expected);
   });
   it("returns the middle part of the file name even if it contains a dot", () => {
     const mockDir = fsDir("/base/patterns");
@@ -48,6 +48,6 @@ describe("getPatternName()", () => {
       name: "ember/template/uses/buttons.with.dot",
       type: "my-type",
     };
-    assert.deepEqual(getPatternName(mockDir, mockFile), expected);
+    assert.deepEqual(getMarkdownEntryId(mockDir, mockFile), expected);
   });
 });

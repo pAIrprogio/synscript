@@ -1,14 +1,14 @@
 import type { FsDir } from "@synstack/fs";
 import { QueryEngine } from "@synstack/query";
 import { z } from "zod/v4";
-import { getPatterns, NAME_SEPARATOR } from "./markdown-patterns.lib.ts";
+import { getMarkdownEntries, NAME_SEPARATOR } from "./markdown-db.lib.ts";
 
 type BaseConfigSchema = z.ZodObject<{
   query: z.ZodType<unknown>;
 }>;
 
 type Pattern<CONFIG_SCHEMA extends BaseConfigSchema> = Awaited<
-  ReturnType<typeof getPatterns<CONFIG_SCHEMA>>
+  ReturnType<typeof getMarkdownEntries<CONFIG_SCHEMA>>
 >[number];
 
 export class MarkdownPatternsEngine<
@@ -90,7 +90,11 @@ export class MarkdownPatternsEngine<
   }
 
   public async refreshPatterns() {
-    this._patternsPromise = getPatterns(this._cwd, this.schema, this._glob);
+    this._patternsPromise = getMarkdownEntries(
+      this._cwd,
+      this.schema,
+      this._glob,
+    );
     this._patternsMapPromise = this._patternsPromise.then(
       (patterns) =>
         new Map(patterns.map((pattern) => [pattern.$name, pattern])),
@@ -100,7 +104,11 @@ export class MarkdownPatternsEngine<
 
   public async getPatterns() {
     if (!this._patternsPromise) {
-      this._patternsPromise = getPatterns(this._cwd, this.schema, this._glob);
+      this._patternsPromise = getMarkdownEntries(
+        this._cwd,
+        this.schema,
+        this._glob,
+      );
     }
     return this._patternsPromise;
   }

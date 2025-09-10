@@ -4,7 +4,7 @@ import assert from "node:assert/strict";
 import { describe, it } from "node:test";
 import path from "path";
 import { z } from "zod/v4";
-import { MarkdownPatternsEngine } from "./markdown-patterns.engine.ts";
+import { MarkdownPatternsEngine } from "./markdown-db.engine.ts";
 
 const currentDirectoryPath =
   import.meta.dirname || path.dirname(import.meta.url.replace("file://", ""));

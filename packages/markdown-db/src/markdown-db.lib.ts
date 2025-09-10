@@ -5,7 +5,7 @@ import z from "zod/v4";
 
 export const NAME_SEPARATOR = "/";
 
-export function getPatternName(patternDir: FsDir, patternFile: FsFile) {
+export function getMarkdownEntryId(patternDir: FsDir, patternFile: FsFile) {
   const relativePath = patternFile.dir().relativePathFrom(patternDir);
   const dirPath = relativePath.split("/");
   const lastFolderName = dirPath.pop();
@@ -34,11 +34,9 @@ export function getPatternName(patternDir: FsDir, patternFile: FsFile) {
   };
 }
 
-export async function getPatterns<CONFIG_SCHEMA extends z.ZodObject<any>>(
-  cwd: FsDir,
-  configSchema: CONFIG_SCHEMA,
-  glob: string = "**/*.md",
-) {
+export async function getMarkdownEntries<
+  CONFIG_SCHEMA extends z.ZodObject<any>,
+>(cwd: FsDir, configSchema: CONFIG_SCHEMA, glob: string = "**/*.md") {
   const patternFiles = await cwd
     .glob(glob)
     // Sort by path
@@ -68,7 +66,7 @@ export async function getPatterns<CONFIG_SCHEMA extends z.ZodObject<any>>(
         `);
 
       // Compute the pattern name
-      const { name, type } = getPatternName(cwd, patternFile);
+      const { name, type } = getMarkdownEntryId(cwd, patternFile);
 
       return {
         $name: name,

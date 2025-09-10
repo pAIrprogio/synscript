@@ -1,32 +1,29 @@
 {
-  "name": "@synstack/markdown-patterns",
+  "name": "@synstack/markdown-db",
   "type": "module",
   "publishConfig": {
     "access": "public"
   },
-  "version": "2.0.1",
-  "description": "Query-based configuration engine for markdown files",
+  "version": "3.0.0",
+  "description": "Markdown database using Frontmatter",
   "keywords": [
-    "pattern",
-    "engine",
+    "database",
     "configuration",
     "query",
     "matching",
     "markdown",
     "typescript",
-    "ts",
-    "rules",
-    "hierarchy"
+    "ts"
   ],
   "author": {
     "name": "pAIrprog",
     "url": "https://pairprog.io"
   },
-  "homepage": "https://github.com/pAIrprogio/synscript/tree/main/packages/markdown-patterns",
+  "homepage": "https://github.com/pAIrprogio/synscript/tree/main/packages/markdown-db",
   "repository": {
     "type": "git",
     "url": "https://github.com/pAIrprogio/synscript.git",
-    "directory": "packages/markdown-patterns"
+    "directory": "packages/markdown-db"
   },
   "license": "Apache-2.0",
   "scripts": {
@@ -41,12 +38,12 @@
   "exports": {
     ".": {
       "import": {
-        "types": "./dist/markdown-patterns.index.d.ts",
-        "default": "./dist/markdown-patterns.index.js"
+        "types": "./dist/markdown-db.index.d.ts",
+        "default": "./dist/markdown-db.index.js"
       },
       "require": {
-        "types": "./dist/markdown-patterns.index.d.cts",
-        "default": "./dist/markdown-patterns.index.cjs"
+        "types": "./dist/markdown-db.index.d.cts",
+        "default": "./dist/markdown-db.index.cjs"
       }
     }
   },
