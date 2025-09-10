@@ -3,6 +3,8 @@ import { QueryEngine } from "@synstack/query";
 import { z } from "zod/v4";
 import { getMarkdownEntries, NAME_SEPARATOR } from "./markdown-db.lib.ts";
 
+type Globs = [string, ...string[]];
+
 type BaseConfigSchema = z.ZodObject<{
   query: z.ZodType<unknown>;
 }>;
@@ -18,7 +20,7 @@ export class MarkdownDb<
   private _configSchema;
   private _cwd;
   private _queryEngine;
-  private _glob: string = "**/*.md";
+  private _globs: Globs = ["**/*.md"];
   private _entriesPromise: Promise<Entry<CONFIG_SCHEMA>[]> | null = null;
   private _entriesMapPromise: Promise<
     Map<string, Entry<CONFIG_SCHEMA>>
@@ -31,14 +33,19 @@ export class MarkdownDb<
     cwd: FsDir,
     queryEngine: QueryEngine<any, INPUT>,
     configSchema: CONFIG_SCHEMA,
-    glob: string = "**/*.md",
+    globs: Globs = ["**/*.md"],
   ) {
     this._cwd = cwd;
     this._queryEngine = queryEngine;
     this._configSchema = configSchema;
-    this._glob = glob;
+    this._globs = globs;
   }
 
+  /**
+   * Create a MarkdownDb instance for the given directory
+   * @param cwd - The FsDir or path to the directory to create the MarkdownDb instance for
+   * @returns A new MarkdownDb instance
+   */
   public static cwd<INPUT = unknown>(cwd: FsDir) {
     const engine = QueryEngine.default<INPUT>();
     return new MarkdownDb<INPUT, BaseConfigSchema>(
@@ -48,18 +55,31 @@ export class MarkdownDb<
     );
   }
 
+  /**
+   * @returns The QueryEngine
+   */
   public get query() {
     return this._queryEngine;
   }
 
+  /**
+   * Set a custom query engine to use for matching with custom predicates
+   * @param queryEngine - The QueryEngine to use
+   * @returns A new MarkdownDb instance
+   */
   public setQueryEngine(queryEngine: QueryEngine<any, INPUT>) {
     // Update the config schema to use the new query engine's schema
     const newSchema = this._configSchema.omit({ query: true }).extend({
       query: queryEngine.schema,
     }) as CONFIG_SCHEMA;
-    return new MarkdownDb(this._cwd, queryEngine, newSchema, this._glob);
+    return new MarkdownDb(this._cwd, queryEngine, newSchema, this._globs);
   }
 
+  /**
+   * Set the zod schema used to validate extra frontmatter data
+   * @param configSchema - The zod schema to use to validate extra frontmatter data
+   * @returns A new MarkdownDb instance
+   */
   public setConfigSchema<NEW_CONFIG_SCHEMA extends z.ZodObject<any>>(
     configSchema: NEW_CONFIG_SCHEMA,
   ) {
@@ -71,24 +91,29 @@ export class MarkdownDb<
       }) as NEW_CONFIG_SCHEMA extends z.ZodObject<infer T>
         ? z.ZodObject<T & { query: z.ZodType<unknown> }>
         : never,
-      this._glob,
+      this._globs,
     );
   }
 
-  public setGlob(glob: string) {
-    return new MarkdownDb(
-      this._cwd,
-      this._queryEngine,
-      this._configSchema,
-      glob,
-    );
+  /**
+   * Filter the markdown files with glob patterns
+   * The "**\/*.md" glob is always included
+   */
+  public setGlobs(...globs: Globs) {
+    return new MarkdownDb(this._cwd, this._queryEngine, this._configSchema, [
+      "**/*.md",
+      ...globs,
+    ]);
   }
 
+  /**
+   * Refresh the markdown entries from the filesystem
+   */
   public async refreshEntries() {
     this._entriesPromise = getMarkdownEntries(
       this._cwd,
       this.schema,
-      this._glob,
+      this._globs,
     );
     this._entriesMapPromise = this._entriesPromise.then(
       (entries) => new Map(entries.map((entry) => [entry.$id, entry])),
@@ -96,34 +121,46 @@ export class MarkdownDb<
     this._parentPatternsMapPromise = null; // Reset parent entries cache
   }
 
-  public async getEntries() {
+  /**
+   * Return all entries as an array of unique entries
+   */
+  public async getAll() {
     if (!this._entriesPromise) {
       this._entriesPromise = getMarkdownEntries(
         this._cwd,
         this.schema,
-        this._glob,
+        this._globs,
       );
     }
     return this._entriesPromise;
   }
 
-  public async getEntriesMap() {
+  /**
+   * Return the entries as a Map<id, entry> for quick lookup
+   */
+  public async getAllMap() {
     if (!this._entriesMapPromise) {
-      this._entriesMapPromise = this.getEntries().then(
+      this._entriesMapPromise = this.getAll().then(
         (entries) => new Map(entries.map((entry) => [entry.$id, entry])),
       );
     }
     return this._entriesMapPromise!;
   }
 
-  public async getEntryById(id: string) {
-    const entries = await this.getEntriesMap();
+  /**
+   * Return the entry for the given id
+   */
+  public async getOneById(id: string) {
+    const entries = await this.getAllMap();
     return entries.get(id);
   }
 
-  public async getParentEntriesMap() {
+  /**
+   * Return the parent entries for all entries
+   */
+  public async getParentsMap() {
     if (!this._parentPatternsMapPromise) {
-      this._parentPatternsMapPromise = this.getEntries().then((entries) => {
+      this._parentPatternsMapPromise = this.getAll().then((entries) => {
         const entriesMap = new Map(entries.map((p) => [p.$id, p]));
         const parentMap = new Map<string, Entry<CONFIG_SCHEMA>[]>();
 
@@ -150,23 +187,29 @@ export class MarkdownDb<
     return this._parentPatternsMapPromise!;
   }
 
-  public async getParentEntries(id: string) {
-    const parentMap = await this.getParentEntriesMap();
+  /**
+   * Return the parent entries for the given id
+   */
+  public async getParentsById(id: string) {
+    const parentMap = await this.getParentsMap();
     return parentMap.get(id) || [];
   }
 
-  public async match(
+  /**
+   * Return all entries matching the input
+   */
+  public async matchOne(
     input: INPUT,
-    config: {
+    config?: {
       /**
        * Skip markdown entries with empty content
        */
       skipEmpty?: boolean;
-    } = { skipEmpty: false },
+    },
   ) {
     // Retrieve all entries and parent entries map
-    const entries = await this.getEntries();
-    const parentMap = await this.getParentEntriesMap();
+    const entries = await this.getAll();
+    const parentMap = await this.getParentsMap();
 
     const matchingEntries: Entry<CONFIG_SCHEMA>[] = [];
 
@@ -191,7 +234,7 @@ export class MarkdownDb<
           skipQueryValidation: true,
         })
       ) {
-        if (config.skipEmpty && !entry.$content?.trim()) continue;
+        if (config?.skipEmpty && !entry.$content?.trim()) continue;
         matchingEntries.push(entry);
       }
     }
@@ -199,7 +242,10 @@ export class MarkdownDb<
     return matchingEntries;
   }
 
-  public async matchAll(
+  /**
+   * Return all entries matching any of the inputs
+   */
+  public async matchAny(
     inputs: INPUT[],
     config: {
       /**
@@ -209,7 +255,7 @@ export class MarkdownDb<
     } = { skipEmpty: false },
   ) {
     const allResults = await Promise.all(
-      inputs.map((input) => this.match(input, config)),
+      inputs.map((input) => this.matchOne(input, config)),
     );
 
     // Remove duplicates
@@ -225,10 +271,16 @@ export class MarkdownDb<
     ).sort((a, b) => a.$file.path.localeCompare(b.$file.path));
   }
 
+  /**
+   * Return the zod/v4 configuration schema
+   */
   public get schema() {
     return this._configSchema;
   }
 
+  /**
+   * Return the JSON schema representation of the configuration schema
+   */
   public get jsonSchema() {
     return z.toJSONSchema(this.schema);
   }
@@ -245,7 +297,7 @@ export declare namespace MarkdownDb {
 
   export namespace Entry {
     export type Infer<T extends MarkdownDb<any, any>> = Awaited<
-      ReturnType<T["getEntries"]>
+      ReturnType<T["getAll"]>
     >[number];
   }
 }

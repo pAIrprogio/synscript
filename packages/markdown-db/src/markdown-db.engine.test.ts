@@ -132,7 +132,7 @@ describe("PatternEngine", () => {
   describe("setGlob", () => {
     it("returns a new instance with custom glob pattern", () => {
       const engine1 = MarkdownDb.cwd(testPatternsDir);
-      const engine2 = engine1.setGlob("simple/**/*.md");
+      const engine2 = engine1.setGlobs("simple/**/*.md");
 
       assert.notEqual(engine1, engine2);
     });
@@ -140,9 +140,9 @@ describe("PatternEngine", () => {
     it("filters patterns using custom glob pattern", async () => {
       const engine = MarkdownDb.cwd<TestInput>(testPatternsDir)
         .setQueryEngine(createTestQueryEngine())
-        .setGlob("simple/**/*.md");
+        .setGlobs("simple/**/*.md");
 
-      const patterns = await engine.getEntries();
+      const patterns = await engine.getAll();
       const patternNames = patterns.map((p) => p.$id);
 
       // Should only find patterns from the simple directory
@@ -158,7 +158,7 @@ describe("PatternEngine", () => {
         createTestQueryEngine(),
       );
 
-      const patterns = await engine.getEntries();
+      const patterns = await engine.getAll();
 
       const basicPattern = patterns.find((p) => p.$id === "simple/basic");
       assert.ok(basicPattern);
@@ -177,7 +177,7 @@ describe("PatternEngine", () => {
       const engine = MarkdownDb.cwd<TestInput>(testPatternsDir).setQueryEngine(
         createTestQueryEngine(),
       );
-      const patterns = await engine.getEntries();
+      const patterns = await engine.getAll();
 
       // The file nested/level1/level1.md should be named "nested/level1"
       const level1Pattern = patterns.find((p) => p.$id === "nested/level1");
@@ -194,7 +194,7 @@ describe("PatternEngine", () => {
           }),
         );
 
-      const patterns = await engine.getEntries();
+      const patterns = await engine.getAll();
       const statusPattern = patterns.find(
         (p) => p.$id === "complex/with-status",
       );
@@ -208,7 +208,7 @@ describe("PatternEngine", () => {
       const engine = MarkdownDb.cwd<TestInput>(testPatternsDir).setQueryEngine(
         createTestQueryEngine(),
       );
-      const patterns = await engine.getEntries();
+      const patterns = await engine.getAll();
 
       const names = patterns.map((p) => p.$id);
       const sortedNames = [...names].sort((a, b) => a.localeCompare(b));
@@ -228,7 +228,7 @@ query:
         const engine = MarkdownDb.cwd<TestInput>(
           testPatternsDir,
         ).setQueryEngine(createTestQueryEngine());
-        const patterns = await engine.getEntries();
+        const patterns = await engine.getAll();
 
         const emptyPromptPattern = patterns.find(
           (p) => p.$id === "empty-prompt" || p.$id === "/empty-prompt",
@@ -255,7 +255,7 @@ query:
         extension: "tsx",
       };
 
-      const matching = await engine.match(input);
+      const matching = await engine.matchOne(input);
       const matchingNames = matching.map((p) => p.$id);
 
       // Should match: simple/basic (always: true), complex/with-query (contains "component")
@@ -275,7 +275,7 @@ query:
         extension: "tsx",
       };
 
-      const matching = await engine.match(input);
+      const matching = await engine.matchOne(input);
       const names = matching.map((p) => p.$id);
 
       // Should match patterns based on query evaluation
@@ -300,7 +300,7 @@ query:
         { content: "component", extension: "tsx" },
       ];
 
-      const results = await engine.matchAll(inputs);
+      const results = await engine.matchAny(inputs);
       const resultIds = results.map((result) => result.$id);
 
       // Verify results are returned in sorted order by file path
@@ -374,7 +374,7 @@ Invalid pattern.`);
       const engine = MarkdownDb.cwd(testPatternsDir);
 
       await assert.rejects(
-        async () => await engine.getEntries(),
+        async () => await engine.getAll(),
         /Failed to parse config/,
       );
 
@@ -398,7 +398,7 @@ Missing query field.`);
       );
 
       await assert.rejects(
-        async () => await engine.getEntries(),
+        async () => await engine.getAll(),
         /Failed to parse config/,
       );
 

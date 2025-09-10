@@ -36,9 +36,13 @@ export function getMarkdownEntryId(mdDir: FsDir, mdFile: FsFile) {
 
 export async function getMarkdownEntries<
   CONFIG_SCHEMA extends z.ZodObject<any>,
->(cwd: FsDir, configSchema: CONFIG_SCHEMA, glob: string = "**/*.md") {
+>(
+  cwd: FsDir,
+  configSchema: CONFIG_SCHEMA,
+  globs: [string, ...string[]] = ["**/*.md"],
+) {
   const mdFiles = await cwd
-    .glob(glob)
+    .glob(globs)
     // Sort by path
     .then((files) =>
       files.sort((a, b) =>
