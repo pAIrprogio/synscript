@@ -1,8 +1,10 @@
 import { type FsDir, type FsFile, fsFile } from "@synstack/fs";
 import { glob } from "@synstack/glob";
+import { md } from "@synstack/markdown";
 import { QueryEngine } from "@synstack/query";
+import { t } from "@synstack/text";
 import { z } from "zod/v4";
-import { getMarkdownEntries, NAME_SEPARATOR } from "./markdown-db.lib.ts";
+import { getMarkdownEntries } from "./markdown-db.lib.ts";
 
 type Globs = [string, ...string[]];
 
@@ -13,6 +15,8 @@ type BaseConfigSchema = z.ZodObject<{
 type Entry<CONFIG_SCHEMA extends BaseConfigSchema> = Awaited<
   ReturnType<typeof getMarkdownEntries<CONFIG_SCHEMA>>
 >[number];
+
+export const NAME_SEPARATOR = "/";
 
 export class MarkdownDb<
   INPUT = unknown,
@@ -97,6 +101,18 @@ export class MarkdownDb<
   }
 
   /**
+   * Filter the markdown files with glob patterns
+   */
+  public setGlobs(...globs: Globs) {
+    return new MarkdownDb(
+      this._cwd,
+      this._queryEngine,
+      this._configSchema,
+      globs,
+    );
+  }
+
+  /**
    * Check if the provided file is a markdown entry file in this db instance
    * @param file - The file to check
    * @returns True if the file is an entry file, false otherwise
@@ -113,10 +129,92 @@ export class MarkdownDb<
   }
 
   /**
-   * Filter the markdown files with glob patterns
+   * Compute the entry id
+   * @param mdFile - The markdown file
+   * @returns The entry id
    */
-  public setGlobs(...globs: Globs) {
-    return new MarkdownDb(this._cwd, this._queryEngine, this._configSchema, globs);
+  public computeEntryId(mdFile: FsFile) {
+    const relativePath = mdFile.dir().relativePathFrom(this._cwd);
+    const dirPath = relativePath.split("/");
+    const lastFolderName = dirPath.pop();
+    let fileName = mdFile.fileNameWithoutExtension();
+
+    // Remove numeric prefix (e.g., "0." from "0.buttons")
+    fileName = fileName.replace(/^\d+\./, "");
+
+    // Extract type suffix if present (e.g., "my-type" from "buttons.my-type")
+    let type: string | null = null;
+    const typeMatch = fileName.match(/^(.+)\.(.+)$/);
+    if (typeMatch) {
+      fileName = typeMatch[1];
+      type = typeMatch[2];
+    }
+
+    // If the last folder's name is the same as the file name, we can skip it
+    const nameParts =
+      lastFolderName === fileName
+        ? [...dirPath, fileName]
+        : [...dirPath, lastFolderName, fileName];
+
+    return {
+      name: nameParts.filter((part) => part !== "").join(NAME_SEPARATOR),
+      type,
+    };
+  }
+
+  /**
+   * Parse the markdown file
+   * @param file - The file to parse
+   * @returns The parsed entry
+   */
+  public async fileToEntry(file: FsFile | string) {
+    const mdFile = fsFile(file);
+
+    // Check if the file is an entry file
+    if (!this.isEntryFile(mdFile))
+      throw new Error(t`
+        File ${mdFile.path} is not an entry file in this MarkdownDb instance
+          - Cwd: ${this._cwd.path}
+          - Globs: ${this._globs.join(", ")}
+      `);
+
+    // Read the file
+    const mdText = await mdFile.read.text();
+
+    // Parse the header data
+    const headerData = await new Promise((resolve) =>
+      resolve(md.getHeaderData(mdText)),
+    ).catch(async (err) => {
+      throw new Error(t`
+        Failed to read markdown file header
+          - File: ${this._cwd.relativePathTo(mdFile)}
+          - Error:
+            ${err.message as string}
+      `);
+    });
+
+    // Validate the header data
+    const parsedData = this._configSchema.safeParse(headerData);
+    if (!parsedData.success)
+      throw new Error(t`
+        Failed to validate config for ${mdFile.path}:
+          ${z.prettifyError(parsedData.error)}
+      `);
+
+    // Compute the entry id
+    const { name, type } = this.computeEntryId(mdFile);
+
+    // Get the content
+    const content = md.getBody(mdText).trim();
+
+    // Return the entry
+    return {
+      $id: name,
+      $type: type,
+      $content: content.length > 0 ? content : null,
+      $file: mdFile,
+      ...parsedData.data,
+    };
   }
 
   /**
