@@ -50,7 +50,8 @@
   "dependencies": {
     "@synstack/fs": "workspace:^",
     "@synstack/markdown": "workspace:^",
-    "@synstack/text": "workspace:^"
+    "@synstack/text": "workspace:^",
+    "@synstack/glob": "workspace:^"
   },
   "devDependencies": {
     "@synstack/query": "workspace:^",

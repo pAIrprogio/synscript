@@ -1,4 +1,5 @@
-import type { FsDir } from "@synstack/fs";
+import { type FsDir, type FsFile, fsFile } from "@synstack/fs";
+import { glob } from "@synstack/glob";
 import { QueryEngine } from "@synstack/query";
 import { z } from "zod/v4";
 import { getMarkdownEntries, NAME_SEPARATOR } from "./markdown-db.lib.ts";
@@ -96,14 +97,26 @@ export class MarkdownDb<
   }
 
   /**
+   * Check if the provided file is a markdown entry file in this db instance
+   * @param file - The file to check
+   * @returns True if the file is an entry file, false otherwise
+   */
+  public isEntryFile(file: FsFile | string) {
+    const fileInstance = fsFile(file);
+    // Check if the file is in the cwd
+    if (!fileInstance.isInDir(this._cwd)) return false;
+    // Check if the file matches the globs
+    if (!glob.matches(fileInstance.relativePathFrom(this._cwd), this._globs))
+      return false;
+    // Default to true
+    return true;
+  }
+
+  /**
    * Filter the markdown files with glob patterns
-   * The "**\/*.md" glob is always included
    */
   public setGlobs(...globs: Globs) {
-    return new MarkdownDb(this._cwd, this._queryEngine, this._configSchema, [
-      "**/*.md",
-      ...globs,
-    ]);
+    return new MarkdownDb(this._cwd, this._queryEngine, this._configSchema, globs);
   }
 
   /**

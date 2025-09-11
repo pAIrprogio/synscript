@@ -427,4 +427,43 @@ Missing query field.`);
       assert.deepEqual(config.status, "ok");
     });
   });
+
+  describe("isEntryFile", () => {
+    it("returns true for files in the cwd that match the glob pattern", () => {
+      const engine = MarkdownDb.cwd(testPatternsDir);
+      const validFile = testPatternsDir.toFile("simple/basic.md");
+
+      assert.ok(engine.isEntryFile(validFile));
+    });
+
+    it("returns true for files passed as string paths", () => {
+      const engine = MarkdownDb.cwd(testPatternsDir);
+      const validFilePath = testPatternsDir.toFile("simple/basic.md").path;
+
+      assert.ok(engine.isEntryFile(validFilePath));
+    });
+
+    it("returns false for files outside the cwd", () => {
+      const engine = MarkdownDb.cwd(testPatternsDir);
+      const outsideFile = fsDir(currentDirectoryPath).toFile("outside.md");
+
+      assert.ok(!engine.isEntryFile(outsideFile));
+    });
+
+    it("returns false for files that don't match the glob pattern", () => {
+      const engine = MarkdownDb.cwd(testPatternsDir);
+      const nonMarkdownFile = testPatternsDir.toFile("simple/basic.txt");
+
+      assert.ok(!engine.isEntryFile(nonMarkdownFile));
+    });
+
+    it("respects custom glob patterns", () => {
+      const engine = MarkdownDb.cwd(testPatternsDir).setGlobs("simple/**/*.md");
+      const simpleFile = testPatternsDir.toFile("simple/basic.md");
+      const nestedFile = testPatternsDir.toFile("nested/level1/pattern1.md");
+
+      assert.ok(engine.isEntryFile(simpleFile));
+      assert.ok(!engine.isEntryFile(nestedFile));
+    });
+  });
 });
