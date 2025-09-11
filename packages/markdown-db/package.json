@@ -4,7 +4,7 @@
   "publishConfig": {
     "access": "public"
   },
-  "version": "3.1.0",
+  "version": "3.2.0",
   "description": "Markdown database using Frontmatter",
   "keywords": [
     "database",
@@ -49,9 +49,9 @@
   },
   "dependencies": {
     "@synstack/fs": "workspace:^",
+    "@synstack/glob": "workspace:^",
     "@synstack/markdown": "workspace:^",
-    "@synstack/text": "workspace:^",
-    "@synstack/glob": "workspace:^"
+    "@synstack/text": "workspace:^"
   },
   "devDependencies": {
     "@synstack/query": "workspace:^",
