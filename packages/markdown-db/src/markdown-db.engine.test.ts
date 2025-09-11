@@ -1,4 +1,4 @@
-import { fsDir } from "@synstack/fs";
+import { fsDir, fsFile } from "@synstack/fs";
 import { QueryEngine } from "@synstack/query";
 import assert from "node:assert/strict";
 import { describe, it } from "node:test";
@@ -9,6 +9,9 @@ import { MarkdownDb } from "./markdown-db.engine.ts";
 const currentDirectoryPath =
   import.meta.dirname || path.dirname(import.meta.url.replace("file://", ""));
 const testPatternsDir = fsDir(currentDirectoryPath).to(".test/patterns");
+const testInvalidPatternsDir = fsDir(currentDirectoryPath).to(
+  ".test/invalid-patterns",
+);
 
 // Simple test input type
 type TestInput = {
@@ -31,9 +34,9 @@ function createTestQueryEngine() {
     );
 }
 
-describe("PatternEngine", () => {
+describe("MarkdownDb", () => {
   describe("constructor and factory methods", () => {
-    it("creates a PatternEngine with default query engine using cwd", () => {
+    it("creates a MarkdownDb with default query engine using cwd", () => {
       const engine = MarkdownDb.cwd(testPatternsDir);
 
       assert.ok(engine);
@@ -152,7 +155,7 @@ describe("PatternEngine", () => {
     });
   });
 
-  describe("getPatterns", () => {
+  describe("getAll", () => {
     it("loads patterns from markdown files", async () => {
       const engine = MarkdownDb.cwd<TestInput>(testPatternsDir).setQueryEngine(
         createTestQueryEngine(),
@@ -244,7 +247,7 @@ query:
     });
   });
 
-  describe("matchingPatterns", () => {
+  describe("matchOne", () => {
     it("filters patterns based on query evaluation", async () => {
       const engine = MarkdownDb.cwd<TestInput>(testPatternsDir).setQueryEngine(
         createTestQueryEngine(),
@@ -290,7 +293,7 @@ query:
       assert.deepEqual(actualSubset.sort(), expectedMatches.sort());
     });
 
-    it("returns results sorted by file path when using matchAll", async () => {
+    it("returns results sorted by file path when using matchAny", async () => {
       const engine = MarkdownDb.cwd<TestInput>(testPatternsDir).setQueryEngine(
         createTestQueryEngine(),
       );
@@ -362,36 +365,16 @@ query:
 
   describe("error handling", () => {
     it("throws error for invalid pattern config", async () => {
-      // Create an invalid pattern file
-      const invalidFile = testPatternsDir.toFile("invalid.md");
-      await invalidFile.write.text(`---
-query:
-  invalid_predicate: true
----
-
-Invalid pattern.`);
-
-      const engine = MarkdownDb.cwd(testPatternsDir);
+      const engine = MarkdownDb.cwd(testInvalidPatternsDir);
 
       await assert.rejects(
         async () => await engine.getAll(),
         /Failed to parse config/,
       );
-
-      // Clean up
-      await invalidFile.remove();
     });
 
     it("throws error for missing required config fields", async () => {
-      // Create a pattern missing required field
-      const missingFieldFile = testPatternsDir.toFile("missing-field.md");
-      await missingFieldFile.write.text(`---
-status: "ok"
----
-
-Missing query field.`);
-
-      const engine = MarkdownDb.cwd(testPatternsDir).setConfigSchema(
+      const engine = MarkdownDb.cwd(testInvalidPatternsDir).setConfigSchema(
         z.object({
           status: z.string(),
         }),
@@ -401,9 +384,6 @@ Missing query field.`);
         async () => await engine.getAll(),
         /Failed to parse config/,
       );
-
-      // Clean up
-      await missingFieldFile.remove();
     });
   });
 
@@ -464,6 +444,64 @@ Missing query field.`);
 
       assert.ok(engine.isEntryFile(simpleFile));
       assert.ok(!engine.isEntryFile(nestedFile));
+    });
+  });
+
+  describe("computeEntryId", () => {
+    it("returns the pattern name from directory and file", () => {
+      const mockDir = fsDir("/base/patterns");
+      const mockFile = fsFile("/base/patterns/ember/template/uses/buttons.md");
+      const mockEngine = MarkdownDb.cwd(mockDir);
+
+      const expected = { name: "ember/template/uses/buttons", type: null };
+      assert.deepEqual(mockEngine.computeEntryId(mockFile), expected);
+    });
+
+    it("skips the file name if it's the same as the last folder", () => {
+      const mockDir = fsDir("/base/patterns");
+      const mockFile = fsFile(
+        "/base/patterns/ember/template/uses/buttons/buttons",
+      );
+      const mockEngine = MarkdownDb.cwd(mockDir);
+
+      const expected = { name: "ember/template/uses/buttons", type: null };
+      assert.deepEqual(mockEngine.computeEntryId(mockFile), expected);
+    });
+
+    it("removes the prefix", () => {
+      const mockDir = fsDir("/base/patterns");
+      const mockFile = fsFile(
+        "/base/patterns/ember/template/uses/buttons/0.buttons.md",
+      );
+      const mockEngine = MarkdownDb.cwd(mockDir);
+
+      const expected = { name: "ember/template/uses/buttons", type: null };
+      assert.deepEqual(mockEngine.computeEntryId(mockFile), expected);
+    });
+
+    it("returns the type", () => {
+      const mockDir = fsDir("/base/patterns");
+      const mockFile = fsFile(
+        "/base/patterns/ember/template/uses/buttons/0.buttons.my-type.md",
+      );
+      const mockEngine = MarkdownDb.cwd(mockDir);
+
+      const expected = { name: "ember/template/uses/buttons", type: "my-type" };
+      assert.deepEqual(mockEngine.computeEntryId(mockFile), expected);
+    });
+
+    it("returns the middle part of the file name even if it contains a dot", () => {
+      const mockDir = fsDir("/base/patterns");
+      const mockFile = fsFile(
+        "/base/patterns/ember/template/uses/0.buttons.with.dot.my-type.md",
+      );
+      const mockEngine = MarkdownDb.cwd(mockDir);
+
+      const expected = {
+        name: "ember/template/uses/buttons.with.dot",
+        type: "my-type",
+      };
+      assert.deepEqual(mockEngine.computeEntryId(mockFile), expected);
     });
   });
 });

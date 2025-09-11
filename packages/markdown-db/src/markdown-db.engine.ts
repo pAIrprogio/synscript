@@ -4,7 +4,6 @@ import { md } from "@synstack/markdown";
 import { QueryEngine } from "@synstack/query";
 import { t } from "@synstack/text";
 import { z } from "zod/v4";
-import { getMarkdownEntries } from "./markdown-db.lib.ts";
 
 type Globs = [string, ...string[]];
 
@@ -13,15 +12,16 @@ type BaseConfigSchema = z.ZodObject<{
 }>;
 
 type Entry<CONFIG_SCHEMA extends BaseConfigSchema> = Awaited<
-  ReturnType<typeof getMarkdownEntries<CONFIG_SCHEMA>>
+  ReturnType<MarkdownDb<any, CONFIG_SCHEMA>["readEntries"]>
 >[number];
 
-export const NAME_SEPARATOR = "/";
+export const DEFAULT_NAME_SEPARATOR = "/";
 
 export class MarkdownDb<
   INPUT = unknown,
   CONFIG_SCHEMA extends BaseConfigSchema = BaseConfigSchema,
 > {
+  private _nameSeparator;
   private _configSchema;
   private _cwd;
   private _queryEngine;
@@ -39,11 +39,13 @@ export class MarkdownDb<
     queryEngine: QueryEngine<any, INPUT>,
     configSchema: CONFIG_SCHEMA,
     globs: Globs = ["**/*.md"],
+    nameSeparator: string = DEFAULT_NAME_SEPARATOR,
   ) {
     this._cwd = cwd;
     this._queryEngine = queryEngine;
     this._configSchema = configSchema;
     this._globs = globs;
+    this._nameSeparator = nameSeparator;
   }
 
   /**
@@ -77,7 +79,13 @@ export class MarkdownDb<
     const newSchema = this._configSchema.omit({ query: true }).extend({
       query: queryEngine.schema,
     }) as CONFIG_SCHEMA;
-    return new MarkdownDb(this._cwd, queryEngine, newSchema, this._globs);
+    return new MarkdownDb(
+      this._cwd,
+      queryEngine,
+      newSchema,
+      this._globs,
+      this._nameSeparator,
+    );
   }
 
   /**
@@ -97,6 +105,7 @@ export class MarkdownDb<
         ? z.ZodObject<T & { query: z.ZodType<unknown> }>
         : never,
       this._globs,
+      this._nameSeparator,
     );
   }
 
@@ -109,6 +118,20 @@ export class MarkdownDb<
       this._queryEngine,
       this._configSchema,
       globs,
+      this._nameSeparator,
+    );
+  }
+
+  /**
+   * Set the name separator when computing the entry id
+   */
+  public setNameSeparator(nameSeparator: string) {
+    return new MarkdownDb(
+      this._cwd,
+      this._queryEngine,
+      this._configSchema,
+      this._globs,
+      nameSeparator,
     );
   }
 
@@ -157,7 +180,7 @@ export class MarkdownDb<
         : [...dirPath, lastFolderName, fileName];
 
     return {
-      name: nameParts.filter((part) => part !== "").join(NAME_SEPARATOR),
+      name: nameParts.filter((part) => part !== "").join(this._nameSeparator),
       type,
     };
   }
@@ -197,7 +220,7 @@ export class MarkdownDb<
     const parsedData = this._configSchema.safeParse(headerData);
     if (!parsedData.success)
       throw new Error(t`
-        Failed to validate config for ${mdFile.path}:
+        Failed to parse config for ${mdFile.path}:
           ${z.prettifyError(parsedData.error)}
       `);
 
@@ -218,14 +241,28 @@ export class MarkdownDb<
   }
 
   /**
+   * Read the entries from the filesystem
+   */
+  private async readEntries() {
+    const mdFiles = await this._cwd
+      .glob(this._globs)
+      // Sort by path
+      .then((files) =>
+        files.sort((a, b) =>
+          a
+            .relativePathFrom(this._cwd)
+            .localeCompare(b.relativePathFrom(this._cwd)),
+        ),
+      );
+
+    return Promise.all(mdFiles.map(async (mdFile) => this.fileToEntry(mdFile)));
+  }
+
+  /**
    * Refresh the markdown entries from the filesystem
    */
   public async refreshEntries() {
-    this._entriesPromise = getMarkdownEntries(
-      this._cwd,
-      this.schema,
-      this._globs,
-    );
+    this._entriesPromise = this.readEntries();
     this._entriesMapPromise = this._entriesPromise.then(
       (entries) => new Map(entries.map((entry) => [entry.$id, entry])),
     );
@@ -237,11 +274,7 @@ export class MarkdownDb<
    */
   public async getAll() {
     if (!this._entriesPromise) {
-      this._entriesPromise = getMarkdownEntries(
-        this._cwd,
-        this.schema,
-        this._globs,
-      );
+      this._entriesPromise = this.readEntries();
     }
     return this._entriesPromise;
   }
@@ -277,12 +310,12 @@ export class MarkdownDb<
 
         // Precompute parent entries for each entry
         for (const entry of entries) {
-          const path = entry.$id.split(NAME_SEPARATOR);
+          const path = entry.$id.split(this._nameSeparator);
           const parentEntries: Entry<CONFIG_SCHEMA>[] = [];
 
           // Build parent chain: "a" -> "a/b" -> "a/b/c"
           for (let i = 1; i <= path.length; i++) {
-            const parentName = path.slice(0, i).join(NAME_SEPARATOR);
+            const parentName = path.slice(0, i).join(this._nameSeparator);
             const parentPattern = entriesMap.get(parentName);
             if (parentPattern) {
               parentEntries.push(parentPattern);
