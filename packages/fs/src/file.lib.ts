@@ -1022,7 +1022,7 @@ class FsFileWrite<
    * @throws If schema validation fails or if the write operation fails
    */
   public async json<T>(
-    data: TSchema extends ZodSchema<infer O> ? O : T,
+    data: TSchema extends ZodSchema<any, infer I> ? I : T,
   ): Promise<void> {
     return this.text(json.serialize(data, { schema: this._schema }));
   }
@@ -1040,7 +1040,7 @@ class FsFileWrite<
    * @throws If schema validation fails or if the write operation fails
    */
   public async prettyJson<T>(
-    data: TSchema extends ZodSchema<infer O> ? O : T,
+    data: TSchema extends ZodSchema<any, infer I> ? I : T,
   ): Promise<void> {
     return this.text(
       json.serialize(data, { schema: this._schema, pretty: true }) + "\n",
@@ -1057,7 +1057,9 @@ class FsFileWrite<
    * @synchronous
    * @throws If schema validation fails or if the write operation fails
    */
-  public jsonSync<T>(data: TSchema extends ZodSchema<infer O> ? O : T): void {
+  public jsonSync<T>(
+    data: TSchema extends ZodSchema<any, infer I> ? I : T,
+  ): void {
     return this.textSync(json.serialize(data, { schema: this._schema }));
   }
 
@@ -1072,7 +1074,7 @@ class FsFileWrite<
    * @throws If schema validation fails or if the write operation fails
    */
   public prettyJsonSync<T = unknown>(
-    data: TSchema extends ZodSchema<infer O> ? O : T,
+    data: TSchema extends ZodSchema<any, infer I> ? I : T,
   ): void {
     return this.textSync(
       json.serialize(data, { schema: this._schema, pretty: true }) + "\n",
@@ -1089,7 +1091,7 @@ class FsFileWrite<
    * @throws If schema validation fails or if the write operation fails
    */
   public async yaml<T = unknown>(
-    data: TSchema extends ZodSchema<infer O> ? O : T,
+    data: TSchema extends ZodSchema<any, infer I> ? I : T,
   ): Promise<void> {
     return this.text(yaml.serialize(data, { schema: this._schema }));
   }
@@ -1105,7 +1107,7 @@ class FsFileWrite<
    * @throws If schema validation fails or if the write operation fails
    */
   public yamlSync<T = unknown>(
-    data: TSchema extends ZodSchema<infer O> ? O : T,
+    data: TSchema extends ZodSchema<any, infer I> ? I : T,
   ): void {
     return this.textSync(yaml.serialize(data, { schema: this._schema }));
   }
