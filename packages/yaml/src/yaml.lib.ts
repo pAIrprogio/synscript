@@ -18,9 +18,15 @@ export const deserialize = <SHAPE = unknown>(
   data: Stringable,
   options: { schema?: ZodSchema<SHAPE> } = {},
 ): SHAPE => {
-  const validatedData = YAML.parse(data.toString());
-  if (options.schema) return options.schema.parse(validatedData);
-  return validatedData;
+  try {
+    const validatedData = YAML.parse(data.toString());
+    if (options.schema) return options.schema.parse(validatedData);
+    return validatedData;
+  } catch (error) {
+    throw new Error(`Failed to parse YAML`, {
+      cause: error,
+    });
+  }
 };
 
 /**
@@ -33,8 +39,14 @@ export const serialize = <SHAPE = any>(
   data: SHAPE,
   options: { schema?: ZodSchema<any, SHAPE> } = {},
 ) => {
-  const validatedData = options.schema ? options.schema.parse(data) : data;
-  return YAML.stringify(validatedData, {
-    blockQuote: "literal", // Avoid unnecessary whitespace on preview
-  });
+  try {
+    const validatedData = options.schema ? options.schema.parse(data) : data;
+    return YAML.stringify(validatedData, {
+      blockQuote: "literal", // Avoid unnecessary whitespace on preview
+    });
+  } catch (error) {
+    throw new Error(`Failed to serialize YAML`, {
+      cause: error,
+    });
+  }
 };
