@@ -424,6 +424,74 @@ export class FsFile<
   }
 
   /**
+   * Copy the file to a new location.
+   *
+   * @param toFile - The destination path for the file or an existing FsFile instance
+   * @returns A promise that resolves to the new copied file
+   * @throws If the copy operation fails or if parent directory creation fails
+   *
+   * ```typescript
+   * import { fsFile } from "@synstack/fs";
+   *
+   * const sourceFile = fsFile("./source.txt");
+   * const copiedFile = await sourceFile.copy("./backup/source.txt");
+   * // Both files now exist with the same content
+   * ```
+   */
+  public async copyTo(toFile: FsFile | string): Promise<FsFile> {
+    const destFile = FsFile.from(toFile);
+    const destDir = destFile.dir().path;
+    try {
+      // Ensure destination directory exists
+      await fs.mkdir(destDir, { recursive: true });
+      // Copy the file
+      await fs.copyFile(this._path, destFile.path);
+      return destFile;
+    } catch (error) {
+      throw new Error(
+        `Failed to copy file from ${this._path} to ${destFile.path}`,
+        {
+          cause: error,
+        },
+      );
+    }
+  }
+
+  /**
+   * Copy the file to a new location synchronously.
+   *
+   * @param toFile - The destination path for the file or an existing FsFile instance
+   * @returns The new copied file
+   * @throws If the copy operation fails or if parent directory creation fails
+   *
+   * ```typescript
+   * import { fsFile } from "@synstack/fs";
+   *
+   * const sourceFile = fsFile("./source.txt");
+   * const copiedFile = sourceFile.copySync("./backup/source.txt");
+   * // Both files now exist with the same content
+   * ```
+   */
+  public copyToSync(toFile: FsFile | string): FsFile {
+    const destFile = FsFile.from(toFile);
+    const destDir = destFile.dir().path;
+    try {
+      // Ensure destination directory exists
+      fsSync.mkdirSync(destDir, { recursive: true });
+      // Copy the file
+      fsSync.copyFileSync(this._path, destFile.path);
+      return destFile;
+    } catch (error) {
+      throw new Error(
+        `Failed to copy file from ${this._path} to ${destFile.path}`,
+        {
+          cause: error,
+        },
+      );
+    }
+  }
+
+  /**
    * Move the file to a new location.
    *
    * @param newPath - The new path for the file or an existing FsFile instance
