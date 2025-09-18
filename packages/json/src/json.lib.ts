@@ -18,8 +18,14 @@ export const serialize = <SHAPE = unknown>(
   data: SHAPE,
   config: { pretty?: boolean; schema?: ZodSchema<any, SHAPE> } = {},
 ) => {
-  const validatedData = config.schema ? config.schema.parse(data) : data;
-  return JSON.stringify(validatedData, null, config.pretty ? 2 : undefined);
+  try {
+    const validatedData = config.schema ? config.schema.parse(data) : data;
+    return JSON.stringify(validatedData, null, config.pretty ? 2 : undefined);
+  } catch (error) {
+    throw new Error(`Failed to serialize JSON`, {
+      cause: error,
+    });
+  }
 };
 
 /**
@@ -39,22 +45,9 @@ export const deserialize = <SHAPE = unknown>(
     if (config.schema) return config.schema.parse(validatedData);
     return validatedData;
   } catch (error) {
-    throw new JsonParseException(content.toString(), error);
+    throw new Error(`Failed to parse JSON`, {
+      cause: error,
+    });
   }
 };
 
-export class JsonParseException extends Error {
-  constructor(value: string, cause?: any) {
-    const message = `
-Failed to parse JSON
-
-[JSON String Value]:
-  ${value}
-
-[Cause]:
-  ${cause instanceof Error ? cause.message : String(cause)}
-    `;
-
-    super(message, { cause });
-  }
-}
