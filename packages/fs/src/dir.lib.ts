@@ -328,6 +328,76 @@ Trying to access a dir file from an absolute paths:
   }
 
   /**
+   * Copy the directory and all its contents to a new location.
+   *
+   * @param toDir - The destination path for the directory or an existing FsDir instance
+   * @returns A promise that resolves to the new copied directory
+   * @throws If the copy operation fails
+   *
+   * ```typescript
+   * import { fsDir } from "@synstack/fs";
+   *
+   * const sourceDir = fsDir("./source");
+   * const copiedDir = await sourceDir.copyTo("./backup/source");
+   * // Both directories now exist with the same content
+   * ```
+   */
+  public async copyTo(toDir: FsDir | string): Promise<FsDir> {
+    const destDir = FsDir.cwd(toDir);
+    const parentDir = path.dirname(destDir.path);
+
+    try {
+      // Ensure parent directory exists
+      await fs.mkdir(parentDir, { recursive: true });
+      // Use native fs.cp with recursive option
+      await fs.cp(this._path, destDir.path, { recursive: true });
+      return destDir;
+    } catch (error) {
+      throw new Error(
+        `Failed to copy directory from ${this._path} to ${destDir.path}`,
+        {
+          cause: error,
+        },
+      );
+    }
+  }
+
+  /**
+   * Copy the directory and all its contents to a new location synchronously.
+   *
+   * @param toDir - The destination path for the directory or an existing FsDir instance
+   * @returns The new copied directory
+   * @throws If the copy operation fails
+   *
+   * ```typescript
+   * import { fsDir } from "@synstack/fs";
+   *
+   * const sourceDir = fsDir("./source");
+   * const copiedDir = sourceDir.copyToSync("./backup/source");
+   * // Both directories now exist with the same content
+   * ```
+   */
+  public copyToSync(toDir: FsDir | string): FsDir {
+    const destDir = FsDir.cwd(toDir);
+    const parentDir = path.dirname(destDir.path);
+
+    try {
+      // Ensure parent directory exists
+      fsSync.mkdirSync(parentDir, { recursive: true });
+      // Use native fsSync.cpSync with recursive option
+      fsSync.cpSync(this._path, destDir.path, { recursive: true });
+      return destDir;
+    } catch (error) {
+      throw new Error(
+        `Failed to copy directory from ${this._path} to ${destDir.path}`,
+        {
+          cause: error,
+        },
+      );
+    }
+  }
+
+  /**
    * Move the directory to a new location.
    *
    * @param newPath - The new path for the directory
