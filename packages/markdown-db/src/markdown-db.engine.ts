@@ -424,9 +424,10 @@ export class MarkdownDb<
 
   /**
    * Return the JSON schema representation of the configuration schema
+   * Validates against the input type
    */
   public get jsonSchema() {
-    return z.toJSONSchema(this.schema);
+    return z.toJSONSchema(this.schema, { io: "input" });
   }
 }
 
