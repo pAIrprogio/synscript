@@ -374,10 +374,14 @@ export class FsFile<
    * ```
    */
   public async remove(): Promise<void> {
-    await fs.rm(this._path, { recursive: true }).catch((e) => {
-      if (e.code === "ENOENT") return;
-      throw e;
-    });
+    try {
+      await fs.rm(this._path, { recursive: true });
+    } catch (error: any) {
+      if (error.code === "ENOENT") return;
+      throw new Error(`Failed to remove file ${this._path}`, {
+        cause: error,
+      });
+    }
   }
 
   /**
@@ -406,7 +410,9 @@ export class FsFile<
       fsSync.rmSync(this._path, { recursive: false });
     } catch (error: any) {
       if (error.code === "ENOENT") return;
-      throw error;
+      throw new Error(`Failed to remove file ${this._path}`, {
+        cause: error,
+      });
     }
   }
 
@@ -425,8 +431,17 @@ export class FsFile<
    */
   public async move(newPath: FsFile | AnyPath): Promise<FsFile> {
     const newFile = FsFile.from(newPath);
-    await fs.rename(this._path, newFile.path);
-    return newFile;
+    try {
+      await fs.rename(this._path, newFile.path);
+      return newFile;
+    } catch (error) {
+      throw new Error(
+        `Failed to move file from ${this._path} to ${newFile.path}`,
+        {
+          cause: error,
+        },
+      );
+    }
   }
 
   /**
@@ -437,8 +452,17 @@ export class FsFile<
    */
   public moveSync(newPath: FsFile | AnyPath): FsFile {
     const newFile = FsFile.from(newPath);
-    fsSync.renameSync(this._path, newFile.path);
-    return newFile;
+    try {
+      fsSync.renameSync(this._path, newFile.path);
+      return newFile;
+    } catch (error) {
+      throw new Error(
+        `Failed to move file from ${this._path} to ${newFile.path}`,
+        {
+          cause: error,
+        },
+      );
+    }
   }
 
   /**
@@ -459,7 +483,12 @@ export class FsFile<
     return fs
       .access(this._path, fs.constants.F_OK)
       .then(() => true)
-      .catch(() => false);
+      .catch((error: any) => {
+        if (error.code === "ENOENT") return false;
+        throw new Error(`Failed to check existence of file ${this._path}`, {
+          cause: error,
+        });
+      });
   }
 
   /**
@@ -483,7 +512,9 @@ export class FsFile<
       return true;
     } catch (error: any) {
       if (error.code === "ENOENT") return false;
-      throw error;
+      throw new Error(`Failed to check existence of file ${this._path}`, {
+        cause: error,
+      });
     }
   }
 
@@ -502,8 +533,14 @@ export class FsFile<
    * ```
    */
   public async creationDate(): Promise<Date> {
-    const fileStats = await fs.stat(this._path);
-    return fileStats.birthtime;
+    try {
+      const fileStats = await fs.stat(this._path);
+      return fileStats.birthtime;
+    } catch (error) {
+      throw new Error(`Failed to get creation date for ${this._path}`, {
+        cause: error,
+      });
+    }
   }
 
   /**
@@ -522,8 +559,14 @@ export class FsFile<
    * ```
    */
   public creationDateSync(): Date {
-    const stats = fsSync.statSync(this._path);
-    return stats.birthtime;
+    try {
+      const stats = fsSync.statSync(this._path);
+      return stats.birthtime;
+    } catch (error) {
+      throw new Error(`Failed to get creation date for ${this._path}`, {
+        cause: error,
+      });
+    }
   }
 
   /**

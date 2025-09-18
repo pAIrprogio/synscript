@@ -242,7 +242,15 @@ Trying to access a dir file from an absolute paths:
     return fs
       .access(this._path, fsSync.constants.F_OK)
       .then(() => true)
-      .catch(() => false);
+      .catch((error: any) => {
+        if (error.code === "ENOENT") return false;
+        throw new Error(
+          `Failed to check existence of directory ${this._path}`,
+          {
+            cause: error,
+          },
+        );
+      });
   }
 
   /**
@@ -269,7 +277,9 @@ Trying to access a dir file from an absolute paths:
       return true;
     } catch (error: any) {
       if (error.code === "ENOENT") return false;
-      throw error;
+      throw new Error(`Failed to check existence of directory ${this._path}`, {
+        cause: error,
+      });
     }
   }
 
@@ -286,7 +296,13 @@ Trying to access a dir file from an absolute paths:
    * ```
    */
   public async make(): Promise<void> {
-    await fs.mkdir(this._path, { recursive: true });
+    try {
+      await fs.mkdir(this._path, { recursive: true });
+    } catch (error) {
+      throw new Error(`Failed to create directory ${this._path}`, {
+        cause: error,
+      });
+    }
   }
 
   /**
@@ -302,7 +318,13 @@ Trying to access a dir file from an absolute paths:
    * ```
    */
   public makeSync(): void {
-    fsSync.mkdirSync(this._path, { recursive: true });
+    try {
+      fsSync.mkdirSync(this._path, { recursive: true });
+    } catch (error) {
+      throw new Error(`Failed to create directory ${this._path}`, {
+        cause: error,
+      });
+    }
   }
 
   /**
@@ -313,8 +335,17 @@ Trying to access a dir file from an absolute paths:
    */
   public async move(newPath: FsDir | AnyPath): Promise<FsDir> {
     const newDir = FsDir.cwd(newPath);
-    await fs.rename(this._path, newDir.path);
-    return newDir;
+    try {
+      await fs.rename(this._path, newDir.path);
+      return newDir;
+    } catch (error) {
+      throw new Error(
+        `Failed to move directory from ${this._path} to ${newDir.path}`,
+        {
+          cause: error,
+        },
+      );
+    }
   }
 
   /**
@@ -325,8 +356,17 @@ Trying to access a dir file from an absolute paths:
    */
   public moveSync(newPath: FsDir | AnyPath): FsDir {
     const newDir = FsDir.cwd(newPath);
-    fsSync.renameSync(this._path, newDir.path);
-    return newDir;
+    try {
+      fsSync.renameSync(this._path, newDir.path);
+      return newDir;
+    } catch (error) {
+      throw new Error(
+        `Failed to move directory from ${this._path} to ${newDir.path}`,
+        {
+          cause: error,
+        },
+      );
+    }
   }
 
   /**
@@ -343,10 +383,14 @@ Trying to access a dir file from an absolute paths:
    * ```
    */
   public async rm(): Promise<void> {
-    await fs.rm(this._path, { recursive: true }).catch((e) => {
-      if (e.code === "ENOENT") return;
-      throw e;
-    });
+    try {
+      await fs.rm(this._path, { recursive: true });
+    } catch (error: any) {
+      if (error.code === "ENOENT") return;
+      throw new Error(`Failed to remove directory ${this._path}`, {
+        cause: error,
+      });
+    }
   }
 
   /**
@@ -367,7 +411,9 @@ Trying to access a dir file from an absolute paths:
       fsSync.rmSync(this._path, { recursive: true });
     } catch (error: any) {
       if (error.code === "ENOENT") return;
-      throw error;
+      throw new Error(`Failed to remove directory ${this._path}`, {
+        cause: error,
+      });
     }
   }
 
