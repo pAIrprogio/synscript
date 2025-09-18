@@ -250,8 +250,15 @@ const buildXmlTree = (parts: Array<XmlPart>) => {
  * @param content The XML like content to parse
  * @returns The parsed XML as a tree of nodes
  */
-export const parse = <T extends Array<Xml.Node>>(content: Stringable): T =>
-  buildXmlTree(splitXmlTags(content.toString().trim())) as T;
+export const parse = <T extends Array<Xml.Node>>(content: Stringable): T => {
+  try {
+    return buildXmlTree(splitXmlTags(content.toString().trim())) as T;
+  } catch (error) {
+    throw new Error(`Failed to parse XML`, {
+      cause: error,
+    });
+  }
+};
 
 export const nodesToText = (nodes: Array<Xml.Node>) =>
   nodes.map((n) => n.text).join("");
