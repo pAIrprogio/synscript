@@ -596,7 +596,13 @@ class FsFileRead<
    * ```
    */
   public async text() {
-    return fs.readFile(this._path, this._encoding);
+    try {
+      return await fs.readFile(this._path, this._encoding);
+    } catch (error) {
+      throw new Error(`Failed to read text from ${this._path}`, {
+        cause: error,
+      });
+    }
   }
 
   /**
@@ -612,7 +618,13 @@ class FsFileRead<
    * ```
    */
   public textSync() {
-    return fsSync.readFileSync(this._path, this._encoding);
+    try {
+      return fsSync.readFileSync(this._path, this._encoding);
+    } catch (error) {
+      throw new Error(`Failed to read text from ${this._path}`, {
+        cause: error,
+      });
+    }
   }
 
   /**
@@ -675,9 +687,13 @@ class FsFileRead<
   public json<
     OUT = SCHEMA extends ZodSchema<infer O> ? O : unknown,
   >(): Promise<OUT> {
-    return this.text().then((t) =>
-      json.deserialize(t, { schema: this._schema }),
-    );
+    return this.text()
+      .then((t) => json.deserialize(t, { schema: this._schema }))
+      .catch((error) => {
+        throw new Error(`Failed to read JSON from ${this._path}`, {
+          cause: error,
+        });
+      });
   }
 
   /**
@@ -699,9 +715,15 @@ class FsFileRead<
   public jsonSync<
     OUT = SCHEMA extends ZodSchema<infer O> ? O : unknown,
   >(): OUT {
-    return json.deserialize(this.textSync(), {
-      schema: this._schema,
-    });
+    try {
+      return json.deserialize(this.textSync(), {
+        schema: this._schema,
+      });
+    } catch (error) {
+      throw new Error(`Failed to read JSON from ${this._path}`, {
+        cause: error,
+      });
+    }
   }
 
   /**
@@ -728,9 +750,13 @@ class FsFileRead<
   public yaml<
     OUT = SCHEMA extends ZodSchema<infer O> ? O : unknown,
   >(): Promise<OUT> {
-    return this.text().then((t) =>
-      yaml.deserialize(t, { schema: this._schema }),
-    );
+    return this.text()
+      .then((t) => yaml.deserialize(t, { schema: this._schema }))
+      .catch((error) => {
+        throw new Error(`Failed to read YAML from ${this._path}`, {
+          cause: error,
+        });
+      });
   }
 
   /**
@@ -753,9 +779,15 @@ class FsFileRead<
   public yamlSync<
     OUT = SCHEMA extends ZodSchema<infer O> ? O : unknown,
   >(): OUT {
-    return yaml.deserialize(this.textSync(), {
-      schema: this._schema,
-    });
+    try {
+      return yaml.deserialize(this.textSync(), {
+        schema: this._schema,
+      });
+    } catch (error) {
+      throw new Error(`Failed to read YAML from ${this._path}`, {
+        cause: error,
+      });
+    }
   }
 
   /**
@@ -785,7 +817,13 @@ class FsFileRead<
    * - Does not support all XML features (see documentation for details)
    */
   public async xml<T extends Array<Xml.Node>>(): Promise<T> {
-    return this.text().then((content) => xml.parse<T>(content));
+    return this.text()
+      .then((content) => xml.parse<T>(content))
+      .catch((error) => {
+        throw new Error(`Failed to read XML from ${this._path}`, {
+          cause: error,
+        });
+      });
   }
 
   /**
@@ -810,7 +848,13 @@ class FsFileRead<
    * - Does not support all XML features (see documentation for details)
    */
   public xmlSync<T extends Array<Xml.Node>>(): T {
-    return xml.parse<T>(this.textSync());
+    try {
+      return xml.parse<T>(this.textSync());
+    } catch (error) {
+      throw new Error(`Failed to read XML from ${this._path}`, {
+        cause: error,
+      });
+    }
   }
 
   /**
@@ -830,7 +874,13 @@ class FsFileRead<
    * ```
    */
   public async base64(): Promise<string> {
-    return fs.readFile(this._path, "base64");
+    try {
+      return await fs.readFile(this._path, "base64");
+    } catch (error) {
+      throw new Error(`Failed to read base64 from ${this._path}`, {
+        cause: error,
+      });
+    }
   }
 
   /**
@@ -847,7 +897,13 @@ class FsFileRead<
    * ```
    */
   public base64Sync(): string {
-    return fsSync.readFileSync(this._path, "base64");
+    try {
+      return fsSync.readFileSync(this._path, "base64");
+    } catch (error) {
+      throw new Error(`Failed to read base64 from ${this._path}`, {
+        cause: error,
+      });
+    }
   }
 
   /**
@@ -921,11 +977,17 @@ class FsFileRead<
    * @throws If schema validation fails when a schema is provided
    */
   public md<DATA_SHAPE = SCHEMA extends ZodSchema<infer O> ? O : unknown>() {
-    return this.text().then((t) =>
-      MdDoc.withOptions<DATA_SHAPE>({
-        schema: this._schema,
-      }).fromString(t),
-    );
+    return this.text()
+      .then((t) =>
+        MdDoc.withOptions<DATA_SHAPE>({
+          schema: this._schema,
+        }).fromString(t),
+      )
+      .catch((error) => {
+        throw new Error(`Failed to read markdown from ${this._path}`, {
+          cause: error,
+        });
+      });
   }
 
   /**
@@ -940,9 +1002,15 @@ class FsFileRead<
   public mdSync<
     DATA_SHAPE = SCHEMA extends ZodSchema<infer O> ? O : unknown,
   >() {
-    return MdDoc.withOptions<DATA_SHAPE>({
-      schema: this._schema,
-    }).fromString(this.textSync());
+    try {
+      return MdDoc.withOptions<DATA_SHAPE>({
+        schema: this._schema,
+      }).fromString(this.textSync());
+    } catch (error) {
+      throw new Error(`Failed to read markdown from ${this._path}`, {
+        cause: error,
+      });
+    }
   }
 }
 
@@ -990,8 +1058,14 @@ class FsFileWrite<
     if (this._mode === "preserve" && (await FsFile.from(this._path).exists()))
       return;
     const dirname = path.dirname(this._path);
-    await fs.mkdir(dirname, { recursive: true });
-    await fs.writeFile(this._path, content.toString(), this._encoding);
+    try {
+      await fs.mkdir(dirname, { recursive: true });
+      await fs.writeFile(this._path, content.toString(), this._encoding);
+    } catch (error) {
+      throw new Error(`Failed to write text to ${this._path}`, {
+        cause: error,
+      });
+    }
   }
 
   /**
@@ -1007,8 +1081,14 @@ class FsFileWrite<
     if (this._mode === "preserve" && FsFile.from(this._path).existsSync())
       return;
     const dirname = path.dirname(this._path);
-    fsSync.mkdirSync(dirname, { recursive: true });
-    fsSync.writeFileSync(this._path, content.toString(), this._encoding);
+    try {
+      fsSync.mkdirSync(dirname, { recursive: true });
+      fsSync.writeFileSync(this._path, content.toString(), this._encoding);
+    } catch (error) {
+      throw new Error(`Failed to write text to ${this._path}`, {
+        cause: error,
+      });
+    }
   }
 
   /**
@@ -1024,7 +1104,13 @@ class FsFileWrite<
   public async json<T>(
     data: TSchema extends ZodSchema<any, infer I> ? I : T,
   ): Promise<void> {
-    return this.text(json.serialize(data, { schema: this._schema }));
+    return this.text(json.serialize(data, { schema: this._schema })).catch(
+      (error) => {
+        throw new Error(`Failed to write JSON to ${this._path}`, {
+          cause: error,
+        });
+      },
+    );
   }
 
   // Todo: add mergeJson
@@ -1044,7 +1130,11 @@ class FsFileWrite<
   ): Promise<void> {
     return this.text(
       json.serialize(data, { schema: this._schema, pretty: true }) + "\n",
-    );
+    ).catch((error) => {
+      throw new Error(`Failed to write pretty JSON to ${this._path}`, {
+        cause: error,
+      });
+    });
   }
 
   /**
@@ -1060,7 +1150,13 @@ class FsFileWrite<
   public jsonSync<T>(
     data: TSchema extends ZodSchema<any, infer I> ? I : T,
   ): void {
-    return this.textSync(json.serialize(data, { schema: this._schema }));
+    try {
+      return this.textSync(json.serialize(data, { schema: this._schema }));
+    } catch (error) {
+      throw new Error(`Failed to write JSON to ${this._path}`, {
+        cause: error,
+      });
+    }
   }
 
   /**
@@ -1076,9 +1172,15 @@ class FsFileWrite<
   public prettyJsonSync<T = unknown>(
     data: TSchema extends ZodSchema<any, infer I> ? I : T,
   ): void {
-    return this.textSync(
-      json.serialize(data, { schema: this._schema, pretty: true }) + "\n",
-    );
+    try {
+      return this.textSync(
+        json.serialize(data, { schema: this._schema, pretty: true }) + "\n",
+      );
+    } catch (error) {
+      throw new Error(`Failed to write pretty JSON to ${this._path}`, {
+        cause: error,
+      });
+    }
   }
 
   /**
@@ -1093,7 +1195,13 @@ class FsFileWrite<
   public async yaml<T = unknown>(
     data: TSchema extends ZodSchema<any, infer I> ? I : T,
   ): Promise<void> {
-    return this.text(yaml.serialize(data, { schema: this._schema }));
+    return this.text(yaml.serialize(data, { schema: this._schema })).catch(
+      (error) => {
+        throw new Error(`Failed to write YAML to ${this._path}`, {
+          cause: error,
+        });
+      },
+    );
   }
 
   /**
@@ -1109,7 +1217,13 @@ class FsFileWrite<
   public yamlSync<T = unknown>(
     data: TSchema extends ZodSchema<any, infer I> ? I : T,
   ): void {
-    return this.textSync(yaml.serialize(data, { schema: this._schema }));
+    try {
+      return this.textSync(yaml.serialize(data, { schema: this._schema }));
+    } catch (error) {
+      throw new Error(`Failed to write YAML to ${this._path}`, {
+        cause: error,
+      });
+    }
   }
 
   /**
@@ -1124,8 +1238,14 @@ class FsFileWrite<
     if (this._mode === "preserve" && (await FsFile.from(this._path).exists()))
       return;
     const dirname = path.dirname(this._path);
-    await fs.mkdir(dirname, { recursive: true });
-    await fs.writeFile(this._path, data.toString(), "base64");
+    try {
+      await fs.mkdir(dirname, { recursive: true });
+      await fs.writeFile(this._path, data.toString(), "base64");
+    } catch (error) {
+      throw new Error(`Failed to write base64 to ${this._path}`, {
+        cause: error,
+      });
+    }
   }
 
   /**
@@ -1141,8 +1261,14 @@ class FsFileWrite<
     if (this._mode === "preserve" && FsFile.from(this._path).existsSync())
       return;
     const dirname = path.dirname(this._path);
-    fsSync.mkdirSync(dirname, { recursive: true });
-    return fsSync.writeFileSync(this._path, data.toString(), "base64");
+    try {
+      fsSync.mkdirSync(dirname, { recursive: true });
+      fsSync.writeFileSync(this._path, data.toString(), "base64");
+    } catch (error) {
+      throw new Error(`Failed to write base64 to ${this._path}`, {
+        cause: error,
+      });
+    }
   }
 
   /**
@@ -1154,7 +1280,11 @@ class FsFileWrite<
    * @throws If schema validation fails or if the write operation fails
    */
   public md(data: MdDoc) {
-    return this.text(data.toMd());
+    return this.text(data.toMd()).catch((error) => {
+      throw new Error(`Failed to write markdown to ${this._path}`, {
+        cause: error,
+      });
+    });
   }
 
   /**
@@ -1167,7 +1297,13 @@ class FsFileWrite<
    * @synchronous
    */
   public mdSync(data: MdDoc) {
-    return this.textSync(data.toMd());
+    try {
+      return this.textSync(data.toMd());
+    } catch (error) {
+      throw new Error(`Failed to write markdown to ${this._path}`, {
+        cause: error,
+      });
+    }
   }
 }
 
