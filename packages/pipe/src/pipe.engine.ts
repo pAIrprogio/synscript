@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-redundant-type-constituents */
 import type { ZodTypeDef as ZodTypeDefV3, ZodType as ZodTypeV3 } from "zod/v3";
 import type { ZodType as ZodTypeV4 } from "zod/v4";
 
@@ -44,12 +43,12 @@ export class Pipe<INPUT, OUTPUT> {
       // Promises
       if (value instanceof Promise) {
         return value.then((resolvedValue) => {
-          return schema.parse(resolvedValue) as T;
+          return schema.parse(resolvedValue);
         });
       }
 
       // Synchronous
-      return schema.parse(value) as T;
+      return schema.parse(value);
     });
   }
 

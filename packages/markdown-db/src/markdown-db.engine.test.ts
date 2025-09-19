@@ -405,6 +405,7 @@ query:
       };
 
       assert.deepEqual(config.status, "ok");
+      assert.ok(engine); 
     });
   });
 

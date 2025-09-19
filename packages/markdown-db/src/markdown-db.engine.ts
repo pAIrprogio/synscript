@@ -207,7 +207,7 @@ export class MarkdownDb<
     // Parse the header data
     const headerData = await new Promise((resolve) =>
       resolve(md.getHeaderData(mdText)),
-    ).catch(async (err) => {
+    ).catch((err) => {
       throw new Error(t`
         Failed to read markdown file header
           - File: ${this._cwd.relativePathTo(mdFile)}
@@ -261,7 +261,7 @@ export class MarkdownDb<
   /**
    * Refresh the markdown entries from the filesystem
    */
-  public async refreshEntries() {
+  public refreshEntries() {
     this._entriesPromise = this.readEntries();
     this._entriesMapPromise = this._entriesPromise.then(
       (entries) => new Map(entries.map((entry) => [entry.$id, entry])),
@@ -288,7 +288,7 @@ export class MarkdownDb<
         (entries) => new Map(entries.map((entry) => [entry.$id, entry])),
       );
     }
-    return this._entriesMapPromise!;
+    return this._entriesMapPromise;
   }
 
   /**
@@ -328,7 +328,7 @@ export class MarkdownDb<
         return parentMap;
       });
     }
-    return this._parentPatternsMapPromise!;
+    return this._parentPatternsMapPromise;
   }
 
   /**
