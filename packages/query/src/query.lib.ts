@@ -30,7 +30,6 @@ export function queryPredicate<NAME extends string, PARAMS, INPUT = unknown>(
 }
 
 type QuerySchemaReturn<EXTRA_SCHEMAS extends z.ZodTypeAny> = z.ZodType<
-  // eslint-disable-next-line @typescript-eslint/no-redundant-type-constituents
   BasePredicates | z.output<EXTRA_SCHEMAS>
 >;
 
@@ -68,7 +67,6 @@ export function querySchema<EXTRA_SCHEMAS extends z.ZodTypeAny>(
     alwaysSchema,
     neverSchema,
     ...extras,
-    // eslint-disable-next-line @typescript-eslint/no-redundant-type-constituents
   ]) as z.ZodType<BasePredicates | z.infer<EXTRA_SCHEMAS>>;
 
   return schema;
@@ -101,16 +99,16 @@ export function queryApply<
 
     if ("and" in query) {
       if (query.and.length === 0) return false;
-      return query.and.every((q: any) => apply(q, input));
+      return query.and.every((q: BasePredicates) => apply(q, input));
     }
 
     if ("or" in query) {
       if (query.or.length === 0) return false;
-      return query.or.some((q: any) => apply(q, input));
+      return query.or.some((q: BasePredicates) => apply(q, input));
     }
 
     if ("not" in query) {
-      return !apply(query.not, input);
+      return !apply(query.not as BasePredicates, input);
     }
 
     return predicates.some((c) => {
