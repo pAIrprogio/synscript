@@ -208,21 +208,19 @@ export class MarkdownDb<
     const headerData = await new Promise((resolve) =>
       resolve(md.getHeaderData(mdText)),
     ).catch(async (err) => {
-      throw new Error(t`
-        Failed to read markdown file header
-          - File: ${this._cwd.relativePathTo(mdFile)}
-          - Error:
-            ${err.message as string}
-      `);
+      throw new Error(
+        `Failed to read markdown file header for ${this._cwd.relativePathTo(mdFile)}`,
+        { cause: err },
+      );
     });
 
     // Validate the header data
     const parsedData = this._configSchema.safeParse(headerData);
     if (!parsedData.success)
-      throw new Error(t`
-        Failed to parse config for ${mdFile.path}:
-          ${z.prettifyError(parsedData.error)}
-      `);
+      throw new Error(
+        `Failed to parse config for ${this._cwd.relativePathTo(mdFile)}`,
+        { cause: parsedData.error },
+      );
 
     // Compute the entry id
     const { name, type } = this.computeEntryId(mdFile);
