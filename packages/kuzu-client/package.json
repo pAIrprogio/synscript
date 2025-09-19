@@ -35,6 +35,9 @@
       }
     }
   },
+  "dependencies": {
+    "@synstack/fs": "workspace:^"
+  },
   "peerDependencies": {
     "kuzu": "^0.11.1"
   },
