@@ -190,13 +190,16 @@ importers:
 
   packages/kuzu-client:
     dependencies:
-      kuzu:
-        specifier: ^0.11.1
-        version: 0.11.2
+      '@synstack/fs':
+        specifier: workspace:^
+        version: link:../fs
     devDependencies:
       '@types/node':
         specifier: ^22.15.32
         version: 22.15.33
+      kuzu:
+        specifier: ^0.11.1
+        version: 0.11.2
       tsup:
         specifier: ^8.5.0
         version: 8.5.0(tsx@4.20.3)(typescript@5.8.3)(yaml@2.8.0)
