@@ -41,5 +41,10 @@
   },
   "dependencies": {
     "glob": "^11.0.3"
+  },
+  "pnpm": {
+    "onlyBuiltDependencies": [
+      "kuzu"
+    ]
   }
 }
