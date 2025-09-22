@@ -15,6 +15,7 @@
   },
   "license": "Apache-2.0",
   "scripts": {
+    "kuzu:install": "node ./node_modules/kuzu/install.js",
     "build": "tsup",
     "prepack": "pnpm build",
     "build:watch": "tsup --watch",
@@ -36,15 +37,15 @@
     }
   },
   "dependencies": {
-    "@synstack/text": "workspace:^",
-    "@synstack/fs": "workspace:^"
+    "@synstack/fs": "workspace:^",
+    "@synstack/text": "workspace:^"
   },
   "peerDependencies": {
     "kuzu": "^0.11.1"
   },
   "devDependencies": {
     "@types/node": "^22.15.32",
-    "kuzu": "^0.11.1",
+    "kuzu": "^0.11.2",
     "tsup": "^8.5.0",
     "typescript": "^5.8.3"
   },
