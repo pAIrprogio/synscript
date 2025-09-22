@@ -207,7 +207,7 @@ export class MarkdownDb<
     // Parse the header data
     const headerData = await new Promise((resolve) =>
       resolve(md.getHeaderData(mdText)),
-    ).catch(async (err) => {
+    ).catch((err) => {
       throw new Error(
         `Failed to read markdown file header for ${this._cwd.relativePathTo(mdFile)}`,
         { cause: err },

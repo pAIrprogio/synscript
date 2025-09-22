@@ -389,14 +389,14 @@ query:
 
   describe("type inference", () => {
     it("correctly infers config type", () => {
-      const engine = MarkdownDb.cwd(testPatternsDir).setConfigSchema(
+      const _engine = MarkdownDb.cwd(testPatternsDir).setConfigSchema(
         z.object({
           status: z.enum(["blocked", "ok"]),
           priority: z.number().optional(),
         }),
       );
 
-      type InferredConfig = MarkdownDb.Config.Infer<typeof engine>;
+      type InferredConfig = MarkdownDb.Config.Infer<typeof _engine>;
 
       const config: InferredConfig = {
         query: { always: true },
@@ -405,7 +405,6 @@ query:
       };
 
       assert.deepEqual(config.status, "ok");
-      assert.ok(engine); 
     });
   });
 
