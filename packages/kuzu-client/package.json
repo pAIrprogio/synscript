@@ -16,7 +16,7 @@
   "license": "Apache-2.0",
   "scripts": {
     "kuzu:install": "node ./node_modules/kuzu/install.js",
-    "build": "tsup && pnpm kuzu:install",
+    "build": "tsup",
     "prepack": "pnpm build",
     "build:watch": "tsup --watch",
     "test:types": "tsc --noEmit",
