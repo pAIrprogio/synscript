@@ -1,6 +1,9 @@
 {
   "name": "@synstack/kuzu-client",
   "type": "module",
+  "publishConfig": {
+    "access": "public"
+  },
   "version": "1.0.0",
   "description": "Kuzu graph database client",
   "author": {
