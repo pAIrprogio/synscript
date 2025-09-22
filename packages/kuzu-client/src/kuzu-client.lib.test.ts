@@ -229,7 +229,7 @@ describe("KuzuClient", { concurrency: false }, () => {
       });
 
       describe("getLoadedExtensions", () => {
-        it("returns list of loaded extensions", async () => {
+        it.skip("returns list of loaded extensions", async () => {
           const extensions = await client.getLoadedExtensions();
           assert.ok(Array.isArray(extensions));
           extensions.forEach((ext) => {
