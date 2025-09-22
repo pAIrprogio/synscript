@@ -8,7 +8,7 @@ export class KuzuClient {
   private readonly conn: Connection;
 
   public constructor(options: KuzuClient.Options) {
-    this.dbPath = fsFile(options.databasePath);
+    this.dbPath = fsFile(options.path);
 
     const dbExists = this.dbPath.existsSync();
 
@@ -106,13 +106,37 @@ export class KuzuClient {
 
 export declare namespace KuzuClient {
   export interface Options {
-    databasePath: FsFile | string;
+    /**
+     * The path to the database file
+     */
+    path: FsFile | string;
+    /**
+     * Whether to create the database file if it does not exist
+     */
     createIfNotExists?: boolean;
+    /**
+     * Whether to enable compression
+     */
     enableCompression?: boolean;
+    /**
+     * Whether to open the database in read-only mode
+     */
     readonly?: boolean;
+    /**
+     * The size of the buffer manager in bytes
+     */
     bufferManagerSize?: number;
+    /**
+     * The maximum size of the database file in bytes
+     */
     maxDBSize?: number;
+    /**
+     * Whether to automatically checkpoint
+     */
     autoCheckpoint?: boolean;
+    /**
+     * The threshold for automatic checkpointing
+     */
     checkpointThreshold?: number;
   }
 

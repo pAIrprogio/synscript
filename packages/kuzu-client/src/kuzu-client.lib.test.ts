@@ -28,7 +28,7 @@ describe("KuzuClient", { concurrency: false }, () => {
     it("creates a new database if createIfNotExists is true", () => {
       assert.doesNotThrow(() => {
         client = new KuzuClient({
-          databasePath: testDbPath,
+          path: testDbPath,
           createIfNotExists: true,
         });
       });
@@ -38,7 +38,7 @@ describe("KuzuClient", { concurrency: false }, () => {
       assert.throws(
         () => {
           client = new KuzuClient({
-            databasePath: testDbPath,
+            path: testDbPath,
             createIfNotExists: false,
           });
         },
@@ -51,7 +51,7 @@ describe("KuzuClient", { concurrency: false }, () => {
     it("accepts all configuration options", () => {
       assert.doesNotThrow(() => {
         client = new KuzuClient({
-          databasePath: testDbPath,
+          path: testDbPath,
           createIfNotExists: true,
           enableCompression: true,
           readonly: false,
@@ -67,7 +67,7 @@ describe("KuzuClient", { concurrency: false }, () => {
   describe("static new method", () => {
     it("creates a new instance using static method", () => {
       const instance = KuzuClient.new({
-        databasePath: testDbPath,
+        path: testDbPath,
         createIfNotExists: true,
       });
       assert.ok(instance instanceof KuzuClient);
@@ -77,7 +77,7 @@ describe("KuzuClient", { concurrency: false }, () => {
   describe("with active database", () => {
     beforeEach(() => {
       client = new KuzuClient({
-        databasePath: testDbPath,
+        path: testDbPath,
         createIfNotExists: true,
       });
     });
@@ -223,7 +223,7 @@ describe("KuzuClient", { concurrency: false }, () => {
     describe("extension methods", () => {
       beforeEach(() => {
         client = new KuzuClient({
-          databasePath: testDbPath,
+          path: testDbPath,
           createIfNotExists: true,
         });
       });
@@ -267,7 +267,7 @@ describe("KuzuClient", { concurrency: false }, () => {
   describe("error handling", () => {
     beforeEach(() => {
       client = new KuzuClient({
-        databasePath: testDbPath,
+        path: testDbPath,
         createIfNotExists: true,
       });
     });
