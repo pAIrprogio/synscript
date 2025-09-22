@@ -1,60 +1,151 @@
 import { FsFile, fsFile } from "@synstack/fs";
-import type { Connection, Database } from "kuzu";
-import kuzu from "kuzu";
-
+import { t } from "@synstack/text";
+import kuzu, { type Connection, type Database } from "kuzu";
 
 export class KuzuClient {
-  private dbPath: FsFile | string;
-  private db: Database;
-  private conn: Connection;
+  private readonly dbPath: FsFile | string;
+  private readonly db: Database;
+  private readonly conn: Connection;
 
-  constructor(options: KuzuClientOptions) {
+  public constructor(options: KuzuClient.Options) {
     this.dbPath = fsFile(options.databasePath);
 
     const dbExists = this.dbPath.existsSync();
 
     if (!dbExists && !options.createIfNotExists) {
-      throw new Error(
-        `Database path ${this.dbPath.path} does not exist, check your configuration`
-      );
+      throw new Error(`Database path ${this.dbPath.path} does not exist`);
     }
 
     const dbPathString: string = this.dbPath.path;
-    this.db = new kuzu.Database(dbPathString);
+    this.db = new kuzu.Database(
+      dbPathString,
+      options.bufferManagerSize,
+      options.enableCompression,
+      options.readonly,
+      options.maxDBSize,
+      options.autoCheckpoint,
+      options.checkpointThreshold,
+    );
     this.conn = new kuzu.Connection(this.db);
+  }
+
+  public static new(options: KuzuClient.Options) {
+    return new KuzuClient(options);
+  }
+
+  /**
+   * Returns the raw kuzu connection
+   */
+  public get connection() {
+    return this.conn;
   }
 
   /**
    * Returns the raw kuzu query result
    * Call `getAll` on the result to get the data
+   * @tip Use QueryClient.Data.* to type the result
+   * @warning Library does not protect against query injection attacks yet
    */
-  async query<T = unknown>(template: TemplateStringsArray) {
-    const query = template.join("");
+  public async query<T = unknown>(
+    template: TemplateStringsArray,
+    ...args: string[]
+  ) {
+    const query = t(template, ...args);
     return await this.conn.query<T>(query);
   }
 
   /**
    * Returns the query results rows directly
+   * @tip Use QueryClient.Data.* to type the result
+   * @warning Library does not protect against query injection attacks yet
    */
-  async queryAll<T = unknown>(template: TemplateStringsArray): Promise<T[]> {
-    const queryResult = await this.query<T>(template);
-    return queryResult.getAll();
+  public async queryAll<T = unknown>(
+    template: TemplateStringsArray,
+    ...args: string[]
+  ) {
+    const result = await this.query<T>(template, ...args);
+    return result.getAll();
   }
 
   /**
    * Returns the first row of the query result
+   * @tip Use QueryClient.Data.* to type the result
+   * @warning Library does not protect against query injection attacks yet
    */
-  async queryOne<T = unknown>(template: TemplateStringsArray): Promise<T | null> { 
-    const result = await this.query<T>(template);
-    return result.getNext() || null;
+  public async queryOne<T = unknown>(
+    template: TemplateStringsArray,
+    ...args: string[]
+  ) {
+    const result = await this.query<T>(template, ...args);
+    return result.getNext();
+  }
+
+  /**
+   * Returns the loaded extensions
+   */
+  public async getLoadedExtensions() {
+    const res = await this.queryAll<{
+      "extension name": string;
+      "extension source": string;
+      "extension path": string;
+    }>`CALL SHOW_LOADED_EXTENSIONS() RETURN *`;
+    return res.map((row) => ({
+      name: row["extension name"],
+      source: row["extension source"],
+      path: row["extension path"],
+    }));
+  }
+
+  public async loadExtension(name: string) {
+    const loadedExtensions = await this.getLoadedExtensions();
+    if (!loadedExtensions.some((ext) => ext.name === name)) {
+      await this.query`INSTALL ${name};`;
+    }
   }
 }
 
-/**
- * Options for KuzuClient constructor
- */
-export interface KuzuClientOptions {
-  databasePath: FsFile | string;
-  createIfNotExists?: boolean;
-}
+export declare namespace KuzuClient {
+  export interface Options {
+    databasePath: FsFile | string;
+    createIfNotExists?: boolean;
+    enableCompression?: boolean;
+    readonly?: boolean;
+    bufferManagerSize?: number;
+    maxDBSize?: number;
+    autoCheckpoint?: boolean;
+    checkpointThreshold?: number;
+  }
 
+  export namespace Data {
+    export type Id = {
+      offset: number;
+      table: number;
+    };
+
+    export type Node<
+      LABEL extends string = string,
+      DATA extends Record<string, unknown> = Record<string, unknown>,
+    > = DATA & {
+      _label: LABEL;
+      _id: Id;
+    };
+
+    export type Relationship<
+      LABEL extends string = string,
+      DATA extends Record<string, unknown> = Record<string, unknown>,
+    > = DATA & {
+      _label: LABEL;
+      _id: Id;
+      _src: Id;
+      _dst: Id;
+    };
+
+    export interface Path<
+      NODE extends Node,
+      RELATIONSHIP extends Relationship,
+    > {
+      _nodes: NODE[];
+      _rels: RELATIONSHIP[];
+    }
+  }
+}

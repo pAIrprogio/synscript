@@ -36,6 +36,7 @@
     }
   },
   "dependencies": {
+    "@synstack/text": "workspace:^",
     "@synstack/fs": "workspace:^"
   },
   "peerDependencies": {
@@ -50,6 +51,7 @@
   "files": [
     "src/**/*.ts",
     "!src/**/*.test.ts",
+    "typings/**/*.d.ts",
     "dist/**/*"
   ]
 }

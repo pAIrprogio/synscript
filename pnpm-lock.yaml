@@ -193,6 +193,9 @@ importers:
       '@synstack/fs':
         specifier: workspace:^
         version: link:../fs
+      '@synstack/text':
+        specifier: workspace:^
+        version: link:../text
     devDependencies:
       '@types/node':
         specifier: ^22.15.32
