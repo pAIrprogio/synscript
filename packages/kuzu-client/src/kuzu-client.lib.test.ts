@@ -229,22 +229,22 @@ describe("KuzuClient", { concurrency: false }, () => {
       });
 
       describe("getLoadedExtensions", () => {
-        it.skip("returns list of loaded extensions", async () => {
-          void client.getLoadedExtensions();
+        void it.skip("returns list of loaded extensions", async () => {
+          await client.getLoadedExtensions();
           assert.ok(true);
         });
       });
 
       describe("loadExtension", () => {
-        it.skip("loads an extension if not already loaded", async () => {
+        void it.skip("loads an extension if not already loaded", async () => {
           // Skipping extension loading test as it's environment-dependent
-          void client.loadExtension("json");
+          await client.loadExtension("json");
           assert.ok(true);
         });
 
-        it.skip("does not reload already loaded extensions", async () => {
+        void it.skip("does not reload already loaded extensions", async () => {
           // Skipping as it depends on environment
-          void client.getLoadedExtensions();
+          await client.getLoadedExtensions();
           assert.ok(true);
         });
       });

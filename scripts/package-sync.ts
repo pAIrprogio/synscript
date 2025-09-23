@@ -77,7 +77,7 @@ await Promise.all(
         ...packageJson.devDependencies,
         "@types/node": "^22.15.32",
         tsup: "^8.5.0",
-        typescript: "^5.8.3",
+        typescript: "^5.9.2",
       } as {}),
       peerDependencies: orderKeys({
         ...packageJson.peerDependencies,
