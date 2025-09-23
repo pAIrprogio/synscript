@@ -62,11 +62,11 @@
   },
   "devDependencies": {
     "@types/node": "^22.15.32",
-    "@types/pako": "^2.0.3",
-    "@types/vscode": "^1.101.0",
+    "@types/pako": "^2.0.4",
+    "@types/vscode": "^1.104.0",
     "tsup": "^8.5.0",
-    "typescript": "^5.8.3",
-    "zod": "^3.25.67"
+    "typescript": "^5.9.2",
+    "zod": "^4.1.11"
   },
   "peerDependencies": {
     "zod": "^3.25.0 || ^4.0.0"
