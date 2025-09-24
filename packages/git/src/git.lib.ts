@@ -1,5 +1,13 @@
-import { execa } from "execa";
 import { execPipe, filter, flatMap } from "iter-tools-es";
+
+function importExeca() {
+  return import("execa").catch((error) => {
+    throw new Error(
+      "The `execa` package is not installed. Please install it first.",
+      { cause: error },
+    );
+  });
+}
 
 /**
  * Lists all files in a Git repository, including tracked, modified, and untracked files.
@@ -15,6 +23,7 @@ import { execPipe, filter, flatMap } from "iter-tools-es";
  * ```
  */
 export async function ls(cwd: string = ".") {
+  const { execa } = await importExeca();
   const [trackedFiles, modifiedFiles, untrackedFiles] = await Promise.all([
     execa({
       cwd: cwd,
@@ -50,6 +59,7 @@ export async function ls(cwd: string = ".") {
  * ```
  */
 export async function show(commitId: string, cwd: string = ".") {
+  const { execa } = await importExeca();
   const res = await execa({
     cwd: cwd,
   })`git show ${commitId}`;
