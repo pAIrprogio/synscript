@@ -15,3 +15,4 @@ describe("test", () => {
 
 <rule>Use `describe` to group tests by feature or context.</rule>
 <rule>Use `assert.deepEqual` for complex object comparisons.</rule>
+<rule>Write the minimum amount of tests to cover the intended behaviors.</rule>
