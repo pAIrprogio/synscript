@@ -1,5 +1,6 @@
 import { type FsDir, type FsFile, fsFile } from "@synstack/fs";
 import { glob } from "@synstack/glob";
+import { stableKey } from "@synstack/key";
 import { md } from "@synstack/markdown";
 import { QueryEngine } from "@synstack/query";
 import { t } from "@synstack/text";
@@ -33,6 +34,7 @@ export class MarkdownDb<
   private _parentPatternsMapPromise: Promise<
     Map<string, Entry<CONFIG_SCHEMA>[]>
   > | null = null;
+  private _cacheMap: Map<string, Entry<CONFIG_SCHEMA>[]> = new Map();
 
   protected constructor(
     cwd: FsDir,
@@ -252,7 +254,6 @@ export class MarkdownDb<
    * Read the entries from the filesystem
    */
   private async readEntries() {
-    this._queryEngine.clearCache();
     const mdFiles = await this._cwd
       .glob(this._globs)
       // Sort by path
@@ -271,6 +272,8 @@ export class MarkdownDb<
    * Refresh the markdown entries from the filesystem
    */
   public refreshEntries() {
+    this._cacheMap.clear();
+    this._queryEngine.clearCache();
     this._entriesPromise = this.readEntries();
     this._entriesMapPromise = this._entriesPromise.then(
       (entries) => new Map(entries.map((entry) => [entry.$id, entry])),
@@ -348,18 +351,7 @@ export class MarkdownDb<
     return parentMap.get(id) || [];
   }
 
-  /**
-   * Return all entries matching the input
-   */
-  public async matchOne(
-    input: INPUT,
-    config?: {
-      /**
-       * Skip markdown entries with empty content
-       */
-      skipEmpty?: boolean;
-    },
-  ) {
+  private async _matchOne(input: INPUT) {
     // Retrieve all entries and parent entries map
     const entries = await this.getAll();
     const parentMap = await this.getParentsMap();
@@ -388,12 +380,39 @@ export class MarkdownDb<
           useCache: true,
         })
       ) {
-        if (config?.skipEmpty && !entry.$content?.trim()) continue;
         matchingEntries.push(entry);
       }
     }
 
     return matchingEntries;
+  }
+
+  /**
+   * Return all entries matching the input
+   */
+  public async matchOne(
+    input: INPUT,
+    config?: {
+      /**
+       * Skip markdown entries with empty content
+       */
+      skipEmpty?: boolean;
+    },
+  ) {
+    let entries: Entry<CONFIG_SCHEMA>[] = [];
+    const entryHash = stableKey(input);
+    if (this._cacheMap.has(entryHash)) {
+      entries = this._cacheMap.get(entryHash)!;
+    } else {
+      entries = await this._matchOne(input);
+      this._cacheMap.set(entryHash, entries);
+    }
+
+    if (config?.skipEmpty) {
+      return entries.filter((entry) => entry.$content?.trim());
+    }
+
+    return entries;
   }
 
   /**
@@ -416,7 +435,6 @@ export class MarkdownDb<
     return Object.values(
       allResults.flat().reduce(
         (acc, result) => {
-          if (config.skipEmpty && !result.$content?.trim()) return acc;
           acc[result.$id] = result;
           return acc;
         },

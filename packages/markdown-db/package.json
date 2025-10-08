@@ -51,7 +51,8 @@
     "@synstack/fs": "workspace:^",
     "@synstack/glob": "workspace:^",
     "@synstack/markdown": "workspace:^",
-    "@synstack/text": "workspace:^"
+    "@synstack/text": "workspace:^",
+    "@synstack/key": "workspace:^"
   },
   "devDependencies": {
     "@synstack/query": "workspace:^",
