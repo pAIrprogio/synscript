@@ -592,7 +592,7 @@ describe("QueryEngine", () => {
         name: "test",
         configSchema: z.boolean(),
         handler: (value: boolean) => () => value,
-        key: () => "key",
+        cacheKey: () => "key",
       });
 
       // Cache the value for true
@@ -609,7 +609,7 @@ describe("QueryEngine", () => {
         name: "test",
         configSchema: z.boolean(),
         handler: (value: boolean) => () => value,
-        key: () => "key",
+        cacheKey: () => "key",
       });
 
       // Cache the value for true

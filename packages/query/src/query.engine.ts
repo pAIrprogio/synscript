@@ -87,16 +87,16 @@ export class QueryEngine<PREDICATES = never, INPUT = never> {
         const predicateConfig = query[predicate.name];
 
         // Check if the predicate is cached
-        if (options?.useCache && predicate.key) {
-          const hash = stableKey(predicate.key(predicateConfig, input));
+        if (options?.useCache && predicate.cacheKey) {
+          const hash = stableKey(predicate.cacheKey(predicateConfig, input));
           if (this._cache.has(hash)) return this._cache.get(hash)!;
         }
 
         const result = predicate.handler(predicateConfig)(input);
 
         // Cache the result
-        if (options?.useCache && predicate.key) {
-          const hash = stableKey(predicate.key(predicateConfig, input));
+        if (options?.useCache && predicate.cacheKey) {
+          const hash = stableKey(predicate.cacheKey(predicateConfig, input));
           this._cache.set(hash, result);
         }
 

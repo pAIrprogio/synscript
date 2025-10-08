@@ -9,13 +9,13 @@ describe("queryPredicate", () => {
       name: "testQuery",
       configSchema: z.string(),
       handler: (param) => (input: { value: string }) => input.value === param,
-      key: () => "testKey",
+      cacheKey: () => "testKey",
     });
 
     assert.equal(query.name, "testQuery");
     assert.ok(query.configSchema);
     assert.ok(query.handler);
-    assert.ok(query.key);
+    assert.ok(query.cacheKey);
   });
 
   it("validates schema correctly", () => {
@@ -23,7 +23,7 @@ describe("queryPredicate", () => {
       name: "testQuery",
       configSchema: z.number(),
       handler: (param) => (input: { value: number }) => param > input.value,
-      key: () => "testKey",
+      cacheKey: () => "testKey",
     });
 
     const parsed = query.configSchema.parse({ testQuery: 42 });

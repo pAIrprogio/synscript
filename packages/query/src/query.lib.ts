@@ -12,7 +12,7 @@ export interface QueryPredicate<NAME extends string, CONFIG, INPUT = unknown> {
   name: NAME;
   configSchema: z.ZodType<{ [key in NAME]: CONFIG }>;
   handler: (config: CONFIG) => (input: INPUT) => boolean;
-  key?: (config: CONFIG, input: INPUT) => any;
+  cacheKey?: (config: CONFIG, input: INPUT) => any;
 }
 
 export interface QueryPredicateConfig<
@@ -20,9 +20,58 @@ export interface QueryPredicateConfig<
   CONFIG,
   INPUT = unknown,
 > {
+  /**
+   * Unique name for the predicate.
+   * Used to identify the predicate in the query if the key is present in a query object.
+   *
+   * @example
+   * ```ts
+   * // For this predicate
+   * const predicate = queryPredicate({
+   *   name: "test",
+   *   configSchema: z.string(),
+   * });
+   *
+   * // This query will match the predicate
+   * const query = {
+   *   test: "test",
+   * };
+   * ```
+   */
   name: NAME;
+  /**
+   * The schema used to validate the predicate key value.
+   *
+   * @example
+   * ```ts
+   * const predicate = queryPredicate({
+   *   name: "test",
+   *   configSchema: z.string(),
+   *   handler: (config) => (input) => input === config,
+   * });
+   *
+   * // This query will match the predicate
+   * const query = {
+   *   test: "value", // <--- The "value" must be a string
+   * };
+   * ```
+   */
   configSchema: z.ZodType<CONFIG>;
+  /**
+   * The handler function that will be used to evaluate if the predicate matches the input.
+   */
   handler: (config: CONFIG) => (input: INPUT) => boolean;
+  /**
+   * Use for costly evaluation of the predicate.
+   * - When provided, the predicate's result will be cached using with the result of the key function.
+   * - The function must return a serializable value.
+   * - Object keys are re-ordered alphabetically to ensure consistent caching.
+   */
+  cacheKey?: (config: CONFIG, input: INPUT) => any;
+  /**
+   * @deprecated Use `cacheKey` instead.
+   * @see {@link cacheKey}
+   */
   key?: (config: CONFIG, input: INPUT) => any;
 }
 
@@ -33,10 +82,10 @@ export function queryPredicate<NAME extends string, PARAMS, INPUT = unknown>(
     name: options.name,
     configSchema: z.object({
       [options.name]: options.configSchema,
-    }),
+    }) as { [key in NAME]: PARAMS },
     handler: options.handler,
-    key: options.key,
-  } as unknown as QueryPredicate<NAME, PARAMS, INPUT>;
+    cacheKey: options.cacheKey ?? options.key,
+  } as QueryPredicate<NAME, PARAMS, INPUT>;
 }
 
 type QuerySchemaReturn<EXTRA_SCHEMAS extends z.ZodTypeAny> = z.ZodType<
