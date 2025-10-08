@@ -54,7 +54,7 @@ export class QueryEngine<PREDICATES = never, INPUT = never> {
   private apply(
     query: { [x: string]: any },
     input: INPUT,
-    options?: { useCache?: boolean },
+    options: { useCache: boolean },
   ): boolean {
     if ("always" in query) {
       return true;
@@ -66,16 +66,20 @@ export class QueryEngine<PREDICATES = never, INPUT = never> {
 
     if ("and" in query) {
       if (query.and.length === 0) return false;
-      return query.and.every((q: BasePredicates) => this.apply(q, input));
+      return query.and.every((q: BasePredicates) =>
+        this.apply(q, input, options),
+      );
     }
 
     if ("or" in query) {
       if (query.or.length === 0) return false;
-      return query.or.some((q: BasePredicates) => this.apply(q, input));
+      return query.or.some((q: BasePredicates) =>
+        this.apply(q, input, options),
+      );
     }
 
     if ("not" in query) {
-      return !this.apply(query.not as BasePredicates, input);
+      return !this.apply(query.not as BasePredicates, input, options);
     }
 
     return this.predicates.some((predicate) => {
@@ -131,7 +135,9 @@ export class QueryEngine<PREDICATES = never, INPUT = never> {
       ? (query as z.output<typeof schema>)
       : schema.parse(query);
 
-    return this.apply(parsedQuery, input, { useCache: options?.useCache });
+    return this.apply(parsedQuery, input, {
+      useCache: options?.useCache ?? false,
+    });
   }
 }
 
