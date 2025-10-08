@@ -254,4 +254,41 @@ World`,
       assert.equal(value, "XXX XXX");
     });
   });
+
+  describe("CRLF compatibility", () => {
+    it("normalizes CRLF to LF in constructor", () => {
+      const value = str("Hello\r\nWorld").str;
+      assert.equal(value, "Hello\nWorld");
+    });
+
+    it("normalizes CRLF to LF in addLineNumbers", () => {
+      const value = str("Hello\r\nWorld").addLineNumbers().str;
+      assert.equal(value, "0:Hello\n1:World");
+    });
+
+    it("normalizes CRLF to LF in indent", () => {
+      const value = str("Hello\r\nWorld").indent(2).str;
+      assert.equal(value, "  Hello\n  World");
+    });
+
+    it("normalizes CRLF to LF in dedent", () => {
+      const value = str("  Hello\r\n  World").dedent().str;
+      assert.equal(value, "Hello\nWorld");
+    });
+
+    it("handles CRLF in lastLine", () => {
+      const value = str("Hello\r\nWorld").lastLine().str;
+      assert.equal(value, "World");
+    });
+
+    it("handles CRLF in firstLine", () => {
+      const value = str("Hello\r\nWorld").firstLine().str;
+      assert.equal(value, "Hello");
+    });
+
+    it("calculates indentation with CRLF", () => {
+      const value = str("  Hello\r\n    World").indentation();
+      assert.equal(value, 2);
+    });
+  });
 });

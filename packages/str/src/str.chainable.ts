@@ -40,7 +40,7 @@ export class Str extends Pipeable<Str, string> {
    */
   public constructor(text: string) {
     super();
-    this.text = text;
+    this.text = text.replace(/\r\n/g, "\n");
   }
 
   /**

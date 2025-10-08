@@ -129,8 +129,8 @@ export const split = (
  * ```
  */
 export const addLineNumbers = (text: string, separator: string = ":") => {
-  return text
-    .split("\n")
+  const lines = text.split(/\r?\n/);
+  return lines
     .map((line, index) => `${index}${separator}${line}`)
     .join("\n");
 };
@@ -148,7 +148,7 @@ export const addLineNumbers = (text: string, separator: string = ":") => {
  */
 export const indentation = (text: string) => {
   return (
-    text.split("\n").reduce((acc: number | null, line) => {
+    text.split(/\r?\n/).reduce((acc: number | null, line) => {
       if (line.trim() === "") return acc;
       const indentation = leadingSpacesCount(line);
       if (acc === null) return indentation;
@@ -173,8 +173,8 @@ export const indent = (text: string, size: number, char: string = " ") => {
   if (size === 0) return text;
 
   const indentStr = char.repeat(size);
-  return text
-    .split("\n")
+  const lines = text.split(/\r?\n/);
+  return lines
     .map((line) => indentStr + line)
     .join("\n");
 };
@@ -194,8 +194,8 @@ export const dedent = (text: string, size?: number) => {
   const _size = size ?? indentation(text);
   if (_size === 0) return text;
   const regex = new RegExp(`^\\s{1,${_size}}`);
-  return text
-    .split("\n")
+  const lines = text.split(/\r?\n/);
+  return lines
     .map((line) => line.replace(regex, ""))
     .join("\n");
 };
@@ -293,7 +293,7 @@ export const takeEnd = (text: string, count: number) => {
  * ```
  */
 export const lastLine = (text: string) => {
-  return text.split("\n").at(-1) ?? "";
+  return text.split(/\r?\n/).at(-1) ?? "";
 };
 
 /**
@@ -308,7 +308,7 @@ export const lastLine = (text: string) => {
  * ```
  */
 export const firstLine = (text: string) => {
-  return text.split("\n").at(0) ?? "";
+  return text.split(/\r?\n/).at(0) ?? "";
 };
 
 /**
