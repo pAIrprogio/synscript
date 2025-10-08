@@ -587,6 +587,27 @@ export class FsFile<
   }
 
   /**
+   * Get the file's stats.
+   *
+   * @returns A promise that resolves to the file's stats
+   * @throws If the file doesn't exist or cannot be accessed
+   */
+  public stats() {
+    return fs.stat(this._path);
+  }
+
+  /**
+   * Get the file's stats synchronously.
+   *
+   * @synchronous
+   * @returns The file's stats
+   * @throws If the file doesn't exist or cannot be accessed
+   */
+  public statsSync() {
+    return fsSync.statSync(this._path);
+  }
+
+  /**
    * Get the creation date of the file.
    *
    * @returns A promise that resolves to the file's creation date
@@ -602,7 +623,7 @@ export class FsFile<
    */
   public async creationDate(): Promise<Date> {
     try {
-      const fileStats = await fs.stat(this._path);
+      const fileStats = await this.stats();
       return fileStats.birthtime;
     } catch (error) {
       throw new Error(`Failed to get creation date for ${this._path}`, {
@@ -628,10 +649,45 @@ export class FsFile<
    */
   public creationDateSync(): Date {
     try {
-      const stats = fsSync.statSync(this._path);
+      const stats = this.statsSync();
       return stats.birthtime;
     } catch (error) {
       throw new Error(`Failed to get creation date for ${this._path}`, {
+        cause: error,
+      });
+    }
+  }
+
+  /**
+   * Get the modification date of the file.
+   *
+   * @returns A promise that resolves to the file's modification date
+   * @throws If the file doesn't exist or cannot be accessed
+   */
+  public async modificationDate(): Promise<Date> {
+    try {
+      const fileStats = await this.stats();
+      return fileStats.mtime;
+    } catch (error) {
+      throw new Error(`Failed to get modification date for ${this._path}`, {
+        cause: error,
+      });
+    }
+  }
+
+  /**
+   * Get the modification date of the file synchronously.
+   *
+   * @synchronous
+   * @returns The file's modification date
+   * @throws If the file doesn't exist or cannot be accessed
+   */
+  public modificationDateSync(): Date {
+    try {
+      const stats = this.statsSync();
+      return stats.mtime;
+    } catch (error) {
+      throw new Error(`Failed to get modification date for ${this._path}`, {
         cause: error,
       });
     }
