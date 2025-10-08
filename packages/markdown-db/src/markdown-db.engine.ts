@@ -1,6 +1,5 @@
 import { type FsDir, type FsFile, fsFile } from "@synstack/fs";
 import { glob } from "@synstack/glob";
-import { stableKey } from "@synstack/key";
 import { md } from "@synstack/markdown";
 import { QueryEngine } from "@synstack/query";
 import { t } from "@synstack/text";
@@ -34,6 +33,7 @@ export class MarkdownDb<
   private _parentPatternsMapPromise: Promise<
     Map<string, Entry<CONFIG_SCHEMA>[]>
   > | null = null;
+  private _cacheKey: ((input: INPUT) => any) | null;
   private _cacheMap: Map<string, Entry<CONFIG_SCHEMA>[]> = new Map();
 
   protected constructor(
@@ -42,12 +42,14 @@ export class MarkdownDb<
     configSchema: CONFIG_SCHEMA,
     globs: Globs = ["**/*.md"],
     nameSeparator: string = DEFAULT_NAME_SEPARATOR,
+    cacheKey: ((input: INPUT) => any) | null = null,
   ) {
     this._cwd = cwd;
     this._queryEngine = queryEngine;
     this._configSchema = configSchema;
     this._globs = globs;
     this._nameSeparator = nameSeparator;
+    this._cacheKey = cacheKey;
   }
 
   /**
@@ -89,6 +91,7 @@ export class MarkdownDb<
       newSchema,
       this._globs,
       this._nameSeparator,
+      this._cacheKey,
     );
   }
 
@@ -110,6 +113,7 @@ export class MarkdownDb<
         : never,
       this._globs,
       this._nameSeparator,
+      this._cacheKey,
     );
   }
 
@@ -123,6 +127,7 @@ export class MarkdownDb<
       this._configSchema,
       globs,
       this._nameSeparator,
+      this._cacheKey,
     );
   }
 
@@ -136,6 +141,23 @@ export class MarkdownDb<
       this._configSchema,
       this._globs,
       nameSeparator,
+      this._cacheKey,
+    );
+  }
+
+  /**
+   * Set the cache key function to use for caching the entries
+   * @param cacheKey - The cache key function to use
+   * @returns A new MarkdownDb instance
+   */
+  public setCacheKey(cacheKey: (input: INPUT) => any) {
+    return new MarkdownDb(
+      this._cwd,
+      this._queryEngine,
+      this._configSchema,
+      this._globs,
+      this._nameSeparator,
+      cacheKey,
     );
   }
 
@@ -406,12 +428,16 @@ export class MarkdownDb<
     },
   ) {
     let entries: Entry<CONFIG_SCHEMA>[] = [];
-    const entryHash = stableKey(input);
-    if (this._cacheMap.has(entryHash)) {
-      entries = this._cacheMap.get(entryHash)!;
-    } else {
-      entries = await this._matchOne(input);
-      this._cacheMap.set(entryHash, entries);
+
+    // Use cache if a cache key function is provided
+    if (this._cacheKey) {
+      const entryHash = this._cacheKey(input);
+      if (this._cacheMap.has(entryHash)) {
+        entries = this._cacheMap.get(entryHash)!;
+      } else {
+        entries = await this._matchOne(input);
+        this._cacheMap.set(entryHash, entries);
+      }
     }
 
     if (config?.skipEmpty) {
