@@ -314,6 +314,30 @@ query:
       const expectedIds = ["complex/with-query", "simple/basic"];
       assert.deepEqual(resultIds, expectedIds);
     });
+
+    it("does not evaluate child entries when parent entry does not match", async () => {
+      const engine = MarkdownDb.cwd<TestInput>(testPatternsDir).setQueryEngine(
+        createTestQueryEngine(),
+      );
+
+      const input: TestInput = {
+        content: "test1 code that would match pattern1",
+        extension: "tsx",
+      };
+
+      const matching = await engine.matchOne(input);
+      const matchingNames = matching.map((p) => p.$id);
+
+      // nested/level1 has query: { never: true } so it should not match
+      assert.ok(!matchingNames.includes("nested/level1"));
+
+      // nested/level1/pattern1 has query: { contains: "test1" } which would match the input
+      // BUT it should not be evaluated because its parent (nested/level1) did not match
+      assert.ok(!matchingNames.includes("nested/level1/pattern1"));
+
+      // simple/basic should still match because it has always: true and no non-matching parents
+      assert.ok(matchingNames.includes("simple/basic"));
+    });
   });
 
   describe("schema getters", () => {

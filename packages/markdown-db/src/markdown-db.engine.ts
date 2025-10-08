@@ -348,7 +348,7 @@ export class MarkdownDb<
           const parentEntries: Entry<CONFIG_SCHEMA>[] = [];
 
           // Build parent chain: "a" -> "a/b" -> "a/b/c"
-          for (let i = 1; i <= path.length; i++) {
+          for (let i = 1; i < path.length; i++) {
             const parentName = path.slice(0, i).join(this._nameSeparator);
             const parentPattern = entriesMap.get(parentName);
             if (parentPattern) {
@@ -438,6 +438,8 @@ export class MarkdownDb<
         entries = await this._matchOne(input);
         this._cacheMap.set(entryHash, entries);
       }
+    } else {
+      entries = await this._matchOne(input);
     }
 
     if (config?.skipEmpty) {
