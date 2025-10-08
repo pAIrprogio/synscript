@@ -25,16 +25,16 @@ type TestInput = {
 // Helper to create a test query engine with common predicates
 function createTestQueryEngine() {
   return QueryEngine.default<TestInput>()
-    .addPredicate(
-      "contains",
-      z.string(),
-      (param) => (input) => input.content.includes(param),
-    )
-    .addPredicate(
-      "hasExtension",
-      z.array(z.string()),
-      (extensions) => (input) => extensions.includes(input.extension),
-    );
+    .addPredicate({
+      name: "contains",
+      configSchema: z.string(),
+      handler: (param) => (input) => input.content.includes(param),
+    })
+    .addPredicate({
+      name: "hasExtension",
+      configSchema: z.array(z.string()),
+      handler: (extensions) => (input) => extensions.includes(input.extension),
+    });
 }
 
 describe("MarkdownDb", () => {
@@ -61,11 +61,11 @@ describe("MarkdownDb", () => {
 
       const customQuery = QueryEngine.default<{
         content: string;
-      }>().addPredicate(
-        "contains",
-        z.string(),
-        (param) => (input) => input.content.includes(param),
-      );
+      }>().addPredicate({
+        name: "contains",
+        configSchema: z.string(),
+        handler: (param) => (input) => input.content.includes(param),
+      });
 
       const engine2 = engine1.setQueryEngine(customQuery);
 
@@ -422,8 +422,7 @@ Content without query field`);
       ).setQueryEngine(createTestQueryEngine());
 
       // Create a file with explicit query field
-      const withQueryFile =
-        testOptionalFrontmatterDir.toFile("with-query.md");
+      const withQueryFile = testOptionalFrontmatterDir.toFile("with-query.md");
       await withQueryFile.write.text(`---
 query:
   always: true
@@ -480,8 +479,9 @@ This file has no frontmatter header at all.`);
         );
 
       // Create a file without frontmatter
-      const noHeaderFile =
-        testOptionalFrontmatterDir.toFile("no-header-required.md");
+      const noHeaderFile = testOptionalFrontmatterDir.toFile(
+        "no-header-required.md",
+      );
       await noHeaderFile.write.text(`# Content without required frontmatter`);
 
       try {

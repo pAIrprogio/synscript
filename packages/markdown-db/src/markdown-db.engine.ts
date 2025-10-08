@@ -384,6 +384,7 @@ export class MarkdownDb<
       if (
         this.query.match(query, input, {
           skipQueryValidation: true,
+          useCache: true,
         })
       ) {
         if (config?.skipEmpty && !entry.$content?.trim()) continue;
