@@ -357,29 +357,35 @@ export class MarkdownDb<
     const parentMap = await this.getParentsMap();
 
     const matchingEntries: Entry<CONFIG_SCHEMA>[] = [];
+    const evaluatedPatterns = new Map<string, boolean>(); // pattern id -> matched
 
-    // Process entries synchronously instead of creating promise storm
+    // Process entries in order (already sorted so parents come before children)
     for (const entry of entries) {
       const parentPatterns = parentMap.get(entry.$id) ?? [];
 
-      // Create a query that matches parent entries and the current entry
-      const query =
-        parentPatterns.length > 0
-          ? {
-              and: [
-                ...parentPatterns.map((parent) => parent.query),
-                entry.query,
-              ],
-            }
-          : entry.query;
+      // Check if all parent patterns matched (skip if not)
+      if (parentPatterns.length > 0) {
+        const allParentsMatched = parentPatterns.every((p) => {
+          const parentMatched = evaluatedPatterns.get(p.$id);
+          // If parent hasn't been evaluated yet, it means it's not in entries
+          // This can happen - treat as matched
+          return parentMatched !== false;
+        });
+        if (!allParentsMatched) {
+          // Parents didn't match, so this pattern can't match either
+          evaluatedPatterns.set(entry.$id, false);
+          continue;
+        }
+      }
 
-      // If the query matches, add the entry
-      if (
-        this.query.match(query, input, {
-          skipQueryValidation: true,
-          useCache: true,
-        })
-      ) {
+      const matches = this.query.match(entry.query, input, {
+        skipQueryValidation: true,
+        useCache: true,
+      });
+
+      evaluatedPatterns.set(entry.$id, matches);
+
+      if (matches) {
         matchingEntries.push(entry);
       }
     }
