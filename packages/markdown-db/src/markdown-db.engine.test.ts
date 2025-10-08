@@ -77,7 +77,7 @@ describe("MarkdownDb", () => {
 
       const engine = MarkdownDb.cwd<TestInput>(testPatternsDir)
         .setQueryEngine(customQuery)
-        .setConfigSchema(z.object({ status: z.string() }));
+        .setEntrySchema(z.object({ status: z.string() }));
 
       const input = {
         query: { contains: "test" },
@@ -89,10 +89,10 @@ describe("MarkdownDb", () => {
     });
   });
 
-  describe("setConfigSchema", () => {
+  describe("setEntrySchema", () => {
     it("returns a new instance with extended config schema", () => {
       const engine1 = MarkdownDb.cwd(testPatternsDir);
-      const engine2 = engine1.setConfigSchema(
+      const engine2 = engine1.setEntrySchema(
         z.object({
           status: z
             .enum(["tag", "blocked", "ok", "ignore"])
@@ -115,7 +115,7 @@ describe("MarkdownDb", () => {
     });
 
     it("applies default values from config schema", () => {
-      const engine = MarkdownDb.cwd(testPatternsDir).setConfigSchema(
+      const engine = MarkdownDb.cwd(testPatternsDir).setEntrySchema(
         z.object({
           status: z
             .enum(["tag", "blocked", "ok", "ignore"])
@@ -194,7 +194,7 @@ describe("MarkdownDb", () => {
     it("loads patterns with custom config fields", async () => {
       const engine = MarkdownDb.cwd<TestInput>(testPatternsDir)
         .setQueryEngine(createTestQueryEngine())
-        .setConfigSchema(
+        .setEntrySchema(
           z.object({
             status: z.string().optional(),
           }),
@@ -342,7 +342,7 @@ query:
 
   describe("schema getters", () => {
     it("returns the correct zod schema", () => {
-      const engine = MarkdownDb.cwd(testPatternsDir).setConfigSchema(
+      const engine = MarkdownDb.cwd(testPatternsDir).setEntrySchema(
         z.object({
           status: z.string(),
           priority: z.number(),
@@ -372,7 +372,7 @@ query:
     });
 
     it("generates valid JSON schema", () => {
-      const engine = MarkdownDb.cwd(testPatternsDir).setConfigSchema(
+      const engine = MarkdownDb.cwd(testPatternsDir).setEntrySchema(
         z.object({
           status: z.enum(["blocked", "ok"]),
         }),
@@ -401,7 +401,7 @@ query:
     });
 
     it("throws error for missing required config fields", async () => {
-      const engine = MarkdownDb.cwd(testInvalidPatternsDir).setConfigSchema(
+      const engine = MarkdownDb.cwd(testInvalidPatternsDir).setEntrySchema(
         z.object({
           status: z.string(),
         }),
@@ -496,7 +496,7 @@ This file has no frontmatter header at all.`);
     it("throws specific error when frontmatter is missing but required fields exist in schema", async () => {
       const engine = MarkdownDb.cwd<TestInput>(testOptionalFrontmatterDir)
         .setQueryEngine(createTestQueryEngine())
-        .setConfigSchema(
+        .setEntrySchema(
           z.object({
             requiredField: z.string(),
           }),
@@ -548,7 +548,7 @@ Content with empty frontmatter`);
 
   describe("type inference", () => {
     it("correctly infers config type", () => {
-      const _engine = MarkdownDb.cwd(testPatternsDir).setConfigSchema(
+      const _engine = MarkdownDb.cwd(testPatternsDir).setEntrySchema(
         z.object({
           status: z.enum(["blocked", "ok"]),
           priority: z.number().optional(),

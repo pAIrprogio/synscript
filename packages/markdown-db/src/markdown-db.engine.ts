@@ -21,11 +21,7 @@ export class MarkdownDb<
   INPUT = unknown,
   CONFIG_SCHEMA extends BaseConfigSchema = BaseConfigSchema,
 > {
-  private _nameSeparator;
-  private _configSchema;
-  private _cwd;
-  private _queryEngine;
-  private _globs: Globs = ["**/*.md"];
+  private _config: MarkdownDb.Config<INPUT, CONFIG_SCHEMA>;
   private _entriesPromise: Promise<Entry<CONFIG_SCHEMA>[]> | null = null;
   private _entriesMapPromise: Promise<
     Map<string, Entry<CONFIG_SCHEMA>>
@@ -33,23 +29,10 @@ export class MarkdownDb<
   private _parentPatternsMapPromise: Promise<
     Map<string, Entry<CONFIG_SCHEMA>[]>
   > | null = null;
-  private _cacheKey: ((input: INPUT) => any) | null;
   private _cacheMap: Map<string, Entry<CONFIG_SCHEMA>[]> = new Map();
 
-  protected constructor(
-    cwd: FsDir,
-    queryEngine: QueryEngine<any, INPUT>,
-    configSchema: CONFIG_SCHEMA,
-    globs: Globs = ["**/*.md"],
-    nameSeparator: string = DEFAULT_NAME_SEPARATOR,
-    cacheKey: ((input: INPUT) => any) | null = null,
-  ) {
-    this._cwd = cwd;
-    this._queryEngine = queryEngine;
-    this._configSchema = configSchema;
-    this._globs = globs;
-    this._nameSeparator = nameSeparator;
-    this._cacheKey = cacheKey;
+  protected constructor(config: MarkdownDb.Config<INPUT, CONFIG_SCHEMA>) {
+    this._config = config;
   }
 
   /**
@@ -59,19 +42,24 @@ export class MarkdownDb<
    */
   public static cwd<INPUT = unknown>(cwd: FsDir) {
     const engine = QueryEngine.default<INPUT>();
-    return new MarkdownDb<INPUT, BaseConfigSchema>(
+    return new MarkdownDb<INPUT, BaseConfigSchema>({
       cwd,
-      engine,
-      // @ts-ignore - We know the base structure of the schema
-      z.object({ query: engine.schema.optional().prefault({ never: true }) }),
-    );
+      queryEngine: engine,
+      // @ts-expect-error - We know the base structure of the schema
+      entrySchema: z.object({
+        query: engine.schema.optional().prefault({ never: true }),
+      }),
+      globs: ["**/*.md"],
+      nameSeparator: DEFAULT_NAME_SEPARATOR,
+      cacheKey: null,
+    });
   }
 
   /**
    * @returns The QueryEngine
    */
   public get query() {
-    return this._queryEngine;
+    return this._config.queryEngine;
   }
 
   /**
@@ -82,67 +70,57 @@ export class MarkdownDb<
   public setQueryEngine(queryEngine: QueryEngine<any, INPUT>) {
     // Update the config schema to use the new query engine's schema
     // @ts-ignore - We know the base structure of the schema
-    const newSchema = this._configSchema.omit({ query: true }).extend({
+    const newSchema = this._config.entrySchema.omit({ query: true }).extend({
       query: queryEngine.schema.optional().prefault({ never: true }),
     }) as CONFIG_SCHEMA;
-    return new MarkdownDb(
-      this._cwd,
+    return new MarkdownDb({
+      ...this._config,
       queryEngine,
-      newSchema,
-      this._globs,
-      this._nameSeparator,
-      this._cacheKey,
-    );
+      entrySchema: newSchema,
+    });
   }
 
   /**
    * Set the zod schema used to validate extra frontmatter data
-   * @param configSchema - The zod schema to use to validate extra frontmatter data
+   * @param entrySchema - The zod schema to use to validate extra frontmatter data
    * @returns A new MarkdownDb instance
+   */
+  public setEntrySchema<NEW_CONFIG_SCHEMA extends z.ZodObject<any>>(
+    entrySchema: NEW_CONFIG_SCHEMA,
+  ) {
+    return new MarkdownDb({
+      ...this._config,
+      entrySchema: entrySchema.extend({
+        query: this._config.queryEngine.schema
+          .optional()
+          .prefault({ never: true }),
+      }) as NEW_CONFIG_SCHEMA extends z.ZodObject<infer T>
+        ? z.ZodObject<T & { query: z.ZodOptional<z.ZodType<unknown>> }>
+        : never,
+    });
+  }
+
+  /**
+   * @deprecated Use {@link setEntrySchema} instead.
    */
   public setConfigSchema<NEW_CONFIG_SCHEMA extends z.ZodObject<any>>(
     configSchema: NEW_CONFIG_SCHEMA,
   ) {
-    return new MarkdownDb(
-      this._cwd,
-      this._queryEngine,
-      configSchema.extend({
-        query: this._queryEngine.schema.optional().prefault({ never: true }),
-      }) as NEW_CONFIG_SCHEMA extends z.ZodObject<infer T>
-        ? z.ZodObject<T & { query: z.ZodOptional<z.ZodType<unknown>> }>
-        : never,
-      this._globs,
-      this._nameSeparator,
-      this._cacheKey,
-    );
+    return this.setEntrySchema(configSchema);
   }
 
   /**
    * Filter the markdown files with glob patterns
    */
   public setGlobs(...globs: Globs) {
-    return new MarkdownDb(
-      this._cwd,
-      this._queryEngine,
-      this._configSchema,
-      globs,
-      this._nameSeparator,
-      this._cacheKey,
-    );
+    return new MarkdownDb({ ...this._config, globs });
   }
 
   /**
    * Set the name separator when computing the entry id
    */
   public setNameSeparator(nameSeparator: string) {
-    return new MarkdownDb(
-      this._cwd,
-      this._queryEngine,
-      this._configSchema,
-      this._globs,
-      nameSeparator,
-      this._cacheKey,
-    );
+    return new MarkdownDb({ ...this._config, nameSeparator });
   }
 
   /**
@@ -151,14 +129,7 @@ export class MarkdownDb<
    * @returns A new MarkdownDb instance
    */
   public setCacheKey(cacheKey: (input: INPUT) => any) {
-    return new MarkdownDb(
-      this._cwd,
-      this._queryEngine,
-      this._configSchema,
-      this._globs,
-      this._nameSeparator,
-      cacheKey,
-    );
+    return new MarkdownDb({ ...this._config, cacheKey });
   }
 
   /**
@@ -169,9 +140,14 @@ export class MarkdownDb<
   public isEntryFile(file: FsFile | string) {
     const fileInstance = fsFile(file);
     // Check if the file is in the cwd
-    if (!fileInstance.isInDir(this._cwd)) return false;
+    if (!fileInstance.isInDir(this._config.cwd)) return false;
     // Check if the file matches the globs
-    if (!glob.matches(fileInstance.relativePathFrom(this._cwd), this._globs))
+    if (
+      !glob.matches(
+        fileInstance.relativePathFrom(this._config.cwd),
+        this._config.globs,
+      )
+    )
       return false;
     // Default to true
     return true;
@@ -183,7 +159,7 @@ export class MarkdownDb<
    * @returns The entry id
    */
   public computeEntryId(mdFile: FsFile) {
-    const relativePath = mdFile.dir().relativePathFrom(this._cwd);
+    const relativePath = mdFile.dir().relativePathFrom(this._config.cwd);
     const dirPath = relativePath.split("/");
     const lastFolderName = dirPath.pop();
     let fileName = mdFile.fileNameWithoutExtension();
@@ -206,7 +182,9 @@ export class MarkdownDb<
         : [...dirPath, lastFolderName, fileName];
 
     return {
-      name: nameParts.filter((part) => part !== "").join(this._nameSeparator),
+      name: nameParts
+        .filter((part) => part !== "")
+        .join(this._config.nameSeparator),
       type,
     };
   }
@@ -223,8 +201,8 @@ export class MarkdownDb<
     if (!this.isEntryFile(mdFile))
       throw new Error(t`
         File ${mdFile.path} is not an entry file in this MarkdownDb instance
-          - Cwd: ${this._cwd.path}
-          - Globs: ${this._globs.join(", ")}
+          - Cwd: ${this._config.cwd.path}
+          - Globs: ${this._config.globs.join(", ")}
       `);
 
     // Read the file
@@ -235,24 +213,24 @@ export class MarkdownDb<
       resolve(md.getHeaderData(mdText)),
     ).catch((err) => {
       throw new Error(
-        `Failed to read markdown file header for ${this._cwd.relativePathTo(mdFile)}`,
+        `Failed to read markdown file header for ${this._config.cwd.relativePathTo(mdFile)}`,
         { cause: err },
       );
     });
 
     // Validate the header data
-    const parsedData = this._configSchema.safeParse(headerData ?? {});
+    const parsedData = this._config.entrySchema.safeParse(headerData ?? {});
 
     if (headerData === undefined && !parsedData.success) {
       throw new Error(
-        `Failed to parse config for ${this._cwd.relativePathTo(mdFile)}. Expected a frontmatter header but got none.`,
+        `Failed to parse config for ${this._config.cwd.relativePathTo(mdFile)}. Expected a frontmatter header but got none.`,
         { cause: parsedData.error },
       );
     }
 
     if (!parsedData.success)
       throw new Error(
-        `Failed to parse config for ${this._cwd.relativePathTo(mdFile)}`,
+        `Failed to parse config for ${this._config.cwd.relativePathTo(mdFile)}`,
         { cause: parsedData.error },
       );
 
@@ -276,14 +254,14 @@ export class MarkdownDb<
    * Read the entries from the filesystem
    */
   private async readEntries() {
-    const mdFiles = await this._cwd
-      .glob(this._globs)
+    const mdFiles = await this._config.cwd
+      .glob(this._config.globs)
       // Sort by path
       .then((files) =>
         files.sort((a, b) =>
           a
-            .relativePathFrom(this._cwd)
-            .localeCompare(b.relativePathFrom(this._cwd)),
+            .relativePathFrom(this._config.cwd)
+            .localeCompare(b.relativePathFrom(this._config.cwd)),
         ),
       );
 
@@ -295,7 +273,7 @@ export class MarkdownDb<
    */
   public refreshEntries() {
     this._cacheMap.clear();
-    this._queryEngine.clearCache();
+    this._config.queryEngine.clearCache();
     this._entriesPromise = this.readEntries();
     this._entriesMapPromise = this._entriesPromise.then(
       (entries) => new Map(entries.map((entry) => [entry.$id, entry])),
@@ -344,12 +322,14 @@ export class MarkdownDb<
 
         // Precompute parent entries for each entry
         for (const entry of entries) {
-          const path = entry.$id.split(this._nameSeparator);
+          const path = entry.$id.split(this._config.nameSeparator);
           const parentEntries: Entry<CONFIG_SCHEMA>[] = [];
 
           // Build parent chain: "a" -> "a/b" -> "a/b/c"
           for (let i = 1; i < path.length; i++) {
-            const parentName = path.slice(0, i).join(this._nameSeparator);
+            const parentName = path
+              .slice(0, i)
+              .join(this._config.nameSeparator);
             const parentPattern = entriesMap.get(parentName);
             if (parentPattern) {
               parentEntries.push(parentPattern);
@@ -430,8 +410,8 @@ export class MarkdownDb<
     let entries: Entry<CONFIG_SCHEMA>[] = [];
 
     // Use cache if a cache key function is provided
-    if (this._cacheKey) {
-      const entryHash = this._cacheKey(input);
+    if (this._config.cacheKey) {
+      const entryHash = this._config.cacheKey(input);
       if (this._cacheMap.has(entryHash)) {
         entries = this._cacheMap.get(entryHash)!;
       } else {
@@ -481,7 +461,7 @@ export class MarkdownDb<
    * Return the zod/v4 configuration schema
    */
   public get schema() {
-    return this._configSchema;
+    return this._config.entrySchema;
   }
 
   /**
@@ -494,6 +474,18 @@ export class MarkdownDb<
 }
 
 export declare namespace MarkdownDb {
+  export interface Config<
+    INPUT = unknown,
+    CONFIG_SCHEMA extends BaseConfigSchema = BaseConfigSchema,
+  > {
+    cwd: FsDir;
+    entrySchema: CONFIG_SCHEMA;
+    nameSeparator: string;
+    cacheKey: ((input: any) => any) | null;
+    globs: Globs;
+    queryEngine: QueryEngine<any, any>;
+  }
+
   export namespace Config {
     // Todo: fix typings in main class so it works
     export type Infer<T extends MarkdownDb<any, any>> =
