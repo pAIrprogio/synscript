@@ -252,6 +252,7 @@ export class MarkdownDb<
    * Read the entries from the filesystem
    */
   private async readEntries() {
+    this._queryEngine.clearCache();
     const mdFiles = await this._cwd
       .glob(this._globs)
       // Sort by path
