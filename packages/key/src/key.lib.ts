@@ -51,8 +51,8 @@ function stableObjectShape(value: any): any {
 }
 
 /**
- * Returns a stable hash of an object with all its properties sorted alphabetically
+ * Returns a stable string of an object with all its properties sorted alphabetically
  */
-export function stableHash(value: any): string {
+export function stableKey(value: any): string {
   return JSON.stringify(value, (_, val) => stableObjectShape(val));
 }

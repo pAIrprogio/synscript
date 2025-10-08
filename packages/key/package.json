@@ -1,60 +1,54 @@
 {
-  "name": "@synstack/query",
+  "name": "@synstack/key",
   "type": "module",
   "publishConfig": {
     "access": "public"
   },
-  "version": "1.0.11",
-  "description": "Query engine",
+  "version": "1.0.0",
+  "description": "Key generation utilities",
   "keywords": [
-    "synstack",
-    "query",
-    "utility"
+    "string",
+    "typescript",
+    "ts",
+    "key",
+    "key generation"
   ],
   "author": {
     "name": "pAIrprog",
     "url": "https://pairprog.io"
   },
-  "homepage": "https://github.com/pAIrprogio/synscript/tree/main/packages/query",
+  "homepage": "https://github.com/pAIrprogio/synscript/tree/main/packages/key",
   "repository": {
     "type": "git",
     "url": "https://github.com/pAIrprogio/synscript.git",
-    "directory": "packages/query"
+    "directory": "packages/key"
   },
   "license": "Apache-2.0",
   "scripts": {
     "build": "tsup",
     "build:watch": "tsup --watch",
-    "prepack": "pnpm build",
     "test:types": "tsc --noEmit",
     "test:unit": "node --experimental-strip-types --experimental-test-snapshots --no-warnings --test src/**/*.test.ts",
     "test:unit:watch": "node --experimental-strip-types --experimental-test-snapshots --no-warnings --watch --test --watch src/**/*.test.ts",
-    "test": "pnpm test:types && pnpm test:unit"
+    "test": "pnpm test:types && pnpm test:unit",
+    "prepack": "pnpm build"
   },
   "exports": {
     ".": {
       "import": {
-        "types": "./dist/query.index.d.ts",
-        "default": "./dist/query.index.js"
+        "types": "./dist/key.index.d.ts",
+        "default": "./dist/key.index.js"
       },
       "require": {
-        "types": "./dist/query.index.d.cts",
-        "default": "./dist/query.index.cjs"
+        "types": "./dist/key.index.d.cts",
+        "default": "./dist/key.index.cjs"
       }
     }
-  },
-  "dependencies": {
-    "@synstack/fs": "workspace:^",
-    "@synstack/key": "workspace:^"
   },
   "devDependencies": {
     "@types/node": "^22.15.32",
     "tsup": "^8.5.0",
-    "typescript": "^5.8.3",
-    "zod": "^3.25.67"
-  },
-  "peerDependencies": {
-    "zod": "^3.25.67 || ^4.0.0"
+    "typescript": "^5.8.3"
   },
   "files": [
     "src/**/*.ts",

@@ -1,5 +1,5 @@
+import { stableKey } from "@synstack/key";
 import { z } from "zod/v4";
-import { stableHash } from "./hash.lib.ts";
 import {
   queryPredicate,
   querySchema,
@@ -84,7 +84,7 @@ export class QueryEngine<PREDICATES = never, INPUT = never> {
 
         // Check if the predicate is cached
         if (options?.useCache && predicate.key) {
-          const hash = stableHash(predicate.key(predicateConfig, input));
+          const hash = stableKey(predicate.key(predicateConfig, input));
           if (this._cache.has(hash)) return this._cache.get(hash)!;
         }
 
@@ -92,7 +92,7 @@ export class QueryEngine<PREDICATES = never, INPUT = never> {
 
         // Cache the result
         if (options?.useCache && predicate.key) {
-          const hash = stableHash(predicate.key(predicateConfig, input));
+          const hash = stableKey(predicate.key(predicateConfig, input));
           this._cache.set(hash, result);
         }
 
