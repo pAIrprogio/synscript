@@ -8,7 +8,7 @@ import { z } from "zod/v4";
 type Globs = [string, ...string[]];
 
 type BaseConfigSchema = z.ZodObject<{
-  query: z.ZodType<unknown>;
+  query: z.ZodOptional<z.ZodType<unknown>>;
 }>;
 
 type Entry<CONFIG_SCHEMA extends BaseConfigSchema> = Awaited<
@@ -58,7 +58,8 @@ export class MarkdownDb<
     return new MarkdownDb<INPUT, BaseConfigSchema>(
       cwd,
       engine,
-      z.object({ query: engine.schema }),
+      // @ts-ignore - We know the base structure of the schema
+      z.object({ query: engine.schema.optional().prefault({ never: true }) }),
     );
   }
 
@@ -76,8 +77,9 @@ export class MarkdownDb<
    */
   public setQueryEngine(queryEngine: QueryEngine<any, INPUT>) {
     // Update the config schema to use the new query engine's schema
+    // @ts-ignore - We know the base structure of the schema
     const newSchema = this._configSchema.omit({ query: true }).extend({
-      query: queryEngine.schema,
+      query: queryEngine.schema.optional().prefault({ never: true }),
     }) as CONFIG_SCHEMA;
     return new MarkdownDb(
       this._cwd,
@@ -100,9 +102,9 @@ export class MarkdownDb<
       this._cwd,
       this._queryEngine,
       configSchema.extend({
-        query: this._queryEngine.schema,
+        query: this._queryEngine.schema.optional().prefault({ never: true }),
       }) as NEW_CONFIG_SCHEMA extends z.ZodObject<infer T>
-        ? z.ZodObject<T & { query: z.ZodType<unknown> }>
+        ? z.ZodObject<T & { query: z.ZodOptional<z.ZodType<unknown>> }>
         : never,
       this._globs,
       this._nameSeparator,
@@ -215,7 +217,15 @@ export class MarkdownDb<
     });
 
     // Validate the header data
-    const parsedData = this._configSchema.safeParse(headerData);
+    const parsedData = this._configSchema.safeParse(headerData ?? {});
+
+    if (headerData === undefined && !parsedData.success) {
+      throw new Error(
+        `Failed to parse config for ${this._cwd.relativePathTo(mdFile)}. Expected a frontmatter header but got none.`,
+        { cause: parsedData.error },
+      );
+    }
+
     if (!parsedData.success)
       throw new Error(
         `Failed to parse config for ${this._cwd.relativePathTo(mdFile)}`,

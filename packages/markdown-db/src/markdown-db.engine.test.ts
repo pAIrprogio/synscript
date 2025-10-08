@@ -12,6 +12,9 @@ const testPatternsDir = fsDir(currentDirectoryPath).to(".test/patterns");
 const testInvalidPatternsDir = fsDir(currentDirectoryPath).to(
   ".test/invalid-patterns",
 );
+const testOptionalFrontmatterDir = fsDir(currentDirectoryPath).to(
+  ".test/optional-frontmatter",
+);
 
 // Simple test input type
 type TestInput = {
@@ -384,6 +387,138 @@ query:
         async () => await engine.getAll(),
         /Failed to parse config/,
       );
+    });
+  });
+
+  describe("optional query field", () => {
+    it("uses default query {never: true} when query field is missing", async () => {
+      const engine = MarkdownDb.cwd<TestInput>(
+        testOptionalFrontmatterDir,
+      ).setQueryEngine(createTestQueryEngine());
+
+      // Create a file without a query field in frontmatter
+      const noQueryFile = testOptionalFrontmatterDir.toFile("no-query.md");
+      await noQueryFile.write.text(`---
+status: ok
+---
+Content without query field`);
+
+      try {
+        const patterns = await engine.getAll();
+
+        assert.equal(patterns.length, 1);
+        assert.equal(patterns[0].$id, "no-query");
+        assert.deepEqual(patterns[0].query, { never: true });
+      } finally {
+        if (await noQueryFile.exists()) {
+          await noQueryFile.remove();
+        }
+      }
+    });
+
+    it("allows explicit query field to override default", async () => {
+      const engine = MarkdownDb.cwd<TestInput>(
+        testOptionalFrontmatterDir,
+      ).setQueryEngine(createTestQueryEngine());
+
+      // Create a file with explicit query field
+      const withQueryFile =
+        testOptionalFrontmatterDir.toFile("with-query.md");
+      await withQueryFile.write.text(`---
+query:
+  always: true
+---
+Content with query field`);
+
+      try {
+        const patterns = await engine.getAll();
+
+        assert.equal(patterns.length, 1);
+        assert.equal(patterns[0].$id, "with-query");
+        assert.deepEqual(patterns[0].query, { always: true });
+      } finally {
+        if (await withQueryFile.exists()) {
+          await withQueryFile.remove();
+        }
+      }
+    });
+  });
+
+  describe("optional frontmatter header", () => {
+    it("handles markdown files without frontmatter header", async () => {
+      const engine = MarkdownDb.cwd<TestInput>(
+        testOptionalFrontmatterDir,
+      ).setQueryEngine(createTestQueryEngine());
+
+      // Create a file without any frontmatter
+      const noHeaderFile = testOptionalFrontmatterDir.toFile("no-header.md");
+      await noHeaderFile.write.text(`# Content Only
+
+This file has no frontmatter header at all.`);
+
+      try {
+        const patterns = await engine.getAll();
+
+        assert.equal(patterns.length, 1);
+        assert.equal(patterns[0].$id, "no-header");
+        assert.deepEqual(patterns[0].query, { never: true });
+        assert.ok(patterns[0].$content?.includes("Content Only"));
+      } finally {
+        if (await noHeaderFile.exists()) {
+          await noHeaderFile.remove();
+        }
+      }
+    });
+
+    it("throws specific error when frontmatter is missing but required fields exist in schema", async () => {
+      const engine = MarkdownDb.cwd<TestInput>(testOptionalFrontmatterDir)
+        .setQueryEngine(createTestQueryEngine())
+        .setConfigSchema(
+          z.object({
+            requiredField: z.string(),
+          }),
+        );
+
+      // Create a file without frontmatter
+      const noHeaderFile =
+        testOptionalFrontmatterDir.toFile("no-header-required.md");
+      await noHeaderFile.write.text(`# Content without required frontmatter`);
+
+      try {
+        await assert.rejects(
+          async () => await engine.getAll(),
+          /Expected a frontmatter header but got none/,
+        );
+      } finally {
+        if (await noHeaderFile.exists()) {
+          await noHeaderFile.remove();
+        }
+      }
+    });
+
+    it("accepts empty frontmatter header", async () => {
+      const engine = MarkdownDb.cwd<TestInput>(
+        testOptionalFrontmatterDir,
+      ).setQueryEngine(createTestQueryEngine());
+
+      // Create a file with empty frontmatter
+      const emptyHeaderFile =
+        testOptionalFrontmatterDir.toFile("empty-header.md");
+      await emptyHeaderFile.write.text(`---
+---
+Content with empty frontmatter`);
+
+      try {
+        const patterns = await engine.getAll();
+
+        assert.equal(patterns.length, 1);
+        assert.equal(patterns[0].$id, "empty-header");
+        assert.deepEqual(patterns[0].query, { never: true });
+      } finally {
+        if (await emptyHeaderFile.exists()) {
+          await emptyHeaderFile.remove();
+        }
+      }
     });
   });
 
