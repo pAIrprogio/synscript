@@ -4,7 +4,7 @@
   "publishConfig": {
     "access": "public"
   },
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "Kuzu graph database client",
   "author": {
     "name": "pAIrprog",
