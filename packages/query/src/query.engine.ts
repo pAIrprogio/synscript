@@ -9,6 +9,7 @@ import {
 export class QueryEngine<PREDICATES = never, INPUT = never> {
   private predicates: Array<QueryPredicate<string, any, INPUT>>;
   private _schema: z.ZodType<BasePredicates<PREDICATES>>;
+  private _cache: Map<string, boolean>;
 
   protected constructor(predicates: Array<QueryPredicate<string, any, INPUT>>) {
     this.predicates = predicates;
@@ -16,6 +17,7 @@ export class QueryEngine<PREDICATES = never, INPUT = never> {
     this._schema = querySchema(
       this.predicates.map((p) => p.schema),
     ) as z.ZodType<BasePredicates<PREDICATES>>;
+    this._cache = new Map();
   }
 
   public static default<INPUT = never>() {
@@ -51,7 +53,11 @@ export class QueryEngine<PREDICATES = never, INPUT = never> {
     return z.toJSONSchema(this.schema);
   }
 
-  private apply(query: { [x: string]: any }, input: INPUT): boolean {
+  private apply(
+    query: { [x: string]: any },
+    input: INPUT,
+    options?: { useCache?: boolean },
+  ): boolean {
     if ("always" in query) {
       return true;
     }
@@ -74,8 +80,23 @@ export class QueryEngine<PREDICATES = never, INPUT = never> {
       return !this.apply(query.not as BasePredicates, input);
     }
 
-    return this.predicates.some((c) => {
-      if (c.name in query) return c.handler(query[c.name])(input);
+    return this.predicates.some((predicate) => {
+      if (options?.useCache && predicate.key) {
+        // Check if the predicate is cached
+        const hash = predicate.key(query[predicate.name]);
+        if (this._cache.has(hash)) return this._cache.get(hash)!;
+      }
+      if (predicate.name in query) {
+        const result = predicate.handler(query[predicate.name])(input);
+
+        // Cache the result
+        if (options?.useCache && predicate.key) {
+          const hash = predicate.key(query[predicate.name]);
+          this._cache.set(hash, result);
+        }
+
+        return result;
+      }
       return false;
     });
   }
@@ -83,16 +104,29 @@ export class QueryEngine<PREDICATES = never, INPUT = never> {
   public match(
     query: unknown,
     input: INPUT,
-    options?: { skipQueryValidation?: boolean },
+    options?: {
+      /**
+       * Skip validation of the input query.
+       *
+       * Recommended for performance when the query is known to be valid.
+       */
+      skipQueryValidation?: boolean;
+      /**
+       * Use the cache to store the results of predicates.
+       * Recommended for performance improvements on big databases.
+       */
+      useCache?: boolean;
+    },
   ): boolean {
     if (query === undefined) return false;
 
+    // Validate the query on the engine's schema
     const schema = querySchema(this.predicates.map((c) => c.schema));
     const parsedQuery = options?.skipQueryValidation
       ? (query as z.output<typeof schema>)
       : schema.parse(query);
 
-    return this.apply(parsedQuery, input);
+    return this.apply(parsedQuery, input, { useCache: options?.useCache });
   }
 }
 
