@@ -38,7 +38,7 @@ export async function ls(cwd: string = ".") {
 
   const files = execPipe(
     [trackedFiles, modifiedFiles, untrackedFiles],
-    flatMap((r) => r.stdout.split("\n")),
+    flatMap((r) => r.stdout.split(/\r?\n/)),
     filter((l) => l.trim().length > 0),
   );
 

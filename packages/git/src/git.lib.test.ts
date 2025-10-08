@@ -44,5 +44,12 @@ describe("git", () => {
       const files = await ls("./test-dir");
       assert.deepEqual(files, [".gitignore", "file-1", "file-2"]);
     });
+
+    it("handles CRLF line endings in git output", async () => {
+      // Mock git output with CRLF line endings
+      const mockGitOutput = ".gitignore\r\nfile-1\r\n";
+      const files = mockGitOutput.split(/\r?\n/).filter((l) => l.trim().length > 0);
+      assert.deepEqual(files, [".gitignore", "file-1"]);
+    });
   });
 });
