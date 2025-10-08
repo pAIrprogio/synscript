@@ -48,6 +48,15 @@ describe("Markdown", () => {
       const data = md.getHeaderData(text);
       assert.equal(data, undefined);
     });
+    it("extracts and parses header data from CRLF files", () => {
+      const text = "---\r\ntitle: Test\r\ncount: 5\r\n---\r\nContent";
+      const schema = z.object({ title: z.string(), count: z.number() });
+      const data = md.getHeaderData<{ title: string; count: number }>(text, {
+        schema,
+      });
+      assertType<{ title: string; count: number } | undefined>(data);
+      assert.deepEqual(data, { title: "Test", count: 5 });
+    });
   });
 
   describe("setHeaderData", () => {

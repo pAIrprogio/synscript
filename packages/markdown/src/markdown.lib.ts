@@ -86,7 +86,7 @@ export const fromHtml = (html: Stringable) => {
     .trim();
 };
 
-const HEADER_REGEX = /^--- *\n([\s\S]*?)\n--- *\n?/;
+const HEADER_REGEX = /^--- *\r?\n([\s\S]*?)\r?\n--- *\r?\n?/;
 
 /**
  * Get the header data from a markdown document
