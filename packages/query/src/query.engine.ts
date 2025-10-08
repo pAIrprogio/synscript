@@ -102,6 +102,10 @@ export class QueryEngine<PREDICATES = never, INPUT = never> {
     });
   }
 
+  public clearCache() {
+    this._cache.clear();
+  }
+
   public match(
     query: unknown,
     input: INPUT,

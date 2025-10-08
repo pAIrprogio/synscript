@@ -30,7 +30,7 @@ describe("QueryEngine", () => {
       const engine = QueryEngine.addPredicate({
         name: "contains",
         configSchema: z.string(),
-        handler: (substring, input: { text: string }) =>
+        handler: (substring) => (input: { text: string }) =>
           input.text.includes(substring),
       });
 
@@ -53,19 +53,19 @@ describe("QueryEngine", () => {
       const engine = QueryEngine.addPredicate({
         name: "contains",
         configSchema: z.string(),
-        handler: (substring, input: { text: string }) =>
+        handler: (substring) => (input: { text: string }) =>
           input.text.includes(substring),
       })
         .addPredicate({
           name: "startsWith",
           configSchema: z.string(),
-          handler: (prefix, input: { text: string }) =>
+          handler: (prefix) => (input: { text: string }) =>
             input.text.startsWith(prefix),
         })
         .addPredicate({
           name: "endsWith",
           configSchema: z.string(),
-          handler: (suffix, input: { text: string }) =>
+          handler: (suffix) => (input: { text: string }) =>
             input.text.endsWith(suffix),
         });
 
