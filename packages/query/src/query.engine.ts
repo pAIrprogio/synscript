@@ -1,6 +1,5 @@
 import { z } from "zod/v4";
 import {
-  queryApply,
   queryPredicate,
   querySchema,
   type BasePredicates,
@@ -52,12 +51,48 @@ export class QueryEngine<PREDICATES = never, INPUT = never> {
     return z.toJSONSchema(this.schema);
   }
 
+  private apply(query: { [x: string]: any }, input: INPUT): boolean {
+    if ("always" in query) {
+      return true;
+    }
+
+    if ("never" in query) {
+      return false;
+    }
+
+    if ("and" in query) {
+      if (query.and.length === 0) return false;
+      return query.and.every((q: BasePredicates) => this.apply(q, input));
+    }
+
+    if ("or" in query) {
+      if (query.or.length === 0) return false;
+      return query.or.some((q: BasePredicates) => this.apply(q, input));
+    }
+
+    if ("not" in query) {
+      return !this.apply(query.not as BasePredicates, input);
+    }
+
+    return this.predicates.some((c) => {
+      if (c.name in query) return c.handler(query[c.name])(input);
+      return false;
+    });
+  }
+
   public match(
     query: unknown,
     input: INPUT,
     options?: { skipQueryValidation?: boolean },
   ): boolean {
-    return queryApply(this.predicates, query, input, options);
+    if (query === undefined) return false;
+
+    const schema = querySchema(this.predicates.map((c) => c.schema));
+    const parsedQuery = options?.skipQueryValidation
+      ? (query as z.output<typeof schema>)
+      : schema.parse(query);
+
+    return this.apply(parsedQuery, input);
   }
 }
 

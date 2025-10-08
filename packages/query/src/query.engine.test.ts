@@ -343,6 +343,40 @@ describe("QueryEngine", () => {
 
       assert.equal(engine.match(falseQuery, input), false);
     });
+
+    it("works with empty predicate array and base functions", () => {
+      const engine = QueryEngine.default<string>();
+
+      const alwaysResult = engine.match({ always: true }, "any input");
+      assert.equal(alwaysResult, true);
+
+      const neverResult = engine.match({ never: true }, "any input");
+      assert.equal(neverResult, false);
+
+      const andResult = engine.match(
+        {
+          and: [{ always: true }, { always: true }],
+        },
+        "any input",
+      );
+      assert.equal(andResult, true);
+
+      const orResult = engine.match(
+        {
+          or: [{ never: true }, { always: true }],
+        },
+        "any input",
+      );
+      assert.equal(orResult, true);
+
+      const notResult = engine.match(
+        {
+          not: { never: true },
+        },
+        "any input",
+      );
+      assert.equal(notResult, true);
+    });
   });
 
   describe("Query Validation", () => {

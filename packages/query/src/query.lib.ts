@@ -12,6 +12,7 @@ export interface QueryPredicate<NAME extends string, PARAMS, INPUT = unknown> {
   name: NAME;
   schema: z.ZodType<{ [key in NAME]: PARAMS }>;
   handler: (params: PARAMS) => (content: INPUT) => boolean;
+  key?: (params: PARAMS) => string;
 }
 
 export function queryPredicate<NAME extends string, PARAMS, INPUT = unknown>(
@@ -72,50 +73,3 @@ export function querySchema<EXTRA_SCHEMAS extends z.ZodTypeAny>(
   return schema;
 }
 
-export function queryApply<
-  PREDICATES extends Array<QueryPredicate<string, any, INPUT>>,
-  INPUT,
->(
-  predicates: PREDICATES,
-  query: unknown,
-  input: INPUT,
-  options?: { skipQueryValidation?: boolean },
-) {
-  if (query === undefined) return false;
-
-  const schema = querySchema(predicates.map((c) => c.schema));
-  const parsedQuery = options?.skipQueryValidation
-    ? (query as z.output<typeof schema>)
-    : schema.parse(query);
-
-  function apply(query: typeof parsedQuery, input: INPUT): boolean {
-    if ("always" in query) {
-      return true;
-    }
-
-    if ("never" in query) {
-      return false;
-    }
-
-    if ("and" in query) {
-      if (query.and.length === 0) return false;
-      return query.and.every((q: BasePredicates) => apply(q, input));
-    }
-
-    if ("or" in query) {
-      if (query.or.length === 0) return false;
-      return query.or.some((q: BasePredicates) => apply(q, input));
-    }
-
-    if ("not" in query) {
-      return !apply(query.not as BasePredicates, input);
-    }
-
-    return predicates.some((c) => {
-      if (c.name in query) return c.handler(query[c.name])(input);
-      return false;
-    });
-  }
-
-  return apply(parsedQuery, input);
-}
