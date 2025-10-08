@@ -124,6 +124,15 @@ Hello
       `Test\n  Hello\n  World\n  %STR_EXTRA%{"type":"extra"}%!STR_EXTRA%`,
     );
   });
+
+  it("handles CRLF line endings in template values", () => {
+    const multiline = "World\r\nUniverse";
+    const text = Text.t`
+      Hello
+        ${multiline}
+    `;
+    assert.equal(text, "Hello\n  World\n  Universe");
+  });
 });
 
 describe("split", () => {

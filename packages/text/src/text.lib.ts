@@ -95,7 +95,8 @@ export class Text {
         Text.EXTRA_OBJECT_SUFFIX
       }`;
     }
-    return value;
+
+    return str(value).$;
   }
 
   public static parse<E extends Text.ExtraObject.Base>(
