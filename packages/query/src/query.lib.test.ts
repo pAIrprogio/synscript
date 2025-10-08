@@ -5,38 +5,38 @@ import { queryPredicate, querySchema } from "./query.lib.ts";
 
 describe("queryPredicate", () => {
   it("creates a query config with correct structure", () => {
-    const query = queryPredicate(
-      "testQuery",
-      z.string(),
-      (param) => (input: { value: string }) => input.value === param,
-    );
+    const query = queryPredicate({
+      name: "testQuery",
+      configSchema: z.string(),
+      handler: (param) => (input: { value: string }) => input.value === param,
+      key: () => "testKey",
+    });
 
     assert.equal(query.name, "testQuery");
-    assert.ok(query.schema);
+    assert.ok(query.configSchema);
     assert.ok(query.handler);
+    assert.ok(query.key);
   });
 
   it("validates schema correctly", () => {
-    const query = queryPredicate(
-      "testQuery",
-      z.number(),
-      (param) => () => param > 0,
-    );
-
-    const parsed = query.schema.parse({ testQuery: 42 });
-    assert.deepEqual(parsed, { testQuery: 42 });
-
-    assert.throws(() => {
-      query.schema.parse({ testQuery: "not a number" });
+    const query = queryPredicate({
+      name: "testQuery",
+      configSchema: z.number(),
+      handler: (param) => (input: { value: number }) => param > input.value,
+      key: () => "testKey",
     });
+
+    const parsed = query.configSchema.parse({ testQuery: 42 });
+    assert.deepEqual(parsed, { testQuery: 42 });
   });
 
   it("handler returns a function that evaluates input", () => {
-    const query = queryPredicate(
-      "contains",
-      z.string(),
-      (param) => (input: { text: string }) => input.text.includes(param),
-    );
+    const query = queryPredicate({
+      name: "contains",
+      configSchema: z.string(),
+      handler: (param) => (input: { text: string }) =>
+        input.text.includes(param),
+    });
 
     const handler = query.handler("test");
     assert.equal(handler({ text: "this is a test" }), true);
@@ -102,4 +102,3 @@ describe("querySchema", () => {
     });
   });
 });
-

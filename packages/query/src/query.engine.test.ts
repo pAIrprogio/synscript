@@ -27,12 +27,12 @@ describe("QueryEngine", () => {
     });
 
     it("creates a QueryEngine with a single predicate using static method", () => {
-      const engine = QueryEngine.addPredicate(
-        "contains",
-        z.string(),
-        (substring) => (input: { text: string }) =>
+      const engine = QueryEngine.addPredicate({
+        name: "contains",
+        configSchema: z.string(),
+        handler: (substring, input: { text: string }) =>
           input.text.includes(substring),
-      );
+      });
 
       const schema = engine.schema;
 
@@ -50,23 +50,24 @@ describe("QueryEngine", () => {
     });
 
     it("adds multiple predicates to an existing QueryEngine", () => {
-      const engine = QueryEngine.addPredicate(
-        "contains",
-        z.string(),
-        (substring) => (input: { text: string }) =>
+      const engine = QueryEngine.addPredicate({
+        name: "contains",
+        configSchema: z.string(),
+        handler: (substring, input: { text: string }) =>
           input.text.includes(substring),
-      )
-        .addPredicate(
-          "startsWith",
-          z.string(),
-          (prefix) => (input: { text: string }) =>
+      })
+        .addPredicate({
+          name: "startsWith",
+          configSchema: z.string(),
+          handler: (prefix, input: { text: string }) =>
             input.text.startsWith(prefix),
-        )
-        .addPredicate(
-          "endsWith",
-          z.string(),
-          (suffix) => (input: { text: string }) => input.text.endsWith(suffix),
-        );
+        })
+        .addPredicate({
+          name: "endsWith",
+          configSchema: z.string(),
+          handler: (suffix, input: { text: string }) =>
+            input.text.endsWith(suffix),
+        });
 
       const schema = engine.schema;
 
@@ -119,15 +120,15 @@ describe("QueryEngine", () => {
 
     it("generates schema for engine with custom predicates", () => {
       type TestInput = { value: string; number: number };
-      const engine = QueryEngine.addPredicate(
-        "equals",
-        z.string(),
-        (value) => (input: TestInput) => input.value === value,
-      ).addPredicate(
-        "greaterThan",
-        z.number(),
-        (threshold) => (input: TestInput) => input.number > threshold,
-      );
+      const engine = QueryEngine.addPredicate({
+        name: "equals",
+        configSchema: z.string(),
+        handler: (value) => (input: TestInput) => input.value === value,
+      }).addPredicate({
+        name: "greaterThan",
+        configSchema: z.number(),
+        handler: (threshold) => (input: TestInput) => input.number > threshold,
+      });
 
       const schema = engine.schema;
 
@@ -156,15 +157,15 @@ describe("QueryEngine", () => {
 
     it("generates JSON schema", () => {
       type TestInput = { value: string; number: number };
-      const engine = QueryEngine.addPredicate(
-        "equals",
-        z.string(),
-        (value) => (input: TestInput) => input.value === value,
-      ).addPredicate(
-        "greaterThan",
-        z.number(),
-        (threshold) => (input: TestInput) => input.number > threshold,
-      );
+      const engine = QueryEngine.addPredicate({
+        name: "equals",
+        configSchema: z.string(),
+        handler: (value) => (input: TestInput) => input.value === value,
+      }).addPredicate({
+        name: "greaterThan",
+        configSchema: z.number(),
+        handler: (threshold) => (input: TestInput) => input.number > threshold,
+      });
 
       const jsonSchema = engine.jsonSchema;
 
@@ -183,27 +184,29 @@ describe("QueryEngine", () => {
     type TestInput = { value: string; number: number; text: string };
 
     const createTestEngine = () =>
-      QueryEngine.addPredicate(
-        "equals",
-        z.string(),
-        (value) => (input: TestInput) => input.value === value,
-      )
-        .addPredicate(
-          "greaterThan",
-          z.number(),
-          (threshold) => (input: TestInput) => input.number > threshold,
-        )
-        .addPredicate(
-          "contains",
-          z.string(),
-          (substring) => (input: TestInput) => input.text.includes(substring),
-        )
-        .addPredicate(
-          "matches",
-          z.string(),
-          (pattern) => (input: TestInput) =>
+      QueryEngine.addPredicate({
+        name: "equals",
+        configSchema: z.string(),
+        handler: (value) => (input: TestInput) => input.value === value,
+      })
+        .addPredicate({
+          name: "greaterThan",
+          configSchema: z.number(),
+          handler: (threshold) => (input: TestInput) =>
+            input.number > threshold,
+        })
+        .addPredicate({
+          name: "contains",
+          configSchema: z.string(),
+          handler: (substring) => (input: TestInput) =>
+            input.text.includes(substring),
+        })
+        .addPredicate({
+          name: "matches",
+          configSchema: z.string(),
+          handler: (pattern) => (input: TestInput) =>
             new RegExp(pattern).test(input.text),
-        );
+        });
 
     it("applies simple predicate queries", () => {
       const engine = createTestEngine();
@@ -381,15 +384,15 @@ describe("QueryEngine", () => {
 
   describe("Query Validation", () => {
     type TestInput = { value: string; number: number };
-    const engine = QueryEngine.addPredicate(
-      "equals",
-      z.string(),
-      (value) => (input: TestInput) => input.value === value,
-    ).addPredicate(
-      "greaterThan",
-      z.number(),
-      (threshold) => (input: TestInput) => input.number > threshold,
-    );
+    const engine = QueryEngine.addPredicate({
+      name: "equals",
+      configSchema: z.string(),
+      handler: (value) => (input: TestInput) => input.value === value,
+    }).addPredicate({
+      name: "greaterThan",
+      configSchema: z.number(),
+      handler: (threshold) => (input: TestInput) => input.number > threshold,
+    });
 
     it("validates queries before execution", () => {
       const input: TestInput = { value: "test", number: 42 };
@@ -425,11 +428,11 @@ describe("QueryEngine", () => {
 
   describe("Edge Cases and Error Handling", () => {
     it("handles undefined query", () => {
-      const engine = QueryEngine.addPredicate(
-        "test",
-        z.string(),
-        () => () => true,
-      );
+      const engine = QueryEngine.addPredicate({
+        name: "test",
+        configSchema: z.string(),
+        handler: () => () => true,
+      });
 
       assert.equal(engine.match(undefined, { any: "input" }), false);
     });
@@ -454,26 +457,29 @@ describe("QueryEngine", () => {
     it("handles predicates with same input type", () => {
       type SharedInput = { text: string; count: number };
 
-      const engine = QueryEngine.addPredicate(
-        "textContains",
-        z.string(),
-        (substring) => (input: SharedInput) => input.text.includes(substring),
-      )
-        .addPredicate(
-          "textStartsWith",
-          z.string(),
-          (prefix) => (input: SharedInput) => input.text.startsWith(prefix),
-        )
-        .addPredicate(
-          "countEquals",
-          z.number(),
-          (value) => (input: SharedInput) => input.count === value,
-        )
-        .addPredicate(
-          "countGreaterThan",
-          z.number(),
-          (threshold) => (input: SharedInput) => input.count > threshold,
-        );
+      const engine = QueryEngine.addPredicate({
+        name: "textContains",
+        configSchema: z.string(),
+        handler: (substring) => (input: SharedInput) =>
+          input.text.includes(substring),
+      })
+        .addPredicate({
+          name: "textStartsWith",
+          configSchema: z.string(),
+          handler: (prefix) => (input: SharedInput) =>
+            input.text.startsWith(prefix),
+        })
+        .addPredicate({
+          name: "countEquals",
+          configSchema: z.number(),
+          handler: (value) => (input: SharedInput) => input.count === value,
+        })
+        .addPredicate({
+          name: "countGreaterThan",
+          configSchema: z.number(),
+          handler: (threshold) => (input: SharedInput) =>
+            input.count > threshold,
+        });
 
       const input: SharedInput = { text: "hello world", count: 42 };
 
@@ -496,11 +502,11 @@ describe("QueryEngine", () => {
     });
 
     it("provides correct type inference", () => {
-      const _engine = QueryEngine.addPredicate(
-        "test",
-        z.string(),
-        (value) => (input: { data: string }) => input.data === value,
-      );
+      const _engine = QueryEngine.addPredicate({
+        name: "test",
+        configSchema: z.string(),
+        handler: (value) => (input: { data: string }) => input.data === value,
+      });
 
       // Type tests (compile-time only, runtime assertion for coverage)
       type InferredQuery = QueryEngine.InferQuery<typeof _engine>;
@@ -518,17 +524,17 @@ describe("QueryEngine", () => {
   describe("Chaining and Immutability", () => {
     it("returns new instance when adding predicates", () => {
       const engine1 = QueryEngine.default<{ value: string }>();
-      const engine2 = engine1.addPredicate(
-        "equals",
-        z.string(),
-        (value) => (input: { value: string }) => input.value === value,
-      );
-      const engine3 = engine2.addPredicate(
-        "contains",
-        z.string(),
-        (substring) => (input: { value: string }) =>
+      const engine2 = engine1.addPredicate({
+        name: "equals",
+        configSchema: z.string(),
+        handler: (value) => (input: { value: string }) => input.value === value,
+      });
+      const engine3 = engine2.addPredicate({
+        name: "contains",
+        configSchema: z.string(),
+        handler: (substring) => (input: { value: string }) =>
           input.value.includes(substring),
-      );
+      });
 
       // All engines are different instances
       assert.notEqual(engine1, engine2);
@@ -548,13 +554,21 @@ describe("QueryEngine", () => {
     });
 
     it("supports method chaining", () => {
-      const engine = QueryEngine.addPredicate(
-        "p1",
-        z.string(),
-        () => () => true,
-      )
-        .addPredicate("p2", z.number(), () => () => true)
-        .addPredicate("p3", z.boolean(), () => () => true);
+      const engine = QueryEngine.addPredicate({
+        name: "p1",
+        configSchema: z.string(),
+        handler: () => () => true,
+      })
+        .addPredicate({
+          name: "p2",
+          configSchema: z.number(),
+          handler: () => () => true,
+        })
+        .addPredicate({
+          name: "p3",
+          configSchema: z.boolean(),
+          handler: () => () => true,
+        });
 
       const schema = engine.schema;
 
@@ -568,6 +582,56 @@ describe("QueryEngine", () => {
         schema.parse({
           and: [{ p1: "test" }, { p2: 123 }, { p3: true }],
         }),
+      );
+    });
+  });
+
+  describe("Query Caching", () => {
+    it("caches predicate results when useCache is enabled", () => {
+      const engine = QueryEngine.addPredicate({
+        name: "test",
+        configSchema: z.boolean(),
+        handler: (value: boolean) => () => value,
+        key: () => "key",
+      });
+
+      // Cache the value for true
+      engine.match({ test: true }, undefined, { useCache: true });
+      // Should return true because the value is cached
+      assert.equal(
+        engine.match({ test: false }, undefined, { useCache: true }),
+        true,
+      );
+    });
+
+    it("does not use cache when useCache is disabled", () => {
+      const engine = QueryEngine.addPredicate({
+        name: "test",
+        configSchema: z.boolean(),
+        handler: (value: boolean) => () => value,
+        key: () => "key",
+      });
+
+      // Cache the value for true
+      engine.match({ test: true }, undefined, { useCache: true });
+      // Should return false because we don't use the cache
+      assert.equal(
+        engine.match({ test: false }, undefined, { useCache: false }),
+        false,
+      );
+    });
+
+    it("does not cache when predicate has no key function", () => {
+      const engine = QueryEngine.addPredicate({
+        name: "test",
+        configSchema: z.boolean(),
+        handler: (value: boolean) => () => value,
+      });
+
+      engine.match({ test: true }, undefined, { useCache: true });
+      assert.equal(
+        engine.match({ test: false }, undefined, { useCache: true }),
+        false,
       );
     });
   });

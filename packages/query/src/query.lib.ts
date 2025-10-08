@@ -8,25 +8,34 @@ export type BasePredicates<PREDICATES = never> =
   | { never: true }
   | PREDICATES;
 
-export interface QueryPredicate<NAME extends string, PARAMS, INPUT = unknown> {
+export interface QueryPredicate<NAME extends string, CONFIG, INPUT = unknown> {
   name: NAME;
-  schema: z.ZodType<{ [key in NAME]: PARAMS }>;
-  handler: (params: PARAMS) => (content: INPUT) => boolean;
-  key?: (params: PARAMS) => string;
+  configSchema: z.ZodType<{ [key in NAME]: CONFIG }>;
+  handler: (config: CONFIG) => (input: INPUT) => boolean;
+  key?: (config: CONFIG, input: INPUT) => any;
+}
+
+export interface QueryPredicateConfig<
+  NAME extends string,
+  CONFIG,
+  INPUT = unknown,
+> {
+  name: NAME;
+  configSchema: z.ZodType<CONFIG>;
+  handler: (config: CONFIG) => (input: INPUT) => boolean;
+  key?: (config: CONFIG, input: INPUT) => any;
 }
 
 export function queryPredicate<NAME extends string, PARAMS, INPUT = unknown>(
-  name: NAME,
-  params: z.ZodType<PARAMS>,
-  handler: (params: PARAMS) => (content: INPUT) => boolean,
+  options: QueryPredicateConfig<NAME, PARAMS, INPUT>,
 ) {
   return {
-    name,
-    schema: z.object({
-      [name]: params,
+    name: options.name,
+    configSchema: z.object({
+      [options.name]: options.configSchema,
     }),
-    handler,
-    // Todo: fix this
+    handler: options.handler,
+    key: options.key,
   } as unknown as QueryPredicate<NAME, PARAMS, INPUT>;
 }
 
@@ -72,4 +81,3 @@ export function querySchema<EXTRA_SCHEMAS extends z.ZodTypeAny>(
 
   return schema;
 }
-

@@ -1,9 +1,11 @@
 import { z } from "zod/v4";
+import { stableHash } from "./hash.lib.ts";
 import {
   queryPredicate,
   querySchema,
   type BasePredicates,
   type QueryPredicate,
+  type QueryPredicateConfig,
 } from "./query.lib.ts";
 
 export class QueryEngine<PREDICATES = never, INPUT = never> {
@@ -15,7 +17,7 @@ export class QueryEngine<PREDICATES = never, INPUT = never> {
     this.predicates = predicates;
     // Build schema once in constructor instead of rebuilding on every access
     this._schema = querySchema(
-      this.predicates.map((p) => p.schema),
+      this.predicates.map((p) => p.configSchema),
     ) as z.ZodType<BasePredicates<PREDICATES>>;
     this._cache = new Map();
   }
@@ -25,23 +27,19 @@ export class QueryEngine<PREDICATES = never, INPUT = never> {
   }
 
   public static addPredicate<NAME extends string, PARAM, INPUT>(
-    name: NAME,
-    params: z.ZodType<PARAM>,
-    handler: (params: PARAM) => (input: INPUT) => boolean,
+    config: QueryPredicateConfig<NAME, PARAM, INPUT>,
   ) {
     return new QueryEngine<{ [n in NAME]: PARAM }, INPUT>([
-      queryPredicate(name, params, handler),
+      queryPredicate(config),
     ]);
   }
 
   public addPredicate<NAME extends string, PARAM>(
-    name: NAME,
-    params: z.ZodType<PARAM>,
-    handler: (params: PARAM) => (input: INPUT) => boolean,
+    config: QueryPredicateConfig<NAME, PARAM, INPUT>,
   ) {
     return new QueryEngine<PREDICATES | { [n in NAME]: PARAM }, INPUT>([
       ...this.predicates,
-      queryPredicate(name, params, handler),
+      queryPredicate(config),
     ]);
   }
 
@@ -81,17 +79,20 @@ export class QueryEngine<PREDICATES = never, INPUT = never> {
     }
 
     return this.predicates.some((predicate) => {
-      if (options?.useCache && predicate.key) {
-        // Check if the predicate is cached
-        const hash = predicate.key(query[predicate.name]);
-        if (this._cache.has(hash)) return this._cache.get(hash)!;
-      }
       if (predicate.name in query) {
-        const result = predicate.handler(query[predicate.name])(input);
+        const predicateConfig = query[predicate.name];
+
+        // Check if the predicate is cached
+        if (options?.useCache && predicate.key) {
+          const hash = stableHash(predicate.key(predicateConfig, input));
+          if (this._cache.has(hash)) return this._cache.get(hash)!;
+        }
+
+        const result = predicate.handler(predicateConfig)(input);
 
         // Cache the result
         if (options?.useCache && predicate.key) {
-          const hash = predicate.key(query[predicate.name]);
+          const hash = stableHash(predicate.key(predicateConfig, input));
           this._cache.set(hash, result);
         }
 
@@ -121,7 +122,7 @@ export class QueryEngine<PREDICATES = never, INPUT = never> {
     if (query === undefined) return false;
 
     // Validate the query on the engine's schema
-    const schema = querySchema(this.predicates.map((c) => c.schema));
+    const schema = querySchema(this.predicates.map((c) => c.configSchema));
     const parsedQuery = options?.skipQueryValidation
       ? (query as z.output<typeof schema>)
       : schema.parse(query);
