@@ -2,7 +2,7 @@ import assert from "node:assert/strict";
 import { describe, it } from "node:test";
 import { stableKey } from "./key.lib.ts";
 
-describe("stableHash", () => {
+describe("stableKey", () => {
   it("produces stable hashes for objects with different key order", () => {
     const obj1 = { a: 1, b: 2, c: 3 };
     const obj2 = { c: 3, a: 1, b: 2 };
