@@ -5,7 +5,8 @@ import { Pipeable } from "@synstack/pipe";
 import type { TemplateExpression } from "execa";
 import * as fsSync from "fs";
 import * as fs from "fs/promises";
-import { dirs } from "./dirs-array.lib.ts";
+import { tmpdir } from "os";
+import { fsDirs } from "./dirs-array.lib.ts";
 import { FsFile } from "./file.lib.ts";
 import { fsFiles, fsFilesFromDir } from "./files-array.lib.ts";
 
@@ -108,6 +109,14 @@ export class FsDir extends Pipeable<FsDir> {
   public static cwd(this: void, arg: FsDir | AnyPath) {
     if (arg instanceof FsDir) return arg;
     return new FsDir(path.resolve(arg));
+  }
+
+  /**
+   * Create a new directory instance with the temporary directory.
+   * @returns A new FsDir instance with the temporary directory
+   */
+  public static tmpDir(this: void) {
+    return new FsDir(tmpdir());
   }
 
   /**
@@ -555,7 +564,7 @@ Trying to access a dir file from an absolute paths:
       .cwd(this._path)
       .options({ nodir: false, absolute: true })
       .find(patternsWithTrailingSlash)
-      .then(dirs);
+      .then(fsDirs);
   }
 
   /**
@@ -570,7 +579,7 @@ Trying to access a dir file from an absolute paths:
       .flat()
       .map((p) => glob.ensureDirTrailingSlash(p));
 
-    return dirs(
+    return fsDirs(
       glob
         .cwd(this._path)
         .options({ nodir: false, absolute: true })
@@ -629,6 +638,12 @@ Trying to access a dir file from an absolute paths:
  * ```
  */
 export const fsDir = FsDir.cwd;
+
+/**
+ * Create a new directory instance with the temporary directory.
+ * @returns A new FsDir instance with the temporary directory
+ */
+export const fsTmpDir = FsDir.tmpDir;
 
 /**
  * @deprecated Changed to avoid namespacing conflicts. Use {@link fsDir} instead
