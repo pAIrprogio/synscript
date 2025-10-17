@@ -555,7 +555,7 @@ Content with empty frontmatter`);
         }),
       );
 
-      type InferredConfig = MarkdownDb.Config.Infer<typeof _engine>;
+      type InferredConfig = MarkdownDb.Entry.Infer<typeof _engine>;
 
       const config: InferredConfig = {
         query: { always: true },

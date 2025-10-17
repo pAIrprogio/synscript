@@ -7,11 +7,7 @@ import { z } from "zod/v4";
 
 type Globs = [string, ...string[]];
 
-type BaseConfigSchema = z.ZodObject<{
-  query: z.ZodOptional<z.ZodType<unknown>>;
-}>;
-
-type Entry<CONFIG_SCHEMA extends BaseConfigSchema> = Awaited<
+type Entry<CONFIG_SCHEMA extends MarkdownDb.Config.Base> = Awaited<
   ReturnType<MarkdownDb<any, CONFIG_SCHEMA>["readEntries"]>
 >[number];
 
@@ -19,19 +15,19 @@ export const DEFAULT_NAME_SEPARATOR = "/";
 
 export class MarkdownDb<
   INPUT = unknown,
-  CONFIG_SCHEMA extends BaseConfigSchema = BaseConfigSchema,
+  ENTRY_SCHEMA extends MarkdownDb.Config.Base = MarkdownDb.Config.Base,
+  QUERY_SHAPE = any,
 > {
-  private _config: MarkdownDb.Config<INPUT, CONFIG_SCHEMA>;
-  private _entriesPromise: Promise<Entry<CONFIG_SCHEMA>[]> | null = null;
-  private _entriesMapPromise: Promise<
-    Map<string, Entry<CONFIG_SCHEMA>>
-  > | null = null;
+  private _config: MarkdownDb.Config<INPUT, ENTRY_SCHEMA>;
+  private _entriesPromise: Promise<Entry<ENTRY_SCHEMA>[]> | null = null;
+  private _entriesMapPromise: Promise<Map<string, Entry<ENTRY_SCHEMA>>> | null =
+    null;
   private _parentPatternsMapPromise: Promise<
-    Map<string, Entry<CONFIG_SCHEMA>[]>
+    Map<string, Entry<ENTRY_SCHEMA>[]>
   > | null = null;
-  private _cacheMap: Map<string, Entry<CONFIG_SCHEMA>[]> = new Map();
+  private _cacheMap: Map<string, Entry<ENTRY_SCHEMA>[]> = new Map();
 
-  protected constructor(config: MarkdownDb.Config<INPUT, CONFIG_SCHEMA>) {
+  protected constructor(config: MarkdownDb.Config<INPUT, ENTRY_SCHEMA>) {
     this._config = config;
   }
 
@@ -42,7 +38,7 @@ export class MarkdownDb<
    */
   public static cwd<INPUT = unknown>(cwd: FsDir) {
     const engine = QueryEngine.default<INPUT>();
-    return new MarkdownDb<INPUT, BaseConfigSchema>({
+    return new MarkdownDb<INPUT, MarkdownDb.Config.Base>({
       cwd,
       queryEngine: engine,
       // @ts-expect-error - We know the base structure of the schema
@@ -72,8 +68,8 @@ export class MarkdownDb<
     // @ts-ignore - We know the base structure of the schema
     const newSchema = this._config.entrySchema.omit({ query: true }).extend({
       query: queryEngine.schema.optional().prefault({ never: true }),
-    }) as CONFIG_SCHEMA;
-    return new MarkdownDb({
+    }) as ENTRY_SCHEMA;
+    return new MarkdownDb<INPUT, ENTRY_SCHEMA>({
       ...this._config,
       queryEngine,
       entrySchema: newSchema,
@@ -85,26 +81,24 @@ export class MarkdownDb<
    * @param entrySchema - The zod schema to use to validate extra frontmatter data
    * @returns A new MarkdownDb instance
    */
-  public setEntrySchema<NEW_CONFIG_SCHEMA extends z.ZodObject<any>>(
-    entrySchema: NEW_CONFIG_SCHEMA,
+  public setEntrySchema<NEW_ENTRY_SCHEMA extends z.ZodObject<any>>(
+    entrySchema: NEW_ENTRY_SCHEMA,
   ) {
-    return new MarkdownDb({
+    return new MarkdownDb<INPUT, NEW_ENTRY_SCHEMA>({
       ...this._config,
       entrySchema: entrySchema.extend({
         query: this._config.queryEngine.schema
           .optional()
           .prefault({ never: true }),
-      }) as NEW_CONFIG_SCHEMA extends z.ZodObject<infer T>
-        ? z.ZodObject<T & { query: z.ZodOptional<z.ZodType<unknown>> }>
-        : never,
+      }) as NEW_ENTRY_SCHEMA,
     });
   }
 
   /**
    * @deprecated Use {@link setEntrySchema} instead.
    */
-  public setConfigSchema<NEW_CONFIG_SCHEMA extends z.ZodObject<any>>(
-    configSchema: NEW_CONFIG_SCHEMA,
+  public setConfigSchema<NEW_ENTRY_SCHEMA extends z.ZodObject<any>>(
+    configSchema: NEW_ENTRY_SCHEMA,
   ) {
     return this.setEntrySchema(configSchema);
   }
@@ -113,14 +107,17 @@ export class MarkdownDb<
    * Filter the markdown files with glob patterns
    */
   public setGlobs(...globs: Globs) {
-    return new MarkdownDb({ ...this._config, globs });
+    return new MarkdownDb<INPUT, ENTRY_SCHEMA>({ ...this._config, globs });
   }
 
   /**
    * Set the name separator when computing the entry id
    */
   public setNameSeparator(nameSeparator: string) {
-    return new MarkdownDb({ ...this._config, nameSeparator });
+    return new MarkdownDb<INPUT, ENTRY_SCHEMA>({
+      ...this._config,
+      nameSeparator,
+    });
   }
 
   /**
@@ -129,7 +126,7 @@ export class MarkdownDb<
    * @returns A new MarkdownDb instance
    */
   public setCacheKey(cacheKey: (input: INPUT) => any) {
-    return new MarkdownDb({ ...this._config, cacheKey });
+    return new MarkdownDb<INPUT, ENTRY_SCHEMA>({ ...this._config, cacheKey });
   }
 
   /**
@@ -318,12 +315,12 @@ export class MarkdownDb<
     if (!this._parentPatternsMapPromise) {
       this._parentPatternsMapPromise = this.getAll().then((entries) => {
         const entriesMap = new Map(entries.map((p) => [p.$id, p]));
-        const parentMap = new Map<string, Entry<CONFIG_SCHEMA>[]>();
+        const parentMap = new Map<string, Entry<ENTRY_SCHEMA>[]>();
 
         // Precompute parent entries for each entry
         for (const entry of entries) {
           const path = entry.$id.split(this._config.nameSeparator);
-          const parentEntries: Entry<CONFIG_SCHEMA>[] = [];
+          const parentEntries: Entry<ENTRY_SCHEMA>[] = [];
 
           // Build parent chain: "a" -> "a/b" -> "a/b/c"
           for (let i = 1; i < path.length; i++) {
@@ -358,7 +355,7 @@ export class MarkdownDb<
     const entries = await this.getAll();
     const parentMap = await this.getParentsMap();
 
-    const matchingEntries: Entry<CONFIG_SCHEMA>[] = [];
+    const matchingEntries: Entry<ENTRY_SCHEMA>[] = [];
     const evaluatedPatterns = new Map<string, boolean>(); // pattern id -> matched
 
     // Process entries in order (already sorted so parents come before children)
@@ -407,7 +404,7 @@ export class MarkdownDb<
       skipEmpty?: boolean;
     },
   ) {
-    let entries: Entry<CONFIG_SCHEMA>[] = [];
+    let entries: Entry<ENTRY_SCHEMA>[] = [];
 
     // Use cache if a cache key function is provided
     if (this._config.cacheKey) {
@@ -452,7 +449,7 @@ export class MarkdownDb<
           acc[result.$id] = result;
           return acc;
         },
-        {} as Record<string, Entry<CONFIG_SCHEMA>>,
+        {} as Record<string, Entry<ENTRY_SCHEMA>>,
       ),
     ).sort((a, b) => a.$file.path.localeCompare(b.$file.path));
   }
@@ -476,10 +473,10 @@ export class MarkdownDb<
 export declare namespace MarkdownDb {
   export interface Config<
     INPUT = unknown,
-    CONFIG_SCHEMA extends BaseConfigSchema = BaseConfigSchema,
+    ENTRY_SCHEMA extends MarkdownDb.Config.Base = MarkdownDb.Config.Base,
   > {
     cwd: FsDir;
-    entrySchema: CONFIG_SCHEMA;
+    entrySchema: ENTRY_SCHEMA;
     nameSeparator: string;
     cacheKey: ((input: any) => any) | null;
     globs: Globs;
@@ -489,14 +486,16 @@ export declare namespace MarkdownDb {
   export namespace Config {
     // Todo: fix typings in main class so it works
     export type Infer<T extends MarkdownDb<any, any>> =
-      T extends MarkdownDb<any, infer CONFIG_SCHEMA>
-        ? z.input<CONFIG_SCHEMA>
+      T extends MarkdownDb<any, infer ENTRY_SCHEMA>
+        ? z.input<ENTRY_SCHEMA>
         : never;
+
+    export type Base = z.ZodObject<{
+      query: z.ZodOptional<z.ZodType<unknown>>;
+    }>;
   }
 
   export namespace Entry {
-    export type Infer<T extends MarkdownDb<any, any>> = Awaited<
-      ReturnType<T["getAll"]>
-    >[number];
+    export SCHEMA;
   }
 }
