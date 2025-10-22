@@ -1,4 +1,5 @@
 import assert from "node:assert/strict";
+import { resolve } from "node:path";
 import { describe, it } from "node:test";
 import { z } from "zod";
 import { assertType } from "../../shared/src/ts.utils.ts";
@@ -31,19 +32,22 @@ describe("File", () => {
   describe("file", () => {
     it("creates a file from a path", () => {
       const testFile = fsFile("/super/path/test.txt");
-      assert.equal(testFile.path, "/super/path/test.txt");
+      assert.equal(testFile.path, resolve("/super/path/test.txt"));
     });
   });
   describe("toFile", () => {
     it("creates a file from a relative path", () => {
       const testFile = fsFile("/super/path/test.txt");
-      assert.equal(testFile.toFile("../other.txt").path, "/super/other.txt");
+      assert.equal(
+        testFile.toFile("../other.txt").path,
+        resolve("/super/other.txt"),
+      );
     });
   });
   describe("toDir", () => {
     it("creates a dir from a relative path", () => {
       const testFile = fsFile("/super/path/test.txt");
-      assert.equal(testFile.toDir("../other").path, "/super/other");
+      assert.equal(testFile.toDir("../other").path, resolve("/super/other"));
     });
   });
   describe("relativePathTo", () => {
