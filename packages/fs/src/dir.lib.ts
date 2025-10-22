@@ -13,9 +13,10 @@ import { fsFiles, fsFilesFromDir } from "./files-array.lib.ts";
 export class FsDir extends Pipeable<FsDir> {
   private readonly _path: AnyPath;
 
-  protected constructor(path: AnyPath) {
+  protected constructor(pathArg: AnyPath) {
     super();
-    this._path = path;
+    // Always normalize the path to ensure consistent drive letter casing on Windows
+    this._path = path.resolve(pathArg);
   }
 
   /**
@@ -108,7 +109,7 @@ export class FsDir extends Pipeable<FsDir> {
   public static cwd(this: void, arg: FsDir | AnyPath): FsDir;
   public static cwd(this: void, arg: FsDir | AnyPath) {
     if (arg instanceof FsDir) return arg;
-    return new FsDir(path.resolve(arg));
+    return new FsDir(arg);
   }
 
   /**
@@ -116,7 +117,7 @@ export class FsDir extends Pipeable<FsDir> {
    * @returns A new FsDir instance with the temporary directory
    */
   public static tmpDir(this: void) {
-    return new FsDir(path.resolve(tmpdir()));
+    return new FsDir(tmpdir());
   }
 
   /**
@@ -138,8 +139,7 @@ export class FsDir extends Pipeable<FsDir> {
    * ```
    */
   public toDir(relativePath: string) {
-    const newPath = path.resolve(this._path, relativePath);
-    return new FsDir(newPath);
+    return new FsDir(path.join(this._path, relativePath));
   }
 
   /**
@@ -190,7 +190,7 @@ Trying to access a dir file from an absolute paths:
   - Folder path: ${this._path}
   - File path: ${relativePath}
 `);
-    return FsFile.from(path.resolve(this._path, relativePath));
+    return FsFile.from(path.join(this._path, relativePath));
   }
 
   /**

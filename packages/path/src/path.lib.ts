@@ -120,7 +120,7 @@ export function isInPath(basePath: AnyPath, path: AnyPath): boolean {
  */
 export function relative(basePath: AnyPath, path: AnyPath): RelativePath {
   return removeRelativeIndicator(
-    fsPath.relative(basePath, path),
+    fsPath.relative(resolve(basePath), resolve(path)),
   ) as RelativePath;
 }
 
@@ -171,7 +171,12 @@ export function join(cwd: AbsolutePath, ...paths: Array<AnyPath>): AbsolutePath;
 export function join(cwd: RelativePath, ...paths: Array<AnyPath>): RelativePath;
 export function join(...paths: Array<AnyPath>): AnyPath;
 export function join(cwd: AnyPath, ...paths: Array<AnyPath>): AnyPath {
-  return fsPath.join(cwd, ...paths);
+  const joined = fsPath.join(cwd, ...paths);
+  // If the result is absolute, normalize it to ensure consistent drive letter casing
+  if (fsPath.isAbsolute(joined)) {
+    return resolve(joined);
+  }
+  return joined;
 }
 
 /**
@@ -237,7 +242,7 @@ export function ensureFileExtension(filePath: AnyPath, extension: string) {
  * ```
  */
 export const importUrlToAbsolutePath = (importUrl: string): AbsolutePath => {
-  return fsPath.dirname(fileURLToPath(importUrl)) as AbsolutePath;
+  return resolve(fsPath.dirname(fileURLToPath(importUrl)));
 };
 
 /**

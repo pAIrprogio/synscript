@@ -71,12 +71,13 @@ export class FsFile<
    */
   public static from(this: void, arg: FsFile | AnyPath) {
     if (arg instanceof FsFile) return arg;
-    return new FsFile<"utf-8", undefined>(path.resolve(arg), "utf-8");
+    return new FsFile<"utf-8", undefined>(arg, "utf-8");
   }
 
-  protected constructor(path: AnyPath, encoding?: TEncoding, schema?: TSchema) {
+  protected constructor(pathArg: AnyPath, encoding?: TEncoding, schema?: TSchema) {
     super();
-    this._path = path;
+    // Always normalize the path to ensure consistent drive letter casing on Windows
+    this._path = path.resolve(pathArg);
     this._encoding = encoding ?? ("utf-8" as TEncoding);
     this._schema = schema ?? undefined;
   }
@@ -284,8 +285,7 @@ export class FsFile<
    * ```
    */
   public toFile(relativePath: string) {
-    const newPath = path.resolve(this.dirPath(), relativePath);
-    return new FsFile(newPath);
+    return new FsFile(path.join(this.dirPath(), relativePath));
   }
 
   /**
@@ -303,8 +303,7 @@ export class FsFile<
    * ```
    */
   public toDir(relativePath: string) {
-    const newPath = path.resolve(this.dirPath(), relativePath);
-    return FsDir.cwd(newPath);
+    return FsDir.cwd(path.join(this.dirPath(), relativePath));
   }
 
   /**
