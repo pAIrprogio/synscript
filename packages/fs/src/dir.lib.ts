@@ -116,7 +116,7 @@ export class FsDir extends Pipeable<FsDir> {
    * @returns A new FsDir instance with the temporary directory
    */
   public static tmpDir(this: void) {
-    return new FsDir(tmpdir());
+    return new FsDir(path.resolve(tmpdir()));
   }
 
   /**
@@ -138,7 +138,7 @@ export class FsDir extends Pipeable<FsDir> {
    * ```
    */
   public toDir(relativePath: string) {
-    const newPath = path.join(this._path, relativePath);
+    const newPath = path.resolve(this._path, relativePath);
     return new FsDir(newPath);
   }
 

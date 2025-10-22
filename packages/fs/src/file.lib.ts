@@ -303,7 +303,7 @@ export class FsFile<
    * ```
    */
   public toDir(relativePath: string) {
-    const newPath = path.join(this.dirPath(), relativePath);
+    const newPath = path.resolve(this.dirPath(), relativePath);
     return FsDir.cwd(newPath);
   }
 

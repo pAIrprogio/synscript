@@ -43,7 +43,12 @@ export function resolve(...paths: Array<AnyPath>) {
   if (paths.length === 0) {
     throw new Error("No paths provided");
   }
-  return fsPath.resolve(...paths) as AbsolutePath;
+  const resolved = fsPath.resolve(...paths);
+  // Normalize drive letter casing on Windows (C:\ vs c:\)
+  if (process.platform === "win32" && /^[a-z]:/.test(resolved)) {
+    return (resolved.charAt(0).toUpperCase() + resolved.slice(1)) as AbsolutePath;
+  }
+  return resolved as AbsolutePath;
 }
 
 /**
@@ -92,7 +97,13 @@ export function dirname(path: AnyPath): AbsolutePath {
 export function isInPath(basePath: AnyPath, path: AnyPath): boolean {
   const resolvedBasePath = resolve(basePath);
   const resolvedPath = resolve(path);
-  return resolvedPath.startsWith(resolvedBasePath);
+
+  const relativePath = fsPath.relative(resolvedBasePath, resolvedPath);
+
+  // If path is inside basePath, relative() returns a path that:
+  // - doesn't start with '..' (not outside)
+  // - isn't empty string (same path)
+  return relativePath !== "" && !relativePath.startsWith("..");
 }
 
 /**
