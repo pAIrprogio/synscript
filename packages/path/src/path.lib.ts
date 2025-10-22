@@ -44,9 +44,10 @@ export function resolve(...paths: Array<AnyPath>) {
     throw new Error("No paths provided");
   }
   const resolved = fsPath.resolve(...paths);
-  // Normalize drive letter casing on Windows (C:\ vs c:\)
-  if (process.platform === "win32" && /^[a-z]:/.test(resolved)) {
-    return (resolved.charAt(0).toUpperCase() + resolved.slice(1)) as AbsolutePath;
+  // Normalize drive letter casing on Windows to lowercase (c:\ not C:\)
+  // Node.js is inconsistent: CommonJS vs ESM may return different cases
+  if (process.platform === "win32" && /^[A-Z]:/.test(resolved)) {
+    return (resolved.charAt(0).toLowerCase() + resolved.slice(1)) as AbsolutePath;
   }
   return resolved as AbsolutePath;
 }
