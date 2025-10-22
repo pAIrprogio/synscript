@@ -4,7 +4,7 @@
   "publishConfig": {
     "access": "public"
   },
-  "version": "2.3.15",
+  "version": "2.3.16",
   "description": "Immutable, chainable, and type-safe wrapper of Vercel's AI SDK",
   "keywords": [
     "llm",
