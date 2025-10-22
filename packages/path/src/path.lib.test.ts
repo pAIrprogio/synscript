@@ -1,7 +1,7 @@
 import assert from "node:assert/strict";
 import { resolve } from "node:path";
 import { describe, it } from "node:test";
-import { ensureFileExtension, isInPath } from "./path.lib.ts";
+import { ensureFileExtension, isInPath, normalizeSeparators, relative } from "./path.lib.ts";
 
 describe("ensureFileExtension", () => {
   it("adds extension when missing", () => {
@@ -54,5 +54,46 @@ describe("isInPath", () => {
   it("returns false when using parent directory navigation", () => {
     const result = isInPath("/base/sub", "/base/sub/../other");
     assert.equal(result, false);
+  });
+});
+
+describe("normalizeSeparators", () => {
+  it("converts Windows backslashes to forward slashes", () => {
+    const result = normalizeSeparators("path\\to\\file.txt");
+    assert.equal(result, "path/to/file.txt");
+  });
+
+  it("handles paths that already use forward slashes", () => {
+    const result = normalizeSeparators("path/to/file.txt");
+    assert.equal(result, "path/to/file.txt");
+  });
+
+  it("handles mixed separators", () => {
+    const result = normalizeSeparators("path\\to/file\\test.txt");
+    assert.equal(result, "path/to/file/test.txt");
+  });
+
+  it("handles empty string", () => {
+    const result = normalizeSeparators("");
+    assert.equal(result, "");
+  });
+});
+
+describe("relative", () => {
+  it("returns normalized relative path with forward slashes", () => {
+    const result = relative("/base/dir", "/base/dir/subdir/file.txt");
+    assert.equal(result, "subdir/file.txt");
+  });
+
+  it("handles going up directories", () => {
+    const result = relative("/base/other", "/base/dir/file.txt");
+    assert.equal(result, "../dir/file.txt");
+  });
+
+  it("normalizes Windows paths in result", () => {
+    // Even if the OS returns backslashes, they should be normalized
+    const result = relative("/path/to", "/path/to/sub/file.txt");
+    assert.ok(!result.includes("\\"), "Result should not contain backslashes");
+    assert.equal(result, "sub/file.txt");
   });
 });

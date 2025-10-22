@@ -160,9 +160,8 @@ export class MarkdownDb<
    */
   public computeEntryId(mdFile: FsFile) {
     const relativePath = mdFile.dir().relativePathFrom(this._config.cwd);
-    // Normalize path separators to forward slashes for consistent splitting across platforms
-    const normalizedPath = relativePath.replace(/\\/g, "/");
-    const dirPath = normalizedPath.split("/");
+    // Already normalized by path.relative() but split by "/"
+    const dirPath = relativePath.split("/");
     const lastFolderName = dirPath.pop();
     let fileName = mdFile.fileNameWithoutExtension();
 

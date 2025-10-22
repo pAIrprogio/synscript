@@ -119,8 +119,9 @@ export function isInPath(basePath: AnyPath, path: AnyPath): boolean {
  * ```
  */
 export function relative(basePath: AnyPath, path: AnyPath): RelativePath {
+  const relativePath = fsPath.relative(resolve(basePath), resolve(path));
   return removeRelativeIndicator(
-    fsPath.relative(resolve(basePath), resolve(path)),
+    normalizeSeparators(relativePath),
   ) as RelativePath;
 }
 
@@ -227,6 +228,22 @@ export function ensureFileExtension(filePath: AnyPath, extension: string) {
   const normalizedExt = extension.startsWith(".") ? extension : `.${extension}`;
   if (filePath.endsWith(normalizedExt)) return filePath;
   return `${filePath}${normalizedExt}`;
+}
+
+/**
+ * Normalizes path separators to forward slashes for cross-platform consistency.
+ * Converts Windows backslashes to forward slashes.
+ *
+ * @param path - The path to normalize
+ * @returns The path with forward slashes
+ *
+ * ```typescript
+ * console.log(normalizeSeparators("path\\to\\file.txt")); // "path/to/file.txt"
+ * console.log(normalizeSeparators("path/to/file.txt")); // "path/to/file.txt"
+ * ```
+ */
+export function normalizeSeparators(path: string): string {
+  return path.replace(/\\/g, "/");
 }
 
 /**

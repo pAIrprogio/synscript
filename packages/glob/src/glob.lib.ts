@@ -1,5 +1,6 @@
 import { glob as globAsync, globSync, type GlobOptions } from "glob";
 import { minimatch } from "minimatch";
+import { normalizeSeparators } from "@synstack/path";
 
 interface Options {
   includes: string[];
@@ -23,6 +24,8 @@ export function ensureDirTrailingSlash(glob: string) {
  * _Note: glob capturing only works with single "*" widlcards_
  */
 export function capture(glob: string, filePath: string) {
+  // Normalize Windows backslashes to forward slashes for consistent glob matching
+  const normalizedPath = normalizeSeparators(filePath);
   const baseRegex = minimatch.makeRe(glob);
   if (!baseRegex) throw new InvalidGlobException(glob);
   const capturingRegexString = baseRegex.source
@@ -30,7 +33,7 @@ export function capture(glob: string, filePath: string) {
     .replaceAll("\\)", ")")
     .replaceAll("\\\\", "\\");
   const regex = new RegExp(capturingRegexString, "g");
-  const matches = regex.exec(filePath);
+  const matches = regex.exec(normalizedPath);
   if (!matches) return null;
   return matches.slice(1);
 }
@@ -48,10 +51,12 @@ export function matches(
   filePath: string,
   ...globs: Array<string> | [Array<string>]
 ): boolean {
+  // Normalize Windows backslashes to forward slashes for consistent glob matching
+  const normalizedPath = normalizeSeparators(filePath);
   const { includes, excludes } = sort(...globs);
   return (
-    includes.some((globPattern) => minimatch(filePath, globPattern)) &&
-    !excludes.some((glob) => minimatch(filePath, glob, { dot: true }))
+    includes.some((globPattern) => minimatch(normalizedPath, globPattern)) &&
+    !excludes.some((glob) => minimatch(normalizedPath, glob, { dot: true }))
   );
 }
 

@@ -64,6 +64,12 @@ describe("File", () => {
         "../other",
       );
     });
+    it("returns normalized path with forward slashes", () => {
+      const testFile = fsFile("/super/path/test.txt");
+      const result = testFile.relativePathTo(fsFile("/super/other/sub/other.txt"));
+      assert.ok(!result.includes("\\"), "Result should not contain backslashes");
+      assert.equal(result, "../other/sub/other.txt");
+    });
   });
   describe("relativePathFrom", () => {
     it("returns the relative path from another file", () => {
@@ -79,6 +85,12 @@ describe("File", () => {
         testFile.relativePathFrom(fsDir("/super/other")),
         "../path/test.txt",
       );
+    });
+    it("returns normalized path with forward slashes", () => {
+      const testFile = fsFile("/super/path/deep/test.txt");
+      const result = testFile.relativePathFrom(fsFile("/super/other/other.txt"));
+      assert.ok(!result.includes("\\"), "Result should not contain backslashes");
+      assert.equal(result, "../path/deep/test.txt");
     });
   });
 });
