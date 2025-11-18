@@ -1,6 +1,6 @@
 import { FsFile, fsFile } from "@synstack/fs";
 import { t } from "@synstack/text";
-import kuzu, { type Connection, type Database } from "kuzu";
+import * as kuzu from "kuzu";
 
 /**
  * KuzuClient provides a TypeScript-friendly interface to the Kuzu graph database.
@@ -27,8 +27,8 @@ import kuzu, { type Connection, type Database } from "kuzu";
  */
 export class KuzuClient {
   private readonly dbPath: FsFile | string;
-  private readonly db: Database;
-  private readonly conn: Connection;
+  private readonly db: kuzu.Database;
+  private readonly conn: kuzu.Connection;
   private initPromise: Promise<void> | null = null;
 
   /**
