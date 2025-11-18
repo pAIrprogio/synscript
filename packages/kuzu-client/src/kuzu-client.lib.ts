@@ -114,6 +114,7 @@ export class KuzuClient {
     template: TemplateStringsArray,
     ...args: string[]
   ) {
+    // If the first query fails, it crashes the database, so we need initialize it manually before executing the query so that it throws instead
     if (!this.initPromise) this.initPromise = this.db.init();
     await this.initPromise;
     const query = t(template, ...args);
