@@ -29,7 +29,7 @@ export class KuzuClient {
   private readonly dbPath: FsFile | string;
   private readonly db: Database;
   private readonly conn: Connection;
-  private initPromise: Promise<void>;
+  private initPromise: Promise<void> | null = null;
 
   /**
    * Creates a new KuzuClient instance.
@@ -57,7 +57,6 @@ export class KuzuClient {
       options.checkpointThreshold,
     );
     this.conn = new kuzu.Connection(this.db);
-    this.initPromise = this.db.init();
   }
 
   /**
@@ -115,6 +114,7 @@ export class KuzuClient {
     template: TemplateStringsArray,
     ...args: string[]
   ) {
+    if (!this.initPromise) this.initPromise = this.db.init();
     await this.initPromise;
     const query = t(template, ...args);
     return await this.conn.query<T>(query);
