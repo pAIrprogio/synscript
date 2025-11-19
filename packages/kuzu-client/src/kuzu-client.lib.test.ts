@@ -113,13 +113,13 @@ describe("KuzuClient", { concurrency: false }, () => {
 
         it("handles template string with parameters", async () => {
           const name = "Bob";
-          const age = "25";
-          await client.query`CREATE (p:Person {name: "${name}", age: ${age}})`;
+          const age = 25;
+          await client.query`CREATE (p:Person {name: ${name}, age: ${age}})`;
 
           const result = await client.queryOne<{
             name: string;
             age: number;
-          }>`MATCH (p:Person {name: "${name}"}) RETURN p.name as name, p.age as age`;
+          }>`MATCH (p:Person {name: ${name}}) RETURN p.name as name, p.age as age`;
           assert.equal(result?.name, "Bob");
           assert.equal(result?.age, 25);
         });
@@ -216,36 +216,6 @@ describe("KuzuClient", { concurrency: false }, () => {
           assert.ok(result?.r._id);
           assert.ok(result?.r._src);
           assert.ok(result?.r._dst);
-        });
-      });
-    });
-
-    describe("extension methods", () => {
-      beforeEach(() => {
-        client = new KuzuClient({
-          path: testDbPath,
-          createIfNotExists: true,
-        });
-      });
-
-      describe("getLoadedExtensions", () => {
-        void it.skip("returns list of loaded extensions", async () => {
-          await client.getLoadedExtensions();
-          assert.ok(true);
-        });
-      });
-
-      describe("loadExtension", () => {
-        void it.skip("loads an extension if not already loaded", async () => {
-          // Skipping extension loading test as it's environment-dependent
-          await client.loadExtension("json");
-          assert.ok(true);
-        });
-
-        void it.skip("does not reload already loaded extensions", async () => {
-          // Skipping as it depends on environment
-          await client.getLoadedExtensions();
-          assert.ok(true);
         });
       });
     });

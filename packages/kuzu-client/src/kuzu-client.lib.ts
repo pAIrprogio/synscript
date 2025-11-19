@@ -106,19 +106,21 @@ export class KuzuClient {
    *   console.log(result.getNext());
    * }
    * ```
-   *
-   * @warning String interpolation does not automatically add quotes for string values.
-   * Use quotes in the template: `WHERE name = "${name}"`
    */
   public async query<T = unknown>(
     template: TemplateStringsArray,
-    ...args: string[]
+    ...args: any[]
   ) {
     // If the first query fails, it crashes the database, so we need initialize it manually before executing the query so that it throws instead
     if (!this.initPromise) this.initPromise = this.db.init();
     await this.initPromise;
-    const query = t(template, ...args);
-    return await this.conn.query<T>(query);
+    const idsArray = args.map((_, index) => `$arg${index}`);
+    const query = t(template, ...idsArray);
+    const preparedStatement = await this.conn.prepare(query);
+    const argsMap = Object.fromEntries(
+      args.map((arg, index) => [`arg${index}`, arg]),
+    );
+    return await this.conn.execute<T>(preparedStatement, argsMap);
   }
 
   /**
