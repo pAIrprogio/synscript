@@ -117,7 +117,7 @@ export class KuzuClient {
    * ```
    */
   public async init() {
-    if (!this.initPromise) this.initPromise = this.db.init();
+    if (!this.initPromise) this.initPromise = this.conn.init();
     return this.initPromise;
   }
 
@@ -145,7 +145,7 @@ export class KuzuClient {
    * ```
    */
   public async close() {
-    const promise = this.db.close();
+    const promise = this.conn.close();
     this.initPromise = null;
     return promise;
   }

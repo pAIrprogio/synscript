@@ -16,15 +16,16 @@ describe("KuzuClient", { concurrency: false }, () => {
     );
   });
 
-  afterEach(() => {
+  afterEach(async () => {
     try {
+      await client.close();
       rmSync(testDbPath, { recursive: true, force: true });
     } catch {
       // Ignore cleanup errors
     }
   });
 
-  describe("constructor", () => {
+  describe("constructor", { concurrency: false }, () => {
     it("creates a new database if createIfNotExists is true", () => {
       assert.doesNotThrow(() => {
         client = new KuzuClient({
@@ -64,7 +65,7 @@ describe("KuzuClient", { concurrency: false }, () => {
     });
   });
 
-  describe("static new method", () => {
+  describe("static new method", { concurrency: false }, () => {
     it("creates a new instance using static method", () => {
       const instance = KuzuClient.new({
         path: testDbPath,
@@ -74,7 +75,7 @@ describe("KuzuClient", { concurrency: false }, () => {
     });
   });
 
-  describe("with active database", () => {
+  describe("with active database", { concurrency: false }, () => {
     beforeEach(() => {
       client = new KuzuClient({
         path: testDbPath,
@@ -82,7 +83,7 @@ describe("KuzuClient", { concurrency: false }, () => {
       });
     });
 
-    describe("connection getter", () => {
+    describe("connection getter", { concurrency: false }, () => {
       it("returns the kuzu connection", () => {
         const conn = client.connection;
         assert.ok(conn);
@@ -90,7 +91,7 @@ describe("KuzuClient", { concurrency: false }, () => {
       });
     });
 
-    describe("query operations", () => {
+    describe("query operations", { concurrency: false }, () => {
       beforeEach(async () => {
         // Create test schema
         await client.queryRaw`CREATE NODE TABLE Person(name STRING, age INT32, PRIMARY KEY (name))`;
@@ -98,7 +99,7 @@ describe("KuzuClient", { concurrency: false }, () => {
         await client.queryRaw`CREATE REL TABLE LivesIn(FROM Person TO City)`;
       });
 
-      describe("query", () => {
+      describe("query", { concurrency: false }, () => {
         it("executes a query and returns QueryResult", async () => {
           await client.queryRaw`CREATE (p:Person {name: "Alice", age: 30})`;
           const result = await client.queryRaw<{
@@ -114,9 +115,9 @@ describe("KuzuClient", { concurrency: false }, () => {
         it("handles template string with parameters", async () => {
           const name = "Bob";
           const age = 25;
-          await client.queryRaw`CREATE (p:Person {name: ${name}, age: ${age}})`;
+          await client.query`CREATE (p:Person {name: ${name}, age: ${age}})`;
 
-          const result = await client.queryRawOne<{
+          const result = await client.queryOne<{
             name: string;
             age: number;
           }>`MATCH (p:Person {name: ${name}}) RETURN p.name as name, p.age as age`;
@@ -125,7 +126,7 @@ describe("KuzuClient", { concurrency: false }, () => {
         });
       });
 
-      describe("queryAll", () => {
+      describe("queryAll", { concurrency: false }, () => {
         it("returns all rows from query", async () => {
           await client.queryRaw`CREATE (p1:Person {name: "Alice", age: 30})`;
           await client.queryRaw`CREATE (p2:Person {name: "Bob", age: 25})`;
@@ -150,7 +151,7 @@ describe("KuzuClient", { concurrency: false }, () => {
         });
       });
 
-      describe("queryOne", () => {
+      describe("queryOne", { concurrency: false }, () => {
         it("returns first row from query", async () => {
           await client.queryRaw`CREATE (p1:Person {name: "Alice", age: 30})`;
           await client.queryRaw`CREATE (p2:Person {name: "Bob", age: 25})`;
@@ -172,13 +173,13 @@ describe("KuzuClient", { concurrency: false }, () => {
         });
       });
 
-      describe("complex queries", () => {
+      describe("complex queries", { concurrency: false }, () => {
         it("handles node creation and retrieval", async () => {
-          await client.queryRaw`CREATE (c:City {name: "New York", population: 8000000})`;
-          await client.queryRaw`CREATE (p:Person {name: "Alice", age: 30})`;
-          await client.queryRaw`MATCH (p:Person {name: "Alice"}), (c:City {name: "New York"}) CREATE (p)-[:LivesIn]->(c)`;
+          await client.query`CREATE (c:City {name: "New York", population: 8000000})`;
+          await client.query`CREATE (p:Person {name: "Alice", age: 30})`;
+          await client.query`MATCH (p:Person {name: "Alice"}), (c:City {name: "New York"}) CREATE (p)-[:LivesIn]->(c)`;
 
-          const result = await client.queryRawOne<{
+          const result = await client.queryOne<{
             person: string;
             city: string;
           }>`
@@ -221,7 +222,7 @@ describe("KuzuClient", { concurrency: false }, () => {
     });
   });
 
-  describe("error handling", () => {
+  describe("error handling", { concurrency: false }, () => {
     beforeEach(() => {
       client = new KuzuClient({
         path: testDbPath,
