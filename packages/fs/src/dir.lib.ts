@@ -164,7 +164,7 @@ export class FsDir extends Pipeable<FsDir> {
   /**
    * Create a new directory instance with a path relative to this directory.
    *
-   * @alias {@link toDir}
+   * @deprecated Use {@link toDir} instead
    * @param relativePath - The relative path to append to the current directory
    * @returns A new FsDir instance representing the combined path
    *
