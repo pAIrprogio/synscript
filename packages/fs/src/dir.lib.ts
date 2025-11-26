@@ -215,7 +215,7 @@ Trying to access a dir file from an absolute paths:
   /**
    * Create a new file instance with a path relative to this directory.
    *
-   * @alias {@link toFile}
+   * @deprecated Use {@link toFile}
    * @param relativePath - The relative path to the file from this directory
    * @returns A new FsFile instance for the specified path
    * @throws If an absolute path is provided
