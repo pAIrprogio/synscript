@@ -330,10 +330,9 @@ export class FsFile<
    * const file2 = fsFile("/path/to-other/file2.txt");
    *
    * console.log(file1.relativePathFrom(file2)); // ../to/file1.txt
-   * console.log(file1.relativePathFrom("/path/to-dir")); // ../to/file1.txt
    * ```
    */
-  public relativePathFrom(dirOrFile: FsDir | FsFile | AnyPath): string {
+  public relativePathFrom(dirOrFile: FsDir | FsFile): string {
     if (dirOrFile instanceof FsFile)
       return this.relativePathFrom(dirOrFile.dir());
     return path.relative(dirOrFile.valueOf(), this.path);

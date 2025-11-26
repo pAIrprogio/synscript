@@ -82,7 +82,7 @@ export class FsDir extends Pipeable<FsDir> {
    * @param dirOrFile - The other directory
    * @returns The relative path as a string
    */
-  public relativePathFrom(dirOrFile: FsDir | FsFile | AnyPath): string {
+  public relativePathFrom(dirOrFile: FsDir | FsFile): string {
     if (dirOrFile instanceof FsFile)
       return this.relativePathFrom(dirOrFile.dir());
     return path.relative(dirOrFile.valueOf(), this.path);
