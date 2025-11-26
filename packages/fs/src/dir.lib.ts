@@ -125,10 +125,17 @@ export class FsDir extends Pipeable<FsDir> {
    * const existingDir = fsDir(fsDir("/path/to/existing"));
    * ```
    */
-  public static cwd(this: void, arg: FsDir | AnyPath): FsDir;
-  public static cwd(this: void, arg: FsDir | AnyPath) {
+  public static from(this: void, arg: FsDir | AnyPath): FsDir;
+  public static from(this: void, arg: FsDir | AnyPath) {
     if (arg instanceof FsDir) return arg;
     return new FsDir(arg);
+  }
+
+  /**
+   * @deprecated Use {@link from} instead.
+   */
+  public static cwd(this: void, arg: FsDir | AnyPath): FsDir {
+    return FsDir.from(arg);
   }
 
   /**
@@ -371,7 +378,7 @@ Trying to access a dir file from an absolute paths:
    * ```
    */
   public async copyTo(toDir: FsDir | string): Promise<FsDir> {
-    const destDir = FsDir.cwd(toDir);
+    const destDir = FsDir.from(toDir);
     const parentDir = path.dirname(destDir.path);
 
     try {
@@ -406,7 +413,7 @@ Trying to access a dir file from an absolute paths:
    * ```
    */
   public copyToSync(toDir: FsDir | string): FsDir {
-    const destDir = FsDir.cwd(toDir);
+    const destDir = FsDir.from(toDir);
     const parentDir = path.dirname(destDir.path);
 
     try {
@@ -432,7 +439,7 @@ Trying to access a dir file from an absolute paths:
    * @returns A promise that resolves the new directory
    */
   public async move(newPath: FsDir | AnyPath): Promise<FsDir> {
-    const newDir = FsDir.cwd(newPath);
+    const newDir = FsDir.from(newPath);
     try {
       await fs.rename(this._path, newDir.path);
       return newDir;
@@ -453,7 +460,7 @@ Trying to access a dir file from an absolute paths:
    * @returns The new directory
    */
   public moveSync(newPath: FsDir | AnyPath): FsDir {
-    const newDir = FsDir.cwd(newPath);
+    const newDir = FsDir.from(newPath);
     try {
       fsSync.renameSync(this._path, newDir.path);
       return newDir;
@@ -670,7 +677,7 @@ Trying to access a dir file from an absolute paths:
  * const existingDir = fsDir(fsDir("/path/to/existing"));
  * ```
  */
-export const fsDir = FsDir.cwd;
+export const fsDir = FsDir.from;
 
 /**
  * Create a new directory instance with the temporary directory.
@@ -681,4 +688,4 @@ export const fsTmpDir = FsDir.tmpDir;
 /**
  * @deprecated Changed to avoid namespacing conflicts. Use {@link fsDir} instead
  */
-export const dir = FsDir.cwd;
+export const dir = FsDir.from;

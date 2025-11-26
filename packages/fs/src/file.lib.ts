@@ -211,7 +211,7 @@ export class FsFile<
    * ```
    */
   public dir() {
-    return FsDir.cwd(this.dirPath());
+    return FsDir.from(this.dirPath());
   }
 
   /**
@@ -221,11 +221,18 @@ export class FsFile<
    *
    * ```typescript
    * const file = fsFile("/path/to/document.txt");
-   * console.log(file.fileName()); // "document.txt"
+   * console.log(file.name()); // "document.txt"
    * ```
    */
-  public fileName() {
+  public name() {
     return path.filename(this._path);
+  }
+
+  /**
+   * @deprecated Use {@link name} instead.
+   */
+  public fileName() {
+    return this.name();
   }
 
   /**
@@ -249,11 +256,18 @@ export class FsFile<
    *
    * ```typescript
    * const file = fsFile("/path/to/document.txt");
-   * console.log(file.fileNameWithoutExtension()); // "document"
+   * console.log(file.nameWithoutExtension()); // "document"
    * ```
    */
-  public fileNameWithoutExtension() {
+  public nameWithoutExtension() {
     return path.filenameWithoutExtension(this._path);
+  }
+
+  /**
+   * @deprecated Use {@link nameWithoutExtension} instead.
+   */
+  public fileNameWithoutExtension() {
+    return this.nameWithoutExtension();
   }
 
   /**
@@ -303,7 +317,7 @@ export class FsFile<
    * ```
    */
   public toDir(relativePath: string) {
-    return FsDir.cwd(path.join(this.dirPath(), relativePath));
+    return FsDir.from(path.join(this.dirPath(), relativePath));
   }
 
   /**
