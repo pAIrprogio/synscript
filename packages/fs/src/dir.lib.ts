@@ -89,6 +89,25 @@ export class FsDir extends Pipeable<FsDir> {
   }
 
   /**
+   * Check if the given file or directory is located within this directory.
+   *
+   * @param dirOrFileOrPath - The file, directory, or path to check
+   * @returns True if the given path is within this directory, false otherwise
+   *
+   * ```typescript
+   * import { fsDir, fsFile } from "@synstack/fs";
+   *
+   * const parentDir = fsDir("/path/to");
+   * console.log(parentDir.isParentOf(fsFile("/path/to/file.txt"))); // true
+   * console.log(parentDir.isParentOf(fsDir("/path/to/subdir"))); // true
+   * console.log(parentDir.isParentOf(fsFile("/other/file.txt"))); // false
+   * ```
+   */
+  public isParentOf(dirOrFileOrPath: AnyPath | FsDir | FsFile): boolean {
+    return path.isInPath(this._path, dirOrFileOrPath.valueOf());
+  }
+
+  /**
    * Create a new directory instance with the provided path(s).
    * Resolves relative paths to absolute paths.
    *
