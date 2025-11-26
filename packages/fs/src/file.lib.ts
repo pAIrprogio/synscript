@@ -330,12 +330,13 @@ export class FsFile<
    * const file2 = fsFile("/path/to-other/file2.txt");
    *
    * console.log(file1.relativePathFrom(file2)); // ../to/file1.txt
+   * console.log(file1.relativePathFrom("/path/to-dir")); // ../to/file1.txt
    * ```
    */
-  public relativePathFrom(dirOrFile: FsDir | FsFile): string {
+  public relativePathFrom(dirOrFile: FsDir | FsFile | AnyPath): string {
     if (dirOrFile instanceof FsFile)
       return this.relativePathFrom(dirOrFile.dir());
-    return path.relative(dirOrFile.path, this.path);
+    return path.relative(dirOrFile.valueOf(), this.path);
   }
 
   /**
@@ -348,10 +349,11 @@ export class FsFile<
    * const file2 = fsFile("/path/to-other/file2.txt");
    *
    * console.log(file1.relativePathTo(file2)); // ../to-other/file2.txt
+   * console.log(file1.relativePathTo("/path/to-other/file2.txt")); // ../to-other/file2.txt
    * ```
    */
-  public relativePathTo(dirOrFileOrPath: FsDir | FsFile): string {
-    return path.relative(this.dirPath(), dirOrFileOrPath.path);
+  public relativePathTo(dirOrFileOrPath: FsDir | FsFile | AnyPath): string {
+    return path.relative(this.dirPath(), dirOrFileOrPath.valueOf());
   }
 
   /**

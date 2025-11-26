@@ -72,8 +72,8 @@ export class FsDir extends Pipeable<FsDir> {
    * @param dirOrfile - The other directory
    * @returns The relative path as a string
    */
-  public relativePathTo(dirOrfile: FsDir | FsFile) {
-    return path.relative(this.path, dirOrfile.path);
+  public relativePathTo(dirOrfile: FsDir | FsFile | AnyPath) {
+    return path.relative(this.path, dirOrfile.valueOf());
   }
 
   /**
@@ -82,10 +82,10 @@ export class FsDir extends Pipeable<FsDir> {
    * @param dirOrFile - The other directory
    * @returns The relative path as a string
    */
-  public relativePathFrom(dirOrFile: FsDir | FsFile): string {
+  public relativePathFrom(dirOrFile: FsDir | FsFile | AnyPath): string {
     if (dirOrFile instanceof FsFile)
       return this.relativePathFrom(dirOrFile.dir());
-    return path.relative(dirOrFile.path, this.path);
+    return path.relative(dirOrFile.valueOf(), this.path);
   }
 
   /**
