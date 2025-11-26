@@ -458,10 +458,10 @@ Trying to access a dir file from an absolute paths:
    * const tempDir = fsDir("./temp");
    *
    * // Remove directory and all contents
-   * await tempDir.rm();
+   * await tempDir.remove();
    * ```
    */
-  public async rm(): Promise<void> {
+  public async remove(): Promise<void> {
     try {
       await fs.rm(this._path, { recursive: true });
     } catch (error: any) {
@@ -470,6 +470,13 @@ Trying to access a dir file from an absolute paths:
         cause: error,
       });
     }
+  }
+
+  /**
+   * @deprecated Use {@link remove} instead.
+   */
+  public rm(): Promise<void> {
+    return this.remove();
   }
 
   /**
@@ -482,10 +489,10 @@ Trying to access a dir file from an absolute paths:
    * const tempDir = fsDir("./temp");
    *
    * // Remove directory and all contents immediately
-   * tempDir.rmSync();
+   * tempDir.removeSync();
    * ```
    */
-  public rmSync(): void {
+  public removeSync(): void {
     try {
       fsSync.rmSync(this._path, { recursive: true });
     } catch (error: any) {
@@ -494,6 +501,13 @@ Trying to access a dir file from an absolute paths:
         cause: error,
       });
     }
+  }
+
+  /**
+   * @deprecated Use {@link removeSync} instead.
+   */
+  public rmSync(): void {
+    this.removeSync();
   }
 
   /**
